@@ -21,22 +21,26 @@ time_t lastTimeChangedMode = std::time(0);
 ///////////////////////////////////////////////////////////////////////////////
 /// Get info from RAM
 ///////////////////////////////////////////////////////////////////////////////
-int getPlayerX() {
+int getPlayerX()
+{
    return alei.getRAM().get(72) + ((rand() % 3) - 1);
 }
 
-int getBallX() {
+int getBallX()
+{
    return alei.getRAM().get(99) + ((rand() % 3) - 1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Do Next Agent Step
 ///////////////////////////////////////////////////////////////////////////////
-float agentStep() {
+float agentStep()
+{
    static int wide = 9;
    float reward = 0;
 
-   if (alei.lives() != lastLives) {
+   if (alei.lives() != lastLives)
+   {
       --lastLives;
       alei.act(PLAYER_A_FIRE);
    }
@@ -44,9 +48,13 @@ float agentStep() {
    // Apply rules.
    int playerX = getPlayerX();
    int ballX = getBallX();
-   if (ballX < playerX + wide) {
+
+   if (ballX < playerX + wide)
+   {
       reward += alei.act(PLAYER_A_LEFT);
-   } else if (ballX > playerX + wide) {
+   }
+   else if (ballX > playerX + wide)
+   {
       reward += alei.act(PLAYER_A_RIGHT);
    } 
    
@@ -56,7 +64,8 @@ float agentStep() {
 ///////////////////////////////////////////////////////////////////////////////
 /// Print usage and exit
 ///////////////////////////////////////////////////////////////////////////////
-void usage(char* pname) {
+void usage(char* pname)
+{
    std::cerr
       << "\nUSAGE:\n" 
       << "   " << pname << " <romfile>\n";
@@ -82,30 +91,24 @@ void printRAM()
     }
 }
 
-void handleSDLEventAgent(const SDL_Event& event)
-{
-    cout << "event.type: " << event.type << endl;
-}
-
+// Keys: https://wiki.libsdl.org/SDL_Keycode
 void checkKeys()
 {
-    //SDL_Event event;
-
-    /*
-    while(SDL_PollEvent(&event))
-    {
-        handleSDLEventAgent(event);
-    }
-    */
-
     Uint8* keystate = SDL_GetKeyState(NULL);
 
-    //continuous-response keys
+    // It checks if key 'e' has been pressed to change to manual mode
     if(keystate[SDLK_e] && (time(0) - lastTimeChangedMode) >= 1)
     {
-        manualInput = !manualInput;
+        if (manualInput)
+        {
+            cout << "[UDL] Bot Control" << endl;
+        }
+        else
+        {
+            cout << "[UDL] Manual Control" << endl;
+        }
 
-        cout << "CAMBIO" << endl;
+        manualInput = !manualInput;
 
         lastTimeChangedMode = time(0);
     }
@@ -115,6 +118,12 @@ float manualMode()
 {
     Uint8* keystate = SDL_GetKeyState(NULL);
     float reward = 0;
+
+    if(keystate[SDLK_SPACE] && alei.lives() != lastLives)
+    {
+        --lastLives;
+        alei.act(PLAYER_A_FIRE);
+    }
 
     if(keystate[SDLK_LEFT])
     {
@@ -131,7 +140,8 @@ float manualMode()
 ///////////////////////////////////////////////////////////////////////////////
 /// MAIN PROGRAM
 ///////////////////////////////////////////////////////////////////////////////
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
    // Check input parameter
    if (argc != 2)
       usage(argv[0]);
