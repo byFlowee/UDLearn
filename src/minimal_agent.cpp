@@ -4,6 +4,7 @@
 #include <sstream>
 #include <cstdlib>
 #include <ctime>
+#include <vector>
 
 #include "SDL.h"
 
@@ -16,6 +17,7 @@ float totalReward;
 ALEInterface alei;
 bool manualInput = false;
 time_t lastTimeChangedMode = std::time(0);
+vector<int> lastRAM(128);
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -83,11 +85,47 @@ void printRAM()
             std::cout << std::endl;
         }
 
-        std::stringstream ramValue;
-        ramValue << std::hex << (int)alei.getRAM().get(i);
-        std::string strRamValue(ramValue.str());
+        cout << "[";
 
-        std::cout << "[" << i << "]" << strRamValue << "\t";
+        if (i < 10)
+        {
+            cout << "  ";
+        }
+        else if (i < 100)
+        {
+            cout << " ";
+        }
+
+        cout << i << "]";
+
+        stringstream ramValue;
+        int intRamValue = (int)alei.getRAM().get(i);
+        ramValue << hex << intRamValue;
+
+        // ANSI colour codes
+        if (intRamValue == lastRAM[i])
+        {
+            // Red color
+            cout << "\033[1;31m";
+        }
+        else
+        {
+            // Green color
+            cout << "\033[1;32m";
+        }
+
+        // Same length for al cases
+        if (intRamValue < 0x10)
+        {
+            cout << "0";
+        }
+
+        cout << ramValue.str() << "\t";
+
+        // ANSI colour code close
+        cout << "\033[0m";
+
+        lastRAM[i] = intRamValue;
     }
 }
 
@@ -165,7 +203,7 @@ int main(int argc, char **argv)
         !alei.game_over() && step < maxSteps; 
         ++step) 
    {
-        //printRAM();
+        printRAM();
         checkKeys();
 
         if (!manualInput)
