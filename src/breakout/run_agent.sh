@@ -7,4 +7,4 @@ fi
 
 make agent
 
-LD_LIBRARY_PATH="." ./m $1
+LD_LIBRARY_PATH="." ./minimal_agent $1

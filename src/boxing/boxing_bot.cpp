@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cmath>
-#include "src/ale_interface.hpp"
+#include "ale_interface.hpp"
 #include <sstream>
 #include <cstdlib>
 #include <ctime>
