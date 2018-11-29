@@ -1,0 +1,78 @@
+#include "Network.h"
+using namespace std;
+
+Network::Network(const vector<unsigned> &topology) {
+    unsigned numLayers = topology.size();
+    for (unsigned layerId = 0; layerId < numLayers;  ++layerId) {
+        unsigned nOutputs = (layerId == topology.size() - 1) ? 0 : topology[layerId + 1];
+        vector<Perceptron> newLayer;
+        for (unsigned neuronId = 0; neuronId < topology[layerId]; ++neuronId) {
+            newLayer.push_back(Perceptron(nOutputs, neuronId));
+        }
+        layers.push_back(newLayer);
+        newLayer.clear();
+    }
+}
+
+void Network::getResults(vector<double> &results) const {
+    results.clear();
+
+    for (unsigned p = 0; p < layers.back().size() - 1; ++p) {
+        results.push_back(layers.back()[p].getOutput());
+    }
+}
+
+void Network::feedForward(const vector<double> &input) {
+    
+    //Feed the first layer with the input values
+    for (unsigned inputId = 0; inputId < input.size(); ++inputId) {
+        layers[0][inputId].setOutput(input[inputId]);
+    }
+
+    for (unsigned layerId = 1; layerId < layers.size(); ++layerId) {
+        vector<Perceptron> &prev = layers[layerId - 1];
+        for (unsigned neuronId = 0; neuronId < layers[layerId].size() - 1; ++neuronId) {
+            layers[layerId][neuronId].computeOutput(prev);
+        }
+    }
+}
+
+void Network::backPropagation(const vector<double> &target) {
+    vector<Perceptron> &outputLayer = layers.back();
+    loss = 0.0;
+
+    for (unsigned p = 0; p < outputLayer.size(); ++p) {
+        double d = target[p] - outputLayer[p].getOutput();
+        loss += d * d;
+    }
+
+    loss = sqrt(loss / outputLayer.size() - 1); // - 1 to exclude the bias
+
+    //Gradient for output layer
+    for (unsigned p = 0; p < outputLayer.size() -1; ++p) {
+        outputLayer[p].computeOutputGradients(target[p]);
+    }
+
+    //Gradient for hidden layers, iterate backwards
+    for (unsigned layerId = layers.size() - 2; layerId > 0; --layerId) {
+         for (unsigned p = 0; p < layers[layerId].size(); ++p) {
+             layers[layerId][p].computeHiddenGradients(layers[layerId + 1]);
+         }
+    }
+
+    //Update weights
+    for (unsigned layerId = layers.size() - 1; layerId > 0; --layerId) {
+        for (unsigned p = 0; p < layers[layerId].size(); ++p) {
+            layers[layerId][p].updateWeights(layers[layerId - 1]);
+        }
+    }
+}
+
+void Network::printTopology() const {
+    cout << "Network:" << endl;
+    
+    for (int i = 0; i < layers.size(); ++i) {
+        cout << "Layer " << i << ": " << layers[i].size() << " perceptrons" << endl;
+    }
+
+}
