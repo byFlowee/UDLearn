@@ -13,9 +13,12 @@ class Network {
         void backPropagation(const vector<double> &target);
         void getResults(vector<double> &result) const;
         void printTopology() const;
+        double getRecentAverageError() const { return avgError; }
     private:
         vector<vector<Perceptron>> layers;
         double loss;
+        double avgError;
+        static double smoothingFactor;
 };
 
 #endif

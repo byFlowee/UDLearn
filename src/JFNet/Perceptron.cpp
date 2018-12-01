@@ -26,12 +26,12 @@ void Perceptron::updateWeights(vector<Perceptron> &previousLayer) {
 //dE/dyⱼ = Σ ∂E/∂zⱼ * ∂z/∂yⱼ = Σ ∂E/∂zⱼ * wᵢⱼ
 void Perceptron::computeHiddenGradients(vector<Perceptron> &nextLayer) {
 
-     double loss = 0.0;
+    double loss = 0.0;
 
-     for (unsigned p = 0; p < nextLayer.size() - 1; ++p) {
-         loss += weights[p] * nextLayer[p].gradient;
-     } 
-
+    for (unsigned p = 0; p < nextLayer.size() - 1; ++p) {
+        loss += weights[p] * nextLayer[p].gradient;
+    } 
+    
     this->gradient = loss * Perceptron::activationFunctionDerivate(output);
 }
 

@@ -1,14 +1,18 @@
 #include "Network.h"
 using namespace std;
 
+double Network::smoothingFactor = 100;
+
 Network::Network(const vector<unsigned> &topology) {
+    srand ( time(NULL) );
     unsigned numLayers = topology.size();
     for (unsigned layerId = 0; layerId < numLayers;  ++layerId) {
         unsigned nOutputs = (layerId == topology.size() - 1) ? 0 : topology[layerId + 1];
         vector<Perceptron> newLayer;
-        for (unsigned neuronId = 0; neuronId < topology[layerId]; ++neuronId) {
+        for (unsigned neuronId = 0; neuronId <= topology[layerId]; ++neuronId) {
             newLayer.push_back(Perceptron(nOutputs, neuronId));
         }
+        newLayer.back().setOutput(1.0); //set bias to 1
         layers.push_back(newLayer);
         newLayer.clear();
     }
@@ -41,12 +45,17 @@ void Network::backPropagation(const vector<double> &target) {
     vector<Perceptron> &outputLayer = layers.back();
     loss = 0.0;
 
-    for (unsigned p = 0; p < outputLayer.size(); ++p) {
+    for (unsigned p = 0; p < outputLayer.size() - 1; ++p) {
         double d = target[p] - outputLayer[p].getOutput();
         loss += d * d;
     }
 
-    loss = sqrt(loss / outputLayer.size() - 1); // - 1 to exclude the bias
+    loss /= (outputLayer.size() - 1);
+    loss = sqrt(loss); // - 1 to exclude the bias
+
+    avgError =
+            (avgError * smoothingFactor + loss)
+            / (smoothingFactor + 1.0);
 
     //Gradient for output layer
     for (unsigned p = 0; p < outputLayer.size() -1; ++p) {
@@ -65,7 +74,7 @@ void Network::backPropagation(const vector<double> &target) {
         for (unsigned p = 0; p < layers[layerId].size(); ++p) {
             layers[layerId][p].updateWeights(layers[layerId - 1]);
         }
-    }
+    } 
 }
 
 void Network::printTopology() const {
