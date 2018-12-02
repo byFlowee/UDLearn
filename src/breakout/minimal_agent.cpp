@@ -21,6 +21,7 @@ vector<int> lastRAM(128);
 int BallX_LastTick(0);
 
 
+
 ///////////////////////////////////////////////////////////////////////////////
 /// Print usage and exit
 ///////////////////////////////////////////////////////////////////////////////
@@ -151,7 +152,7 @@ int getBallX()
 ///////////////////////////////////////////////////////////////////////////////
 float agentStep()
 {
-    static int wide = 9;
+    static int wide = alei.getRAM().get(108);
     float reward = 0;
 
     if (alei.lives() != lastLives)
@@ -165,10 +166,10 @@ float agentStep()
     int ballX = getBallX();
     
     if (BallX_LastTick < ballX) {
-        ballX += ((rand() % 2) + 2);
+        ballX += ((rand() % 3) + 1);
     }
     if (BallX_LastTick > ballX) {
-        ballX -= ((rand() % 2) - 2);
+        ballX -= ((rand() % 3) - 1);
     }
     BallX_LastTick = getBallX();
 
@@ -176,10 +177,10 @@ float agentStep()
     {
         reward += alei.act(PLAYER_A_LEFT);
     }
-    else if (ballX > playerX + wide)
+    else if ((ballX > playerX + wide) && (playerX + wide < 188))
     {
         reward += alei.act(PLAYER_A_RIGHT);
-    } 
+    }
    
    return (reward + alei.act(PLAYER_A_NOOP));
 }
@@ -238,6 +239,5 @@ int main(int argc, char **argv)
 
    std::cout << "Steps: " << step << std::endl;
    std::cout << "Reward: " << totalReward << std::endl;
-
    return 0;
 }

@@ -11,57 +11,16 @@
 using namespace std;
 
 // Global vars
-const int maxSteps = 7500;
+const int maxSteps(7500);
 int lastLives;
 float totalReward;
 ALEInterface alei;
-bool manualInput = false;
-time_t lastTimeChangedMode = std::time(0);
+bool manualInput(false);
+time_t lastTimeChangedMode(std::time(0));
 vector<int> lastRAM(128);
+int BallX_LastTick(0);
 
 
-///////////////////////////////////////////////////////////////////////////////
-/// Get info from RAM
-///////////////////////////////////////////////////////////////////////////////
-int getPlayerX()
-{
-   return alei.getRAM().get(72) + ((rand() % 3) - 1);
-}
-
-int getBallX()
-{
-   return alei.getRAM().get(99) + ((rand() % 3) - 1);
-}
-
-///////////////////////////////////////////////////////////////////////////////
-/// Do Next Agent Step
-///////////////////////////////////////////////////////////////////////////////
-float agentStep()
-{
-   static int wide = 9;
-   float reward = 0;
-
-   if (alei.lives() != lastLives)
-   {
-      --lastLives;
-      alei.act(PLAYER_A_FIRE);
-   }
-
-   // Apply rules.
-   int playerX = getPlayerX();
-   int ballX = getBallX();
-
-   if (ballX < playerX + wide)
-   {
-      reward += alei.act(PLAYER_A_LEFT);
-   }
-   else if (ballX > playerX + wide)
-   {
-      reward += alei.act(PLAYER_A_RIGHT);
-   } 
-   
-   return (reward + alei.act(PLAYER_A_NOOP));
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Print usage and exit
@@ -70,7 +29,7 @@ void usage(char* pname)
 {
    std::cerr
       << "\nUSAGE:\n" 
-      << "   " << pname << " <romfile>\n";
+      << "   " << pname << " <romfile> "<< "<display media?([0],1)> <Print ram?([0],1)>\n";
    exit(-1);
 }
 
@@ -176,48 +135,109 @@ float manualMode()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+/// Get info from RAM
+///////////////////////////////////////////////////////////////////////////////
+int getPlayerX()
+{
+   return alei.getRAM().get(72);// + ((rand() % 3) - 1);
+}
+
+int getBallX()
+{
+   return alei.getRAM().get(99);// + ((rand() % 3) - 1);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// Do Next Agent Step
+///////////////////////////////////////////////////////////////////////////////
+float agentStep()
+{
+    static int wide = alei.getRAM().get(108);
+    float reward = 0;
+
+    if (alei.lives() != lastLives)
+    {
+        --lastLives;
+        alei.act(PLAYER_A_FIRE);
+    }
+
+    // Apply rules.
+    int playerX = getPlayerX();
+    int ballX = getBallX();
+    
+    if (BallX_LastTick < ballX) {
+        ballX += ((rand() % 3) + 1);
+    }
+    if (BallX_LastTick > ballX) {
+        ballX -= ((rand() % 3) - 1);
+    }
+    BallX_LastTick = getBallX();
+
+    if (ballX < playerX + wide)
+    {
+        reward += alei.act(PLAYER_A_LEFT);
+    }
+    else if ((ballX > playerX + wide) && (playerX + wide < 188))
+    {
+        reward += alei.act(PLAYER_A_RIGHT);
+    }
+   
+   return (reward + alei.act(PLAYER_A_NOOP));
+}
+
+///////////////////////////////////////////////////////////////////////////////
 /// MAIN PROGRAM
 ///////////////////////////////////////////////////////////////////////////////
 int main(int argc, char **argv)
 {
-   // Check input parameter
-   if (argc != 2)
-      usage(argv[0]);
+    // Check input parameter
+    if (argc < 2)
+        usage(argv[0]);
 
-   // Create alei object.
-   alei.setInt("random_seed", 0);
-   alei.setFloat("repeat_action_probability", 0);
-   alei.setBool("display_screen", true);
-   alei.setBool("sound", true);
-   alei.loadROM(argv[1]);
+    /** 
+    * argv[1] : rom
+    * argv[2] : media? true/>false<
+    * argv[3] : print_ram? true/>false<
+    **/
+    const bool display_media(argc >= 3 ? atoi(argv[2])==1 : false);
+    const bool printRam(argc == 4 ? atoi(argv[3])==1 : false);
 
-   // Init
-   srand(time(NULL));
-   lastLives = alei.lives();
-   totalReward = .0f;
+    // Init rand seed
+    srand(time(NULL));
 
-   // Main loop
-   alei.act(PLAYER_A_FIRE);
-   int step;
-   for (step = 0; 
-        !alei.game_over() && step < maxSteps; 
-        ++step) 
-   {
-        printRAM();
-        checkKeys();
+    // Create alei object.
+    alei.setInt("random_seed", rand()%1000);
+    alei.setFloat("repeat_action_probability", 0);
+    alei.setBool("sound", display_media);
+    alei.setBool("display_screen", display_media);
+    alei.loadROM(argv[1]);
 
-        if (!manualInput)
-        {
-            totalReward += agentStep();
-        }
-        else
-        {
-            totalReward += manualMode();
-        }
+
+    // Init
+    lastLives = alei.lives();
+    totalReward = .0f;
+
+    // Main loop
+    alei.act(PLAYER_A_FIRE);
+    int step;
+
+    /*
+    * Bot expl: This bot will try to adjust the player location based on the 
+    * last tick ball location and the current tick location
+    **/
+    BallX_LastTick = getBallX();   
+    for (step = 0; !alei.game_over() && step < maxSteps; ++step) 
+    {
+        // Debug mode ***********************************
+        if(printRam) printRAM();
+        if(display_media) checkKeys();
+        // **********************************************
+
+        // Total reward summation
+        totalReward += manualInput ? manualMode() : agentStep();
    }
 
    std::cout << "Steps: " << step << std::endl;
    std::cout << "Reward: " << totalReward << std::endl;
-
    return 0;
 }
