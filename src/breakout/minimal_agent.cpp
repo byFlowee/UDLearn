@@ -70,7 +70,7 @@ void usage(char* pname)
 {
    std::cerr
       << "\nUSAGE:\n" 
-      << "   " << pname << " <romfile>\n";
+      << "   " << pname << " <romfile> "<< "<display media?([0],1)> <Print ram?([0],1)>\n";
    exit(-1);
 }
 
@@ -180,40 +180,45 @@ float manualMode()
 ///////////////////////////////////////////////////////////////////////////////
 int main(int argc, char **argv)
 {
-   // Check input parameter
-   if (argc != 2)
-      usage(argv[0]);
+    // Check input parameter
+    if (argc < 2)
+        usage(argv[0]);
 
-   // Create alei object.
-   alei.setInt("random_seed", 0);
-   alei.setFloat("repeat_action_probability", 0);
-   alei.setBool("display_screen", true);
-   alei.setBool("sound", true);
-   alei.loadROM(argv[1]);
+    /** 
+    * argv[1] : rom
+    * argv[2] : media? true/>false<
+    * argv[3] : print_ram? true/>false<
+    **/
+    const bool display_media(argc >= 3 ? atoi(argv[2])==1 : false);
+    const bool printRam(argc == 4 ? atoi(argv[3])==1 : false);
 
-   // Init
-   srand(time(NULL));
-   lastLives = alei.lives();
-   totalReward = .0f;
+    // Init rand seed
+    srand(time(NULL));
 
-   // Main loop
-   alei.act(PLAYER_A_FIRE);
-   int step;
-   for (step = 0; 
-        !alei.game_over() && step < maxSteps; 
-        ++step) 
-   {
-        printRAM();
-        checkKeys();
+    // Create alei object.
+    alei.setInt("random_seed", rand()%1000);
+    alei.setFloat("repeat_action_probability", 0);
+    alei.setBool("sound", display_media);
+    alei.setBool("display_screen", display_media);
+    alei.loadROM(argv[1]);
 
-        if (!manualInput)
-        {
-            totalReward += agentStep();
-        }
-        else
-        {
-            totalReward += manualMode();
-        }
+
+    // Init
+    lastLives = alei.lives();
+    totalReward = .0f;
+
+    // Main loop
+    alei.act(PLAYER_A_FIRE);
+    int step;
+    for (step = 0; !alei.game_over() && step < maxSteps; ++step) 
+    {
+        // Debug mode ***********************************
+        if(printRam) printRAM();
+        if(display_media) checkKeys();
+        // **********************************************
+
+        // Total reward summation
+        totalReward += manualInput ? manualMode() : agentStep();
    }
 
    std::cout << "Steps: " << step << std::endl;
