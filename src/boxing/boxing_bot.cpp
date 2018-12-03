@@ -12,15 +12,27 @@ using namespace std;
 
 // Global vars
 const int maxSteps(7500);
-int lastLives;
 float totalReward;
 ALEInterface alei;
 bool manualInput(false);
+int lastLives;
 time_t lastTimeChangedMode(std::time(0));
 vector<int> lastRAM(128);
-int BallX_LastTick(0);
 
+// refactor
+const int thresold_y(0);
+const int thresold_x(25);
 
+/**
+* Player position struct
+**/
+struct player_pos {
+    int x;
+    int y;
+
+    player_pos(int nx, int ny) : 
+    x(nx), y(ny) { }
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Print usage and exit
@@ -116,9 +128,8 @@ float manualMode()
     Uint8* keystate = SDL_GetKeyState(NULL);
     float reward = 0;
 
-    if(keystate[SDLK_SPACE] && alei.lives() != lastLives)
+    if(keystate[SDLK_SPACE])
     {
-        --lastLives;
         alei.act(PLAYER_A_FIRE);
     }
 
@@ -130,6 +141,14 @@ float manualMode()
     {
         reward += alei.act(PLAYER_A_RIGHT);
     }
+    if(keystate[SDLK_UP])
+    {
+        reward += alei.act(PLAYER_A_UP);
+    }
+    if(keystate[SDLK_DOWN])
+    {
+        reward += alei.act(PLAYER_A_DOWN);
+    }
 
     return (reward + alei.act(PLAYER_A_NOOP));
 }
@@ -137,14 +156,24 @@ float manualMode()
 ///////////////////////////////////////////////////////////////////////////////
 /// Get info from RAM
 ///////////////////////////////////////////////////////////////////////////////
-int getPlayerX()
+int getP1_X()
 {
-   return alei.getRAM().get(72);// + ((rand() % 3) - 1);
+   return alei.getRAM().get(32) + ((rand() % 2) - 1);
 }
 
-int getBallX()
+int getP1_Y() // refactor
 {
-   return alei.getRAM().get(99);// + ((rand() % 3) - 1);
+   return alei.getRAM().get(34) + ((rand() % 5) - 1);
+}
+
+int getP2_X()
+{
+   return alei.getRAM().get(33) + ((rand() % 2) - 1);
+}
+
+int getP2_Y() // refactor
+{
+   return alei.getRAM().get(35) + ((rand() % 5) - 1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -152,36 +181,29 @@ int getBallX()
 ///////////////////////////////////////////////////////////////////////////////
 float agentStep()
 {
-    static int wide = alei.getRAM().get(108);
     float reward = 0;
 
-    if (alei.lives() != lastLives)
-    {
-        --lastLives;
-        alei.act(PLAYER_A_FIRE);
-    }
-
     // Apply rules.
-    int playerX = getPlayerX();
-    int ballX = getBallX();
-    
-    if (BallX_LastTick < ballX) {
-        ballX += ((rand() % 3) + 1);
-    }
-    if (BallX_LastTick > ballX) {
-        ballX -= ((rand() % 3) - 1);
-    }
-    BallX_LastTick = getBallX();
+    player_pos p1(getP1_X(), getP1_Y()); // cout << "P1 x: " << p1.x << " y: " << p1.y << endl;
+    player_pos p2(getP2_X(), getP2_Y()); // cout << "P2 x: " << p2.x << " y: " << p2.y << endl;
+    const int abs_p1_p2_x(abs(p1.x - p2.x));
+    const int abs_p1_p2_y(abs(p1.y - p2.y));
 
-    if (ballX < playerX + wide)
+    if(abs_p1_p2_y > 3 && abs_p1_p2_y < 20) 
     {
-        reward += alei.act(PLAYER_A_LEFT);
+        reward += alei.act(PLAYER_A_FIRE);
     }
-    else if ((ballX > playerX + wide) && (playerX + wide < 188))
+    else 
     {
-        reward += alei.act(PLAYER_A_RIGHT);
+        if(abs_p1_p2_x > 25 && abs_p1_p2_x < 40) 
+        {
+            reward += alei.act(PLAYER_A_RIGHT); //cout << "ABS: " << (abs_p1_p2_x > 25) << endl;
+        } 
+        else 
+        {
+            reward += (p1.y > p2.y) ? alei.act(PLAYER_A_UP) : alei.act(PLAYER_A_DOWN);
+        }
     }
-   
    return (reward + alei.act(PLAYER_A_NOOP));
 }
 
@@ -218,14 +240,11 @@ int main(int argc, char **argv)
     totalReward = .0f;
 
     // Main loop
-    alei.act(PLAYER_A_FIRE);
     int step;
 
     /*
-    * Bot expl: This bot will try to adjust the player location based on the 
-    * last tick ball location and the current tick location
+    * Bot expl: 
     **/
-    BallX_LastTick = getBallX();   
     for (step = 0; !alei.game_over() && step < maxSteps; ++step) 
     {
         // Debug mode ***********************************
