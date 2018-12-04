@@ -31,7 +31,7 @@ endif
 all: minimal_agent
 
 minimal_agent:
-	$(CXX) $(DEFINES) $(FLAGS) $(FILE).cpp $(LDFLAGS) -o $(FILE)
+	$(CXX) $(DEFINES) $(FLAGS) $(FILE).cpp $(LDFLAGS) ../NeuralNetwork/mat.o ../NeuralNetwork/neuralNetwork.o -o $(FILE)
 
 clean:
 	rm -rf minimal_agent *.o
