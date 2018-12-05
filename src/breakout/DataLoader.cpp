@@ -25,6 +25,20 @@ vector<string> DataLoader::getNextLineAndSplitIntoTokens(istream& str) {
     return result;
 }
 
+vector<double> DataLoader::getPrediction(vector<double> inputs) {
+    vector<double> outputs;
+    Mat values(1, inputs.size());
+    for (unsigned i = 0; i < inputs.size(); ++i)
+        values.set(0, i, inputs[i]);
+    
+    Mat result = this->net->forwardPropagation(values);
+
+    for (int i = 0; i < inputs.size(); ++i)
+        outputs.push_back(result.get(0, i));
+
+    return outputs;    
+}
+
 void DataLoader::trainNN(unsigned nInputs, unsigned nOutputs, unsigned epochs) {
     ifstream file;
     file.open(this->filename);

@@ -8,7 +8,8 @@
 #include <fstream>
 
 #include "SDL.h"
-#include "../NeuralNetwork/neuralNetwork.h"
+//#include "../NeuralNetwork/neuralNetwork.h"
+#include "DataLoader.h"
 
 using namespace std;
 
@@ -21,104 +22,8 @@ bool manualInput(false);
 time_t lastTimeChangedMode(std::time(0));
 vector<int> lastRAM(128);
 int BallX_LastTick(0);
-ofstream csv;
-bool toCSV = false;
-
-std::vector<std::string> getNextLineAndSplitIntoTokens(std::istream& str)
-{
-    std::vector<std::string>   result;
-    std::string                line;
-    std::getline(str,line);
-
-    std::stringstream          lineStream(line);
-    std::string                cell;
-
-    while(std::getline(lineStream,cell, ','))
-    {
-        result.push_back(cell);
-    }
-    // This checks for a trailing comma with no data after it.
-    if (!lineStream && cell.empty())
-    {
-        // If there was a trailing comma then add an empty element.
-        result.push_back("");
-    }
-    return result;
-}
-
-void printVector(const vector<string>& v)
-{
-    for (size_t i = 0; i < v.size(); i++)
-    {
-        cout << v[i] << " ";
-    }
-
-    cout << endl;
-}
-
-NeuralNetwork trainNN()
-{
-    ifstream file;
-
-    file.open("breakout.csv");
-
-    vector<string> line = getNextLineAndSplitIntoTokens(file);
-
-    vector<int> nodes;
-    
-    nodes.push_back(4);
-    nodes.push_back(4);
-    nodes.push_back(1);
-
-    NeuralNetwork nn(nodes);
-
-    nn.setLearningRate(0.1);
-
-    vector<Mat> inputs;
-    vector<Mat> expectedOutputs;
-
-    for (int i = 0; i < 7500; i++)
-    {
-        line.clear();
-        line = getNextLineAndSplitIntoTokens(file);
-
-        Mat inputs1(1, 4);
-        Mat expectedOutputs1(1, 1);
-
-        inputs1.set(0, 0, atof(line[0].c_str()));
-        inputs1.set(0, 1, atof(line[1].c_str()));
-        inputs1.set(0, 2, atof(line[2].c_str()));
-        inputs1.set(0, 3, atof(line[3].c_str()));
-        expectedOutputs1.set(0, 0, atof(line[4].c_str()));
-
-        inputs.push_back(inputs1);
-        expectedOutputs.push_back(expectedOutputs1);
-    }
-
-    cout << "Training!" << endl;
-
-    nn.train(inputs, expectedOutputs, 100);
-
-    file.close();
-
-    return nn;
-}
-
-void write(double d)
-{
-    if (toCSV)
-    {
-        csv << to_string(d);
-    }
-}
-
-void write(string s)
-{
-    if (toCSV)
-    {
-        csv << s;
-    }
-}
+int tpl[] = { 4, 4, 1 };
+vector<int> topology(tpl, tpl + sizeof(tpl)/sizeof(int));
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Print usage and exit
@@ -218,21 +123,15 @@ float manualMode()
     {
         --lastLives;
         alei.act(PLAYER_A_FIRE);
-
-        //if (toCSV) write(PLAYER_A_FIRE);
     }
 
     if(keystate[SDLK_LEFT])
     {
         reward += alei.act(PLAYER_A_LEFT);
-
-        //if (toCSV) write(PLAYER_A_LEFT);
     }
     if(keystate[SDLK_RIGHT])
     {
-        reward += alei.act(PLAYER_A_RIGHT);
-
-        //if (toCSV) write(PLAYER_A_RIGHT);
+        reward += alei.act(PLAYER_A_RIGHT);;
     }
 
     return (reward + alei.act(PLAYER_A_NOOP));
@@ -251,69 +150,11 @@ int getBallX()
    return alei.getRAM().get(99);// + ((rand() % 3) - 1);
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
-/// Do Next Agent Step
+/// Do next agent step predicted by the Network
 ///////////////////////////////////////////////////////////////////////////////
-float agentStep()
-{
-    int wide = alei.getRAM().get(108);
-    float reward = 0;
-
-    if (alei.lives() != lastLives)
-    {
-        --lastLives;
-        alei.act(PLAYER_A_FIRE);
-    }
-
-    // Apply rules.
-    int playerX = getPlayerX();
-    int ballX = getBallX();
-    double direction = 0.5;
-    
-    if (BallX_LastTick < ballX) {
-        direction = 0.0;
-        ballX += ((rand() % 2) + 2);
-    }
-    if (BallX_LastTick > ballX) {
-        direction = 1.0;
-        ballX -= ((rand() % 2) + 2);
-    }
-
-    write((double)(ballX) / 201.0);
-    write(",");
-    write(direction);
-    write(",");
-    write((double)playerX / 188.0);
-    write(",");
-    write((double)wide / 8.0);
-    write(",");
-
-    BallX_LastTick = getBallX();
-
-    if (ballX < playerX + wide)
-    {
-        reward += alei.act(PLAYER_A_LEFT);
-
-        write(1.0);
-    }
-    else if ((ballX > playerX + wide) && (playerX + wide < 188))
-    {
-        reward += alei.act(PLAYER_A_RIGHT);
-        
-        write(0.0);
-    }
-    else
-    {
-        write(0.5);
-    }
-
-
-    write("\n");
-   
-   return (reward + alei.act(PLAYER_A_NOOP));
-}
-
-float NN(NeuralNetwork &nn)
+float NN(DataLoader &d)
 {
     int wide = alei.getRAM().get(108);
     float reward = 0;
@@ -335,16 +176,20 @@ float NN(NeuralNetwork &nn)
         direction = 1.0;
     }
 
-    Mat values(1, 4);
 
-    values.set(0, 0, ballX);
-    values.set(0, 1, direction);
-    values.set(0, 2, playerX);
-    values.set(0, 3, wide);
+    vector<double> inputs;
+    vector<double> outputs;
 
-    Mat m = nn.forwardPropagation(values);
+    inputs.push_back(ballX);
+    inputs.push_back(direction);
+    inputs.push_back(playerX);
+    inputs.push_back(wide);
 
-    if (m.get(0, 0) < 0.45)
+    outputs = d.getPrediction(inputs);
+
+    //Mat m = nn.forwardPropagation(values);
+
+    if (outputs[0] < 0.45)
     {
         reward += alei.act(PLAYER_A_RIGHT);
     }
@@ -371,20 +216,13 @@ int main(int argc, char **argv)
     * argv[1] : rom
     * argv[2] : media? true/>false<
     * argv[3] : print_ram? true/>false<
-    * argv[4] : to csv? true/>false<
     **/
     const bool display_media(argc >= 3 ? atoi(argv[2])==1 : false);
     const bool printRam(argc >= 4 ? atoi(argv[3])==1 : false);
-    toCSV = argc == 5 ? atoi(argv[4])==1 : false;
 
-    if (toCSV)
-    {
-        csv.open("breakout.csv");
-
-        write("ballX,ballDirection,playerX,playerWidth,userInput\n");
-    }
-
-    NeuralNetwork asd = trainNN();
+    DataLoader d("breakout.csv", topology);
+    d.trainNN(topology.front(),topology.back(),100);
+    //NeuralNetwork &nn = *d.getNN();
 
     // Init rand seed
     srand(time(NULL));
@@ -395,7 +233,6 @@ int main(int argc, char **argv)
     alei.setBool("sound", display_media);
     alei.setBool("display_screen", display_media);
     alei.loadROM(argv[1]);
-
 
     // Init
     lastLives = alei.lives();
@@ -418,14 +255,11 @@ int main(int argc, char **argv)
         // **********************************************
 
         // Total reward summation
-        //totalReward += manualInput ? manualMode() : agentStep();
-        totalReward += NN(asd);
-   }
+        totalReward += NN(d);
+    }
 
-   std::cout << "Steps: " << step << std::endl;
-   std::cout << "Reward: " << totalReward << std::endl;
+    std::cout << "Steps: " << step << std::endl;
+    std::cout << "Reward: " << totalReward << std::endl;
 
-    csv.close();
-
-   return 0;
+    return 0;
 }
