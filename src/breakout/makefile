@@ -12,6 +12,8 @@ ALE := ../../../ALE
 FLAGS := -I$(ALE)/src -I$(ALE)/src/controllers -I$(ALE)/src/os_dependent -I$(ALE)/src/environment -I$(ALE)/src/external -L$(ALE)
 CXX := g++
 FILE := minimal_agent
+LOADER := DataLoader
+NETWORK := ../NeuralNetwork/mat.cpp ../NeuralNetwork/neuralNetwork.cpp
 LDFLAGS := -lale -lz
 
 UNAME_S := $(shell uname -s)
@@ -31,7 +33,7 @@ endif
 all: minimal_agent
 
 minimal_agent:
-	$(CXX) $(DEFINES) $(FLAGS) $(FILE).cpp DataLoader.cpp $(LDFLAGS) ../NeuralNetwork/mat.o ../NeuralNetwork/neuralNetwork.o -o $(FILE)
+	$(CXX) $(DEFINES) $(FLAGS) $(FILE).cpp $(LOADER).cpp $(NETWORK) $(LDFLAGS) -o $(FILE)
 
 clean:
 	rm -rf minimal_agent *.o
