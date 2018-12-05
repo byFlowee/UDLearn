@@ -13,7 +13,7 @@
 using namespace std;
 
 // Global vars
-const int maxSteps(7500);
+const int maxSteps(15000);
 int lastLives;
 float totalReward;
 ALEInterface alei;
@@ -272,11 +272,11 @@ float agentStep()
     
     if (BallX_LastTick < ballX) {
         direction = 0.0;
-        ballX += ((rand() % 3) + 1);
+        ballX += ((rand() % 2) + 2);
     }
     if (BallX_LastTick > ballX) {
         direction = 1.0;
-        ballX -= ((rand() % 3) - 1);
+        ballX -= ((rand() % 2) + 2);
     }
 
     write((double)(ballX) / 201.0);

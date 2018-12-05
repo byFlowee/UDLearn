@@ -1,7 +1,7 @@
 #include "Perceptron.h"
 
-double Perceptron::lr = 0.2;
-double Perceptron::momentum = 0.5;
+double Perceptron::lr = 0.5;
+double Perceptron::momentum = 0.1;
 
 Perceptron::Perceptron(unsigned nOutputs, unsigned index) {
     
@@ -20,6 +20,7 @@ void Perceptron::updateWeights(vector<Perceptron> &previousLayer) {
 
         previousLayer[p].deltaWeights[index] = deltaWeight;
         previousLayer[p].weights[index] += deltaWeight;
+
     }
 }
 
@@ -28,10 +29,10 @@ void Perceptron::computeHiddenGradients(vector<Perceptron> &nextLayer) {
 
     double loss = 0.0;
 
-    for (unsigned p = 0; p < nextLayer.size() - 1; ++p) {
+    for (unsigned p = 0; p < nextLayer.size(); ++p) {
         loss += weights[p] * nextLayer[p].gradient;
-    } 
-    
+    }
+
     this->gradient = loss * Perceptron::activationFunctionDerivate(output);
 }
 
@@ -54,6 +55,6 @@ double Perceptron::activationFunction(double x) {
 }
 
 double Perceptron::activationFunctionDerivate(double x) {
-    double t = tanh(x);
-    return 1.0 - t*t;
+    //derivative of tanh is actually 1 - tanh(x)*tanh(x) but since x has already been passed through activation (tanh(x)) we de x*x
+    return 1.0 - x*x;       
 }
