@@ -22,14 +22,20 @@ ofstream csv;
 bool toCSV = false;
 vector<unsigned char> grayscale;
 const int LINE_WIDTH(160);          // Amount of pixels in a line
-const int SHIP_WIDTH(10);           // Approximate width in pixels of the ship
-const int LEFT_THRESOLD(18);        // MIN X coordinate the ship can move
-const int RIGHT_THRESOLD(141);      // MAX X coordinate the ship can move
+const int SHIP_WIDTH(7);            // Ship width in pixels
+const int LEFT_THRESOLD(21);        // MIN X non-pixel coordinate the ship can move 25
+const int RIGHT_THRESOLD(138);      // MAX X non-pixel coordinate the ship can move 135
+const int P1_BULLETS_COLOR(174);
+const int P1_SHIP_COLOR(115);
+const int EN_BULLETS_COLOR(176);
+const int VISION_THRESOLD(10);
 
-// Handlers for dirty state
-#define RIGHT_DIR true              
-#define LEFT_DIR false
 
+enum BlockingHit {
+    ENotBlocking,
+    EMoveRight,
+    EMoveLeft
+};
 
 void write(double d)
 {
@@ -45,9 +51,8 @@ void dumpLine(int TARGET_LINE) {
     int const FILTER_LINE(LINE_WIDTH*TARGET_LINE);
     for(int i = FILTER_LINE; i < FILTER_LINE + LINE_WIDTH; ++i) {
         int a(grayscale[i]);
-        cout << a << ((i%160==0) ? "\n" : "");
+        cout << (a==0 ? "." : ",") << ((i%160==0) ? "\n" : "");
     }
-    system("clear");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -142,35 +147,107 @@ void checkKeys()
 ///////////////////////////////////////////////////////////////////////////////
 /// Get info from RAM
 ///////////////////////////////////////////////////////////////////////////////
-int getP1_X()
+int getChar_X(int char_id)
 {
-    int const val(alei.getRAM().get(16));
-    // player position hex nibbles are inverted so we turn it around
-    return (((val & 0xf0) >> 4) + ((val & 0x0f)*16)); // + ((rand() % 2) - 1);
+    // player position hex nibbles are inverted so we turn it around, same with the first nibble which seems to be desync with the second nibble
+    int const val(alei.getRAM().get(char_id));
+    int const rawFirstNibble((7-((val & 0xF0)>>4)) & 0x0F);
+    int const rawSecondNibble(val & 0x0F);
+    return (rawSecondNibble*16) + rawFirstNibble; 
+}
+
+int getP1_X(bool pixel=false)
+{
+    if(pixel) {
+        // 185 is the ship position line we are tracking
+        int const FILTER_LINE(LINE_WIDTH*185);
+        for(int i = FILTER_LINE; i < FILTER_LINE + LINE_WIDTH; ++i) {
+            int a(grayscale[i]);
+            if(a == P1_SHIP_COLOR){
+                return (i - FILTER_LINE);
+            }
+        }
+    }
+
+    return getChar_X(16);
+}
+
+int firing_frames(0);
+int last_firing_pos(0);
+int getFiringEnemy_X() { 
+    const int current_pos = getChar_X(15);
+    if(last_firing_pos == current_pos) firing_frames++;
+    else firing_frames = 0;
+    last_firing_pos = current_pos;
+    return current_pos; 
+}
+
+int mid_frames(0);
+int last_mid_pos(0);
+int getMidEnemy_X() { 
+    const int current_pos = getChar_X(14);
+    if(last_mid_pos == current_pos) mid_frames++;
+    else mid_frames = 0;
+    last_mid_pos = current_pos;
+    return current_pos; 
+}
+
+int further_frames(0);
+int last_further_pos(0);
+int getFurtherEnemy_X() { 
+    const int current_pos = getChar_X(13);
+    if(last_further_pos == current_pos) further_frames++;
+    else further_frames = 0;
+    last_further_pos = current_pos;
+    return current_pos; 
+}
+
+
+int EnemyHandler() {
+    if(firing_frames > 4) {
+        if(mid_frames > 4) {
+            return getFurtherEnemy_X();
+        } else {
+            return getMidEnemy_X();
+        }
+    } else {
+        return getFiringEnemy_X();
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// 1D Collision check given a screen line
 ///////////////////////////////////////////////////////////////////////////////
-bool isBlockingHit(int line) {
+BlockingHit isBlockingHit(int line) {
     int const FILTER_LINE(LINE_WIDTH*line);
-    for(int i = 0; i < SHIP_WIDTH; ++i) {
-        if(grayscale[FILTER_LINE + getP1_X() + i] != 0) {
-            return true;
+    int const VISION_X_AREA(SHIP_WIDTH + (VISION_THRESOLD*2));
+    for(int i = 0; i < VISION_X_AREA; ++i) {
+        const int impact_pixel_val(grayscale[FILTER_LINE + (getP1_X(true)-VISION_THRESOLD) + i]);
+        if(impact_pixel_val == EN_BULLETS_COLOR) {
+            // Blocking hit, now we have to determine the direction we want to  based on the impact point
+            if(i < (VISION_X_AREA/2)) return EMoveRight;
+            else if(i >= (VISION_X_AREA/2)) return EMoveLeft;
         }
     }
-    return false;
+    return ENotBlocking;
 }
 
 float manualMode()
-{
-    system("clear");
-    bool bBlockingHit(false);
-    for(int line = 150; line > 60; --line) {
-        bBlockingHit = isBlockingHit(line); 
-        if(bBlockingHit) break;
+{   
+    alei.getScreenGrayscale(grayscale);
+    BlockingHit bs = ENotBlocking;
+    for(int line = 185; line > 60; --line) {
+        bs = isBlockingHit(line); 
+        if(bs != ENotBlocking) break;
+    } 
+
+    if(bs != ENotBlocking) {
+        cout << "BlockingHit = true" << endl;
+    } else {
+        cout << "BlockingHit = false" << endl;
     }
-    //cout << "Is Blocking Hit: " << ((bBlockingHit) ? "true" : "false") << endl;
+
+
 
     Uint8* keystate = SDL_GetKeyState(NULL);
     float reward = 0;
@@ -197,7 +274,6 @@ float manualMode()
         reward += alei.act(PLAYER_A_DOWN);
     }
 
-    //cout << "Player position = " << getP1_X() << endl;
 
     return (reward + alei.act(PLAYER_A_NOOP));
 }
@@ -210,36 +286,34 @@ float manualMode()
 ///////////////////////////////////////////////////////////////////////////////
 struct DirtyState {
     bool Dirty;
-    bool Direction; // 0 left 1 right
-    DirtyState(bool bDirty, bool bDirection) 
+    BlockingHit Direction;
+    DirtyState(bool bDirty, BlockingHit bDirection) 
     : Dirty(bDirty), Direction(bDirection) { }
 };
 
-DirtyState ds(false, false);
-bool flipflop(true);
+DirtyState ds(false, ENotBlocking);
 float agentStep()
 {
     // get screen information
     alei.getScreenGrayscale(grayscale);
     
     // Reseting variables
-    float reward = 0;
-    ds.Dirty = false;
-    flipflop = !flipflop;
+    float reward = 0;    
+    BlockingHit eBH = ENotBlocking;
+
 
     // Iterating from bottom line to top line which defines a vision rectangle (see is BlockingHit)
-    for(int line = 170; line > 60; --line) {
-        bool const bBlockingHit(isBlockingHit(line)); 
-        //cout << "Is Blocking Hit: " << ((bBlockingHit) ? "true" : "false") << endl;
-        if (bBlockingHit && !ds.Dirty)
+    for(int line = 185; line > 60; --line) {
+        eBH = isBlockingHit(line); 
+        if (eBH != ENotBlocking && !ds.Dirty)
         {   
             /**
             * Dirtying the warning state, now we have to avoid every enemy and undesired object
             * Random direction for the bot to pick when the dirty state is set
             **/
-            ds.Dirty = true; ds.Direction = rand()%2; 
+            ds.Dirty = true; ds.Direction = eBH; 
             break;
-        } else if (bBlockingHit) {
+        } else if (eBH != ENotBlocking) {
             /**
             * Theorically at this point the direction is already set so we don't have to re-set it here
             * we just mark the dirty state to true
@@ -249,38 +323,47 @@ float agentStep()
         }
     }
 
+
     /***************************************************
     * Blocking hit detected at this point
     ***************************************************/
-
-    // Frame intercaling for firing
-    if(flipflop) 
+    if(eBH != ENotBlocking) 
     {
+        // Left thresold
+        if(getP1_X() == LEFT_THRESOLD) {
+            // If we cannot move more to the left we change direction
+            ds.Direction = EMoveRight;
+        }
+        // Right thresold
+        else if(getP1_X() == RIGHT_THRESOLD) {
+            // If we cannot move more to the right we change direction
+            ds.Direction = EMoveLeft;   
+        }
+        switch(ds.Direction){
+            case EMoveLeft:
+                reward+= alei.act(PLAYER_A_LEFT);              
+                break;
+            case EMoveRight:
+                reward+= alei.act(PLAYER_A_RIGHT);
+                break;
+            default:
+                reward+= reward+=alei.act(PLAYER_A_FIRE);
+        }
+        
+    } else {
+        // Here we are safe, don't move but keep shooting
         reward+=alei.act(PLAYER_A_FIRE);
-    } 
-    else 
-    {
-        if(ds.Dirty) 
-        {
-            // Left thresold
-            if(getP1_X() == LEFT_THRESOLD) {
-                // If we cannot move more to the left we change direction
-                ds.Direction = RIGHT_DIR;
-            }
-            // Right thresold
-            else if(getP1_X() == RIGHT_THRESOLD) {
-                // If we cannot move more to the right we change direction
-                ds.Direction = LEFT_DIR;   
-            }
-            reward+= ds.Direction ? alei.act(PLAYER_A_RIGHT) : alei.act(PLAYER_A_LEFT);      
+        ds.Dirty = false;
+        const int mypos = getP1_X();
+        const int en_pos = EnemyHandler();
+        if(mypos < en_pos) {
+            reward+= alei.act(PLAYER_A_RIGHT);
+        } else if (mypos > en_pos) {
+            reward+= alei.act(PLAYER_A_LEFT);
         } else {
-            // Here we are safe, don't move but keep shooting
             reward+=alei.act(PLAYER_A_FIRE);
-            // Here we would need to mark dirty a false but it is defaulted in every iteration to false
-        }   
-    }
-
-
+        }
+    }   
     return (reward + alei.act(PLAYER_A_NOOP));
 }
 
