@@ -20,25 +20,25 @@ time_t lastTimeChangedMode(std::time(0));
 vector<int> lastRAM(128);
 ofstream csv;
 bool toCSV = false;
-const int LINE_WIDTH(160);
-const int SHIP_WIDTH(10);
 vector<unsigned char> grayscale;
+const int LINE_WIDTH(160);          // Amount of pixels in a line
+const int SHIP_WIDTH(10);           // Approximate width in pixels of the ship
+const int LEFT_THRESOLD(18);        // MIN X coordinate the ship can move
+const int RIGHT_THRESOLD(141);      // MAX X coordinate the ship can move
+
+// Handlers for dirty state
+#define RIGHT_DIR true              
+#define LEFT_DIR false
 
 
 void write(double d)
 {
-    if (toCSV)
-    {
-        csv << to_string(d);
-    }
+    if (toCSV) csv << to_string(d);
 }
 
 void write(string s)
 {
-    if (toCSV)
-    {
-        csv << s;
-    }
+    if (toCSV) csv << s;
 }
 
 void dumpLine(int TARGET_LINE) {
@@ -144,9 +144,9 @@ void checkKeys()
 ///////////////////////////////////////////////////////////////////////////////
 int getP1_X()
 {
-    int val(alei.getRAM().get(16));
-    // player position hex is inverted so we turn it around
-    return (((val & 0xf0) >> 4) + ((val & 0x0f)*16)) /* + ((rand() % 2) - 1)*/;
+    int const val(alei.getRAM().get(16));
+    // player position hex nibbles are inverted so we turn it around
+    return (((val & 0xf0) >> 4) + ((val & 0x0f)*16)); // + ((rand() % 2) - 1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -156,9 +156,6 @@ bool isBlockingHit(int line) {
     int const FILTER_LINE(LINE_WIDTH*line);
     for(int i = 0; i < SHIP_WIDTH; ++i) {
         if(grayscale[FILTER_LINE + getP1_X() + i] != 0) {
-            // cout << "Detected shoot";
-            int hola(grayscale[FILTER_LINE + getP1_X() + i]);
-            cout << hola << endl;
             return true;
         }
     }
@@ -167,15 +164,13 @@ bool isBlockingHit(int line) {
 
 float manualMode()
 {
-    alei.getScreenGrayscale(grayscale);
-    for(int line = 170; line > 30; --line) {
-        int const FILTER_LINE(LINE_WIDTH*line);
-        if (isBlockingHit(line))
-        {
-            break;
-        } 
+    system("clear");
+    bool bBlockingHit(false);
+    for(int line = 150; line > 60; --line) {
+        bBlockingHit = isBlockingHit(line); 
+        if(bBlockingHit) break;
     }
-
+    //cout << "Is Blocking Hit: " << ((bBlockingHit) ? "true" : "false") << endl;
 
     Uint8* keystate = SDL_GetKeyState(NULL);
     float reward = 0;
@@ -202,6 +197,8 @@ float manualMode()
         reward += alei.act(PLAYER_A_DOWN);
     }
 
+    //cout << "Player position = " << getP1_X() << endl;
+
     return (reward + alei.act(PLAYER_A_NOOP));
 }
 
@@ -211,38 +208,80 @@ float manualMode()
 ///////////////////////////////////////////////////////////////////////////////
 /// Do Next Agent Step
 ///////////////////////////////////////////////////////////////////////////////
+struct DirtyState {
+    bool Dirty;
+    bool Direction; // 0 left 1 right
+    DirtyState(bool bDirty, bool bDirection) 
+    : Dirty(bDirty), Direction(bDirection) { }
+};
+
+DirtyState ds(false, false);
 bool flipflop(true);
 float agentStep()
 {
     // get screen information
     alei.getScreenGrayscale(grayscale);
+    
+    // Reseting variables
     float reward = 0;
+    ds.Dirty = false;
+    flipflop = !flipflop;
 
-    for(int line = 170; line > 30; --line) {
-        int const FILTER_LINE(LINE_WIDTH*line);
-        if (isBlockingHit(line))
-        {
-            if(grayscale[FILTER_LINE + getP1_X() - 1] == 0) {
-                reward+=alei.act(PLAYER_A_LEFT);    
-            }
-            else if(grayscale[FILTER_LINE + getP1_X() + SHIP_WIDTH + 1] == 0) {
-                reward+=alei.act(PLAYER_A_RIGHT);    
-            } 
+    // Iterating from bottom line to top line which defines a vision rectangle (see is BlockingHit)
+    for(int line = 170; line > 60; --line) {
+        bool const bBlockingHit(isBlockingHit(line)); 
+        //cout << "Is Blocking Hit: " << ((bBlockingHit) ? "true" : "false") << endl;
+        if (bBlockingHit && !ds.Dirty)
+        {   
+            /**
+            * Dirtying the warning state, now we have to avoid every enemy and undesired object
+            * Random direction for the bot to pick when the dirty state is set
+            **/
+            ds.Dirty = true; ds.Direction = rand()%2; 
             break;
-        } else {
-            flipflop = !flipflop;    
-            if(flipflop) {
-                reward+=alei.act(PLAYER_A_FIRE);
-            } else {
-                //reward+= (rand()%2) ? alei.act(PLAYER_A_LEFT) : alei.act(PLAYER_A_RIGHT);    
-            }
+        } else if (bBlockingHit) {
+            /**
+            * Theorically at this point the direction is already set so we don't have to re-set it here
+            * we just mark the dirty state to true
+            **/
+            ds.Dirty = true; 
+            break;
         }
     }
 
+    /***************************************************
+    * Blocking hit detected at this point
+    ***************************************************/
+
+    // Frame intercaling for firing
+    if(flipflop) 
+    {
+        reward+=alei.act(PLAYER_A_FIRE);
+    } 
+    else 
+    {
+        if(ds.Dirty) 
+        {
+            // Left thresold
+            if(getP1_X() == LEFT_THRESOLD) {
+                // If we cannot move more to the left we change direction
+                ds.Direction = RIGHT_DIR;
+            }
+            // Right thresold
+            else if(getP1_X() == RIGHT_THRESOLD) {
+                // If we cannot move more to the right we change direction
+                ds.Direction = LEFT_DIR;   
+            }
+            reward+= ds.Direction ? alei.act(PLAYER_A_RIGHT) : alei.act(PLAYER_A_LEFT);      
+        } else {
+            // Here we are safe, don't move but keep shooting
+            reward+=alei.act(PLAYER_A_FIRE);
+            // Here we would need to mark dirty a false but it is defaulted in every iteration to false
+        }   
+    }
 
 
-   
-   return (reward + alei.act(PLAYER_A_NOOP));
+    return (reward + alei.act(PLAYER_A_NOOP));
 }
 
 ///////////////////////////////////////////////////////////////////////////////

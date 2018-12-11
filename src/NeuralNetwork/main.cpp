@@ -1,5 +1,7 @@
 
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 #include "neuralNetwork.h"
 
@@ -183,10 +185,80 @@ void XORFunction(bool showResults)
     }
 }
 
+std::vector<std::string> getNextLineAndSplitIntoTokens(std::istream& str)
+{
+    std::vector<std::string>   result;
+    std::string                line;
+    std::getline(str,line);
+
+    std::stringstream          lineStream(line);
+    std::string                cell;
+
+    while(std::getline(lineStream,cell, ','))
+    {
+        result.push_back(cell);
+    }
+    // This checks for a trailing comma with no data after it.
+    if (!lineStream && cell.empty())
+    {
+        // If there was a trailing comma then add an empty element.
+        result.push_back("");
+    }
+    return result;
+}
+
 int main(int argc, char **argv)
 {
     ANDFunction(true);
     XORFunction(true);
+
+    ifstream file;
+
+    file.open("../breakout/breakout.csv");
+
+    vector<string> line = getNextLineAndSplitIntoTokens(file);
+
+    for (size_t i = 0; i < line.size(); i++)
+    {
+        cout << line[i] << " ";
+    }
+
+    cout << endl;
+
+    vector<int> nodes;
+    
+    nodes.push_back(2);
+    nodes.push_back(10);
+    nodes.push_back(1);
+    
+    NeuralNetwork nn(nodes);
+    
+    nn.setLearningRate(0.1);
+
+    vector<Mat> inputs;
+    vector<Mat> expectedOutputs;
+
+    for (int i = 0; i < 4990; i++)
+    {
+        line.clear();
+        line = getNextLineAndSplitIntoTokens(file);
+
+        Mat inputs1(1, 4);
+        Mat expectedOutputs1(1, 1);
+
+        inputs1.set(0, 0, atoi(line[0]));
+        inputs1.set(0, 1, atoi(line[1]));
+        inputs1.set(0, 2, atoi(line[2]));
+        inputs1.set(0, 3, atoi(line[3]));
+        expectedOutputs1.set(0, 0, atoi(line[4]));
+
+        inputs.push_back(inputs1);
+        expectedOutputs.push_back(expectedOutputs1);
+    }
+
+    nn.train(inputs, expectedOutputs, 100000);
+
+    file.close();
 
     return 0;
 }
