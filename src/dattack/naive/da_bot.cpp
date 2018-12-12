@@ -10,8 +10,10 @@
 
 using namespace std;
 
+#define twK 20000
+
 // Global vars
-const int maxSteps(7500);
+const int maxSteps(twK);
 float totalReward;
 ALEInterface alei;
 bool manualInput(false);
@@ -21,6 +23,7 @@ vector<int> lastRAM(128);
 ofstream csv;
 bool toCSV = false;
 vector<unsigned char> grayscale;
+// non modificable
 const int LINE_WIDTH(160);          // Amount of pixels in a line
 const int SHIP_WIDTH(7);            // Ship width in pixels
 const int LEFT_THRESOLD(21);        // MIN X non-pixel coordinate the ship can move 25
@@ -28,8 +31,13 @@ const int RIGHT_THRESOLD(138);      // MAX X non-pixel coordinate the ship can m
 const int P1_BULLETS_COLOR(174);
 const int P1_SHIP_COLOR(115);
 const int EN_BULLETS_COLOR(176);
-const int VISION_THRESOLD(10);
 
+
+// modifiable params
+const int VISION_THRESOLD(10);
+const int SECOND_VISION_LINE_THRESOLD(168);
+const bool bRandomisePlayerGPos(false);
+const bool bRandomiseEnemyGPos(false);
 
 enum BlockingHit {
     ENotBlocking,
@@ -169,7 +177,7 @@ int getP1_X(bool pixel=false)
         }
     }
 
-    return getChar_X(16);
+    return getChar_X(16) + (bRandomisePlayerGPos ? rand()%2-1 : 0);
 }
 
 int firing_frames(0);
@@ -179,7 +187,7 @@ int getFiringEnemy_X() {
     if(last_firing_pos == current_pos) firing_frames++;
     else firing_frames = 0;
     last_firing_pos = current_pos;
-    return current_pos; 
+    return current_pos + (bRandomiseEnemyGPos ? rand()%2-1 : 0); 
 }
 
 int mid_frames(0);
@@ -189,7 +197,7 @@ int getMidEnemy_X() {
     if(last_mid_pos == current_pos) mid_frames++;
     else mid_frames = 0;
     last_mid_pos = current_pos;
-    return current_pos; 
+    return current_pos + (bRandomiseEnemyGPos ? rand()%2-1 : 0); 
 }
 
 int further_frames(0);
@@ -199,30 +207,48 @@ int getFurtherEnemy_X() {
     if(last_further_pos == current_pos) further_frames++;
     else further_frames = 0;
     last_further_pos = current_pos;
-    return current_pos; 
+    return current_pos + (bRandomiseEnemyGPos ? rand()%2-1 : 0); 
 }
 
 
 int EnemyHandler() {
+    int a = getFurtherEnemy_X();
+    int b = getMidEnemy_X();
+    int c = getFiringEnemy_X();
+
     if(firing_frames > 4) {
         if(mid_frames > 4) {
-            return getFurtherEnemy_X();
+            return a;
         } else {
-            return getMidEnemy_X();
+            return b;
         }
     } else {
-        return getFiringEnemy_X();
+        return c;
     }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 /// 1D Collision check given a screen line
 ///////////////////////////////////////////////////////////////////////////////
+
+bool ImpactValIsAnEnemy(int impact_pixel_val){
+    return (impact_pixel_val != EN_BULLETS_COLOR && 
+    impact_pixel_val != P1_SHIP_COLOR && 
+    impact_pixel_val != P1_BULLETS_COLOR &&
+    impact_pixel_val != 0);
+}
+
 BlockingHit isBlockingHit(int line) {
     int const FILTER_LINE(LINE_WIDTH*line);
     int const VISION_X_AREA(SHIP_WIDTH + (VISION_THRESOLD*2));
     for(int i = 0; i < VISION_X_AREA; ++i) {
         const int impact_pixel_val(grayscale[FILTER_LINE + (getP1_X(true)-VISION_THRESOLD) + i]);
+        // Avoid flies
+        if (line > SECOND_VISION_LINE_THRESOLD && ImpactValIsAnEnemy(impact_pixel_val)) {
+            if(i < (VISION_X_AREA/2)) return EMoveRight;
+            else if(i >= (VISION_X_AREA/2)) return EMoveLeft;
+        }
+        // Avoid pew pew's
         if(impact_pixel_val == EN_BULLETS_COLOR) {
             // Blocking hit, now we have to determine the direction we want to  based on the impact point
             if(i < (VISION_X_AREA/2)) return EMoveRight;
