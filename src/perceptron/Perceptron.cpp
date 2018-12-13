@@ -1,67 +1,78 @@
 #include "Perceptron.h"
 #include <iostream>
+#include <time.h>
+#include <limits>
 
-Perceptron::Perceptron(unsigned inputSize) { 
-    for (unsigned i = 0; i < inputSize; ++i) 
+Perceptron::Perceptron(unsigned inputSize) {
+    srand(time(NULL));
+    for (unsigned i = 0; i <= inputSize; ++i) 
         this->weights.push_back(Perceptron::getRandomWeight());  
 }
 
-void Perceptron::computeOutput() {
+double Perceptron::computeOutput() {
     double sum = 0.0;
     for (unsigned i = 0; i < this->inputs.size(); ++i) {
         sum += this->weights[i] * this->inputs[i];
     }
 
-    this->output = sum;
+    return (sum < 0.0) ? -1.0 : 1.0;
 }
 
 //Input values are set in this->inputs
-void Perceptron::updateWeights(double target) {     
-    
-    for (unsigned i = 0; i < weights.size(); ++i) {
-        this->weights[i] += target * this->inputs[i];
-    }
+void Perceptron::updateWeights(double target) {
+
+    for (int w = 0; w < weights.size(); ++w)
+        this->weights[w] += (target * this->inputs[w]);
 }
 
-double Perceptron::getPrediction() const {
-    return (this->output < 0.0) ? -1.0 : 1.0;
+double Perceptron::getPrediction(const vector<double> &inputs) {
+    this->setInputValues(inputs);
+    return this->computeOutput();   
+}
+
+void Perceptron::setInputValues(const vector<double> &inputs) {
+    this->inputs = inputs;
+    this->inputs.insert(this->inputs.begin(), 1.0);
 }
 
 void Perceptron::trainPerceptron(unsigned epochs, const vector<vector<double> > &inputs, const vector<double> &targets) {
-
+    this->pocket.clear();
+    bestSolution = numeric_limits<unsigned>::max();
+    
     for (unsigned e = 0; e < epochs; ++e) {
         vector<double> predictions; 
+        vector<unsigned> missclassifiedPoints;
         double pred;
         unsigned sum = 0;
+        cout << weights[0] << " " << weights[1] << endl;
 
         for(unsigned d = 0; d < inputs.size(); ++d) {
-            cout << weights[0] << " " << weights[1];
-            this->inputs = inputs[d];
-            this->computeOutput();
-            pred = this->getPrediction();   // returns -1 or 1
+            this->setInputValues(inputs[d]);
+            pred = this->computeOutput();
             predictions.push_back(pred);
             
-            if (pred < 0) 
-                sum++;
+            if (pred + targets[d] < 0.1 && pred + targets[d] > -0.1) 
+                missclassifiedPoints.push_back(d);
         }
 
-        if (sum == 0) {
+        if (bestSolution > missclassifiedPoints.size()) {
+            this->bestSolution = missclassifiedPoints.size();
+            this->pocket = this->weights;
+        }
+
+        if (missclassifiedPoints.size() == 0) {
             cout << "100% accuracy on training set" << endl;
             return;
         }
         else {
-            int random = rand() % sum;
-            int aux = 0;
-
-            for (unsigned i = 0; i < predictions.size(); ++i) {
-                if (predictions[i] < 0) {
-                    if(aux == random) {
-                        this->inputs = inputs[i];
-                        this->updateWeights(targets[i]);
-                        break;
-                    }
-
-                    aux++;
+            int random = rand() % missclassifiedPoints.size();
+            
+            for (unsigned i = 0; i < missclassifiedPoints.size(); ++i) {
+                if(i == random) {
+                    cout << "updating weights" << endl;
+                    setInputValues(inputs[missclassifiedPoints[i]]);
+                    this->updateWeights(targets[missclassifiedPoints[i]]);
+                    break;
                 }
             }
         }
@@ -69,8 +80,13 @@ void Perceptron::trainPerceptron(unsigned epochs, const vector<vector<double> > 
         for (unsigned i = 0; i < predictions.size(); ++i) {
             cout << predictions[i] << " ";
         }
+
         cout << endl;
     }
+
+    if (!this->pocket.empty()) {
+        this->weights = this->pocket;
+    } 
 }
 
 int main() {
@@ -106,5 +122,30 @@ int main() {
     targets.push_back(-1.0);
     targets.push_back(1.0);
 
-    p.trainPerceptron(20, x, targets);
+    p.trainPerceptron(200, x, targets);
+
+    cout << "1 1 : " << p.getPrediction(aux) << endl;
+
+    aux.clear();
+
+    aux.push_back(0.0);
+    aux.push_back(0.0);
+    
+    cout << "0 0 : " << p.getPrediction(aux) << endl;
+    
+    aux.clear();
+
+    aux.push_back(0.0);
+    aux.push_back(1.0);
+    
+    cout << "0 1 : " << p.getPrediction(aux) << endl;
+
+    aux.clear();
+  
+    aux.push_back(1.0);
+    aux.push_back(0.0);
+    
+    cout << "1 0 : " << p.getPrediction(aux) << endl;
+
+    aux.clear();
 }
