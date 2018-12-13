@@ -82,6 +82,11 @@ public class PhraseGeneticAlgorithm
 		}
 	}
 	
+	/**
+	 * It returns the most likely gene to pass to the next generation.
+	 * 
+	 * Is a distribution.
+	 */
 	private Integer getRandom()
 	{
 		Integer sum = 0;
@@ -90,13 +95,15 @@ public class PhraseGeneticAlgorithm
 		{
 			sum += i;
 		}
+
+		// sum = total fitness
 		
 		Integer index = 0;
 		Double random = ThreadLocalRandom.current().nextDouble(0.0, 1.0);
 		
 		for (int i = 0; i < this.fitness.size(); i++)
 		{
-			random -= (double)this.fitness.get(i) / (double)sum;
+			random -= (double)this.fitness.get(i) / (double)sum;	// random -= fitness normalized
 			
 			if (random < 0.0)
 			{
