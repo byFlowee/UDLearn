@@ -1,12 +1,12 @@
 #ifndef _GeneticNN_
 #define _GeneticNN_
 
-#include "ADN.h"
+#include "DNA.h"
 
 class GeneticNN {
     private:
         unsigned totalPopulation;
-        vector<ADN> population;
+        vector<DNA> population;
         vector<int> fitnessValues;
         unsigned rows;
         unsigned cols;
@@ -19,9 +19,9 @@ class GeneticNN {
         GeneticNN(const vector<unsigned> &topology, unsigned = 0, unsigned = 50);
         void createPopulation();
         void computeFitness();
-        ADN crossover();
+        DNA crossover();
         void getCurrentBest();
-        void mutate(ADN);
+        void mutate(DNA);
         void newGeneration();
 
 };

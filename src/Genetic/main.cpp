@@ -1,5 +1,5 @@
 #include "GeneticNN.h"
-#include "ADN.h"
+#include "DNA.h"
 #include "UtilG.h"
 
 int main () {

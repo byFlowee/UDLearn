@@ -1,29 +1,34 @@
 
-#include "ADN.h"
+#include "DNA.h"
 #include "UtilG.h"
 
-ADN::ADN() :
+DNA::DNA() :
     mutation(0.01),
     genes(Mat(1, 1, 1.0))
 {
     // Default genes: [1.0]
 }
 
-ADN::ADN(const Mat& m, double mutation) :
+DNA::DNA(const Mat& m, double mutation) :
     mutation(mutation),
     genes(m)
 {
 
 }
 
-void ADN::setMutation(double mutation)
+void DNA::setMutation(double mutation)
 {
     this->mutation = mutation;
 }
 
-ADN ADN::crossover(const ADN& a)
+/**
+ * Take care, this->mutation is the mutation
+ *  that is going to get the crossover, not
+ *  a.mutation
+ */
+DNA DNA::crossover(const DNA &a)
 {
-    ADN res(a.genes, this->mutation);
+    DNA res(a.genes, this->mutation);
 
     for (int row = 0; row < this->genes.rows(); row++)
     {
@@ -39,7 +44,7 @@ ADN ADN::crossover(const ADN& a)
     return res;
 }
 
-void ADN::mutate()
+void DNA::mutate()
 {
     for (int row = 0; row < this->genes.rows(); row++)
     {

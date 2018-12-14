@@ -1,5 +1,5 @@
-#ifndef _ADN_
-#define _ADN_
+#ifndef _DNA_
+#define _DNA_
 
 #include <vector>
 #include <string>
@@ -8,16 +8,16 @@
 
 using namespace std;
 
-class ADN {
+class DNA {
     private:
         double mutation;
         Mat genes;
 
     public:
-        ADN();
-        ADN(const Mat&, double = 0.01);
+        DNA();
+        DNA(const Mat&, double = 0.01);
         void setMutation(double);
-        ADN crossover(const ADN&);
+        DNA crossover(const DNA&);
         void mutate();
 };
 

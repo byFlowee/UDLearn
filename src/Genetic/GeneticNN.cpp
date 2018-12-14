@@ -13,7 +13,7 @@ GeneticNN::GeneticNN(const vector<unsigned> &topology, unsigned maxGenerations, 
 void GeneticNN::createPopulation() {
     for (size_t i = 0; i < this->totalPopulation; i++)
     {
-        this->population[i] = ADN(UtilG::getRandomMatrix(this->rows*this->cols,1));
+        this->population[i] = DNA(UtilG::getRandomMatrix(this->rows*this->cols,1));
     }                    
 }
 
@@ -23,9 +23,9 @@ void GeneticNN::computeFitness() {
     }
 }
 
-ADN GeneticNN::crossover() {
-    ADN p1 = this->population[this->getRandomMostLikelyGeneIndex()];
-    ADN p2 = this->population[this->getRandomMostLikelyGeneIndex()];
+DNA GeneticNN::crossover() {
+    DNA p1 = this->population[this->getRandomMostLikelyGeneIndex()];
+    DNA p2 = this->population[this->getRandomMostLikelyGeneIndex()];
     
     return p1.crossover(p2);
 }
@@ -35,7 +35,7 @@ void GeneticNN::getCurrentBest() {
     return;
 }
 
-void GeneticNN::mutate(ADN a) {
+void GeneticNN::mutate(DNA a) {
     a.mutate();
 }
 
