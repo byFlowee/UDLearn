@@ -22,7 +22,8 @@ bool manualInput(false);
 time_t lastTimeChangedMode(std::time(0));
 vector<int> lastRAM(128);
 int BallX_LastTick(0);
-int tpl[] = { 4, 4, 1 };
+int tpl[] = { 4, 1 };
+int epochs = 1;
 vector<int> topology(tpl, tpl + sizeof(tpl)/sizeof(int));
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -185,11 +186,11 @@ float NN(DataLoader &d)
     inputs.push_back(playerX);
     inputs.push_back(wide);
 
-    outputs = d.getPrediction(inputs);
+    outputs = d.getPredictionJNet(inputs);
 
     //Mat m = nn.forwardPropagation(values);
 
-    if (outputs[0] < 0.45)
+    if (outputs[0] < 0.5)
     {
         reward += alei.act(PLAYER_A_RIGHT);
     }
@@ -221,7 +222,7 @@ int main(int argc, char **argv)
     const bool printRam(argc >= 4 ? atoi(argv[3])==1 : false);
 
     DataLoader d("breakout.csv", topology);
-    d.trainNN(topology.front(),topology.back(),100);
+    d.trainJNet(topology.front(),topology.back(),epochs);
     //NeuralNetwork &nn = *d.getNN();
 
     // Init rand seed
