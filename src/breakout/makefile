@@ -13,7 +13,7 @@ FLAGS := -I$(ALE)/src -I$(ALE)/src/controllers -I$(ALE)/src/os_dependent -I$(ALE
 CXX := g++
 FILE := minimal_agent
 LOADER := DataLoader
-NETWORK := ../NeuralNetwork/mat.cpp ../NeuralNetwork/neuralNetwork.cpp
+NETWORK := ../NeuralNetwork/mat.cpp ../NeuralNetwork/neuralNetwork.cpp ../JNet/JNet.cpp ../JNet/Perceptron.cpp
 LDFLAGS := -lale -lz
 
 UNAME_S := $(shell uname -s)

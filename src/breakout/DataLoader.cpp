@@ -5,6 +5,11 @@ DataLoader::DataLoader(string filename, vector<int> &topology) {
     this->filename = filename;
 }
 
+DataLoader::DataLoader(string filename, vector<unsigned> &topology) {
+    jnet = new JNet(topology);
+    this->filename = filename;
+}
+
 vector<string> DataLoader::getNextLineAndSplitIntoTokens(istream& str) {
     vector<string> result;
     string line;

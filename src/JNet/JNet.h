@@ -1,14 +1,14 @@
-#ifndef _NETWORK_H_
-#define _NETWORK_H_
+#ifndef _JNET_H_
+#define _JNET_H_
 
 #include <vector>
 #include <iostream>
 #include "Perceptron.h"
 using namespace std;
 
-class Network {
+class JNet {
     public:
-        Network(const vector<unsigned> &topology);
+        JNet(const vector<unsigned> &topology);
         void feedForward(const vector<double> &input);
         void backPropagation(const vector<double> &target);
         void getResults(vector<double> &result) const;

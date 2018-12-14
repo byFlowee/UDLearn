@@ -1,9 +1,9 @@
-#include "Network.h"
+#include "JNet.h"
 using namespace std;
 
-double Network::smoothingFactor = 100;
+double JNet::smoothingFactor = 100;
 
-Network::Network(const vector<unsigned> &topology) {
+JNet::JNet(const vector<unsigned> &topology) {
     srand ( time(NULL) );
     unsigned numLayers = topology.size();
     for (unsigned layerId = 0; layerId < numLayers;  ++layerId) {
@@ -18,7 +18,7 @@ Network::Network(const vector<unsigned> &topology) {
     }
 }
 
-void Network::getResults(vector<double> &results) const {
+void JNet::getResults(vector<double> &results) const {
     results.clear();
 
     for (unsigned p = 0; p < layers.back().size() - 1; ++p) {
@@ -26,7 +26,7 @@ void Network::getResults(vector<double> &results) const {
     }
 }
 
-void Network::feedForward(const vector<double> &input) {
+void JNet::feedForward(const vector<double> &input) {
     
     //Feed the first layer with the input values
     for (unsigned inputId = 0; inputId < input.size(); ++inputId) {
@@ -41,7 +41,7 @@ void Network::feedForward(const vector<double> &input) {
     }
 }
 
-void Network::backPropagation(const vector<double> &target) {
+void JNet::backPropagation(const vector<double> &target) {
     vector<Perceptron> &outputLayer = layers.back();
     loss = 0.0;
 
@@ -77,8 +77,8 @@ void Network::backPropagation(const vector<double> &target) {
     } 
 }
 
-void Network::printTopology() const {
-    cout << "Network:" << endl;
+void JNet::printTopology() const {
+    cout << "Topology:" << endl;
     
     for (int i = 0; i < layers.size(); ++i) {
         cout << "Layer " << i << ": " << layers[i].size() << " perceptrons" << endl;

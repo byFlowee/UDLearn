@@ -1,4 +1,4 @@
-#include "Network.h"
+#include "JNet.h"
 #include <iostream>
 #include <cstdlib>
 #include <cassert>
@@ -104,7 +104,7 @@ int main() {
     // topology.push_back(2);
     // topology.push_back(1);
     
-    // Network n(topology);
+    // JNet n(topology);
 
     // n.printTopology();
 
@@ -162,7 +162,7 @@ int main() {
     vector<unsigned> topology;
     trainData.getTopology(topology);
 
-    Network myNet(topology);
+    JNet myNet(topology);
 
     vector<double> inputVals, targetVals, resultVals;
     int trainingPass = 0;
