@@ -2,6 +2,13 @@
 #include "ADN.h"
 #include "UtilG.h"
 
+ADN::ADN() :
+    mutation(0.01),
+    genes(Mat(1, 1, 1.0))
+{
+    // Default genes: [1.0]
+}
+
 ADN::ADN(const Mat& m, double mutation) :
     mutation(mutation),
     genes(m)
@@ -39,6 +46,11 @@ void ADN::mutate()
         for (int col = 0; col < this->genes.cols(); col++)
         {
             double random = UtilG::getRandomDouble(0.0, 1.0);
+
+            if (random <= this->mutation)
+			{
+				this->genes.set(row, col, UtilG::getRandomDouble(0.0, 1.0));
+			}
         }
     }
 }

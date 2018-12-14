@@ -16,7 +16,7 @@ class GeneticNN {
         unsigned getRandomMostLikelyGeneIndex();
 
     public:
-        GeneticNN(unsigned, unsigned, const vector<unsigned> &topology);
+        GeneticNN(const vector<unsigned> &topology, unsigned = 0, unsigned = 50);
         void createPopulation();
         void computeFitness();
         ADN crossover();

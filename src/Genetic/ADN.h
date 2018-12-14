@@ -14,6 +14,7 @@ class ADN {
         Mat genes;
 
     public:
+        ADN();
         ADN(const Mat&, double = 0.01);
         void setMutation(double);
         ADN crossover(const ADN&);

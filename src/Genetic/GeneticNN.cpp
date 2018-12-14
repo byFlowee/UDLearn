@@ -1,7 +1,7 @@
 #include "GeneticNN.h"
 #include "UtilG.h"
 
-GeneticNN::GeneticNN(unsigned maxGenerations = 0, unsigned population = 50, const vector<unsigned> &topology) :
+GeneticNN::GeneticNN(const vector<unsigned> &topology, unsigned maxGenerations, unsigned population) :
     population(population),
     fitnessValues(population)
 {
@@ -11,14 +11,14 @@ GeneticNN::GeneticNN(unsigned maxGenerations = 0, unsigned population = 50, cons
 }
 
 void GeneticNN::createPopulation() {
-    for (int i = 0; i < this->totalPopulation; i++)
+    for (size_t i = 0; i < this->totalPopulation; i++)
     {
         this->population[i] = ADN(UtilG::getRandomMatrix(this->rows*this->cols,1));
     }                    
 }
 
 void GeneticNN::computeFitness() {
-    for (int i = 0; i < this->population.size(); ++i) {
+    for (size_t i = 0; i < this->population.size(); ++i) {
         this->fitnessValues[i] = this->fitness(); 
     }
 }
@@ -51,7 +51,7 @@ int GeneticNN::fitness() {
 unsigned GeneticNN::getRandomMostLikelyGeneIndex() {
     int sum = 0;
 
-    for (int i = 0; i < this->fitnessValues.size(); ++i)
+    //for (size_t i = 0; i < this->fitnessValues.size(); ++i)
 
     return 0;
 }
