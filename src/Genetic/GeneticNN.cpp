@@ -4,6 +4,7 @@
 #include "GeneticNN.h"
 #include "UtilG.h"
 #include "../NeuralNetwork/neuralNetwork.h"
+#include "Player.h"
 
 GeneticNN::Game GeneticNN::currentGame = GeneticNN::Game::breakout;
 

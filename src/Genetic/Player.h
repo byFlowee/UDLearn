@@ -6,9 +6,11 @@
 class Player
 {
     private:
+        static int breakoutGetPlayerX();
+        static int breakoutGetBallX();
 
     public:
-        static int playBreakout(const NeuralNetwork&);
+        static int playBreakout(NeuralNetwork&);
     
 };
 

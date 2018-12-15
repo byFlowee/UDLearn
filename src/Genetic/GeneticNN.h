@@ -4,7 +4,6 @@
 #include <string>
 
 #include "DNA.h"
-#include "Player.h"
 
 class GeneticNN {
     private:
