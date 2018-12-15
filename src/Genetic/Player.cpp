@@ -1,6 +1,4 @@
 
-#include <vector>
-
 #include "Player.h"
 #include "ale_interface.hpp"
 #include "SDL.h"
@@ -19,8 +17,9 @@ int Player::breakoutGetBallX()
    return alei.getRAM().get(99);// + ((rand() % 3) - 1);
 }
 
-int Player::playBreakout(NeuralNetwork &nn)
+vector<int> Player::playBreakout(NeuralNetwork &nn, bool displayScreen)
 {
+    vector<int> res;
     int lastLives = 0;
     float totalReward = .0f;
     int maxSteps = 15000;
@@ -34,17 +33,18 @@ int Player::playBreakout(NeuralNetwork &nn)
     alei.setInt("random_seed", rand()%1000);
     alei.setFloat("repeat_action_probability", 0);
     alei.setBool("sound", false);
-    alei.setBool("display_screen", false);
+    alei.setBool("display_screen", displayScreen);
     alei.loadROM(Player::BREAKOUT_ROM);
 
     lastLives = alei.lives();
 
     int score = 0;
+    int step = 0;
     int BallX_LastTick = Player::breakoutGetBallX();
 
     alei.act(PLAYER_A_FIRE);
 
-    for (int step = 0; !alei.game_over() && step < maxSteps; ++step) 
+    for (step = 0; !alei.game_over() && step < maxSteps; ++step) 
     {
         int wide = alei.getRAM().get(108);
         float reward = 0;
@@ -93,5 +93,8 @@ int Player::playBreakout(NeuralNetwork &nn)
 
     score = (int)totalReward;
 
-    return score;
+    res.push_back(score);
+    res.push_back(step);
+
+    return res;
 }

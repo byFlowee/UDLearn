@@ -1,6 +1,7 @@
 #ifndef _Player_
 #define _Player_
 
+#include <vector>
 #include <string>
 
 #include "../NeuralNetwork/neuralNetwork.h"
@@ -14,7 +15,7 @@ class Player
         static int breakoutGetBallX();
 
     public:
-        static int playBreakout(NeuralNetwork&);
+        static vector<int> playBreakout(NeuralNetwork&, bool = false);
     
 };
 

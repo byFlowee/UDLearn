@@ -33,9 +33,10 @@ void GeneticNN::createPopulation()
     }                    
 }
 
-int GeneticNN::fitness(const DNA &dna)
+vector<int> GeneticNN::fitness(const DNA &dna)
 {
-    int res = -1;
+    //int res = -1;
+    vector<int> res;
 
     NeuralNetwork nn(this->topology);
 
@@ -58,7 +59,13 @@ void GeneticNN::computeFitness()
 {
     for (size_t i = 0; i < this->populationSize; ++i)
     {
-        this->fitnessValues[i] = this->fitness(this->population[i]); 
+        vector<int> currentFitness = this->fitness(this->population[i]);
+
+        // Modify fitness function HERE!
+
+        this->fitnessValues[i] = currentFitness[0];   // Score
+        //this->fitnessValues[i] = currentFitness[0] + currentFitness[1]; // Score + Steps
+        //this->fitnessValues[i] = currentFitness[0] * 10 + currentFitness[1]; // Score * 10 + Steps
     }
 }
 
@@ -85,6 +92,23 @@ DNA GeneticNN::getCurrentBestDNA() const
     }
 
     return this->population[index];
+}
+
+int GeneticNN::getCurrentBestDNAFitness() const
+{
+    int best = -1;
+    int index = 0;
+
+    for (size_t i = 0; i < this->fitnessValues.size(); i++)
+    {
+        if (this->fitnessValues[i] > best)
+        {
+            best = this->fitnessValues[i];
+            index = i;
+        }
+    }
+
+    return this->fitnessValues[index];
 }
 
 void GeneticNN::nextGeneration()

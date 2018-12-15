@@ -218,30 +218,41 @@ void DNACrossoverAndMutation()
     cout << endl;
 }
 
-int playBreakout(const vector<int> &topology)
+NeuralNetwork playBreakout(const vector<int> &topology, int maxGenerations, int population)
 {
     int score = 0;
-    GeneticNN geneticAlg(topology, 50, 5);
+    int steps = 0;
+    GeneticNN geneticAlg(topology, maxGenerations, population);
     NeuralNetwork nn(topology);
+    vector<vector<Mat>> weightsAndBias;
 
     geneticAlg.createPopulation();
 
-    for (int i = 1; i <= 50; i++)
+    for (int i = 1; i <= maxGenerations; i++)
 	{
         geneticAlg.computeFitness();
 			
-        //String best = p.obtenerMejorFitness();
+        int fitnessValue = geneticAlg.getCurrentBestDNAFitness();
         DNA best = geneticAlg.getCurrentBestDNA();
         Mat genes = best.getGenes();
+        vector<int> playerResults;
 
-        vector<vector<Mat>> weightsAndBias = UtilG::setRepresentativeVectorOnNeuralNetwork(genes, nn);
+        // Weights and bias of the best Neural Network
+        weightsAndBias = UtilG::setRepresentativeVectorOnNeuralNetwork(genes, nn);
 
-        score = Player::playBreakout(nn);
+        //score = Player::playBreakout(nn);
+        //playerResults = Player::playBreakout(nn, true);   // If you want to see the best DNA of the generation. Can't be closed and continue.. It has to end.
+        playerResults = Player::playBreakout(nn);           // If you don't want to see the best DNA.
+        score = playerResults[0];
+        steps = playerResults[1];
 
         //cout << "Generation " << geneticAlg.getCurrentGeneration() << ": " << best << endl;
         cout << "--------------------------------------------------------------------" << endl;
         cout << "--------------------------------------------------------------------" << endl;
-        cout << "------------------- Generation " << geneticAlg.getCurrentGeneration() << " | score = " << score << endl;
+        cout << "------------------- Generation " << geneticAlg.getCurrentGeneration() << endl;
+        cout << "------------------- Best fitness = " << fitnessValue << endl;
+        cout << "------------------- Score playing = " << score << endl;
+        cout << "------------------- Steps playing = " << steps << endl;
         cout << "--------------------------------------------------------------------" << endl;
         cout << "--------------------------------------------------------------------" << endl;
         cout << endl;
@@ -256,12 +267,24 @@ int playBreakout(const vector<int> &topology)
         geneticAlg.nextGeneration();
     }
 
-    return score;
+    // See best DNA of last generation
+    cout << "Best neural network is playing!" << endl;
+    Player::playBreakout(nn, true);
+
+    return nn;
 }
 
-int main ()
+int main (int argc, char **argv)
 {
-    vector<int> topology = {4, 4, 1};
+    if (argc != 3)
+    {
+        cerr << "ERROR: Usage: ./main maxGenerations population" << endl;
+
+        return 0;
+    }
+
+    vector<int> topology = {4, 1};
+    
     //int epochs = 100;
     //int score = 0;
 //
@@ -281,7 +304,8 @@ int main ()
     int devNull = open("/dev/null", O_WRONLY);
     dup2(devNull, STDERR_FILENO);
 
-    playBreakout(topology);
+    //playBreakout(topology, 50, 10);
+    playBreakout(topology, atoi(argv[1]), atoi(argv[2]));
 
     // Restore error output
     dup2(save_out, STDERR_FILENO);

@@ -23,7 +23,7 @@ class GeneticNN {
 
         static Game currentGame;
 
-        int fitness(const DNA&);
+        vector<int> fitness(const DNA&);
         unsigned getRandomMostLikelyGeneIndex() const;
 
     public:
@@ -32,6 +32,7 @@ class GeneticNN {
         void computeFitness();
         DNA crossover() const;
         DNA getCurrentBestDNA() const;
+        int getCurrentBestDNAFitness() const;
         void nextGeneration();
         unsigned getCurrentGeneration() const;
 
