@@ -32,6 +32,10 @@ class NeuralNetwork
         void backPropagation(const Mat &inputs, const Mat &expectedOutputs);
         void train(const vector<Mat> &inputs, const vector<Mat> &expectedOutputs, int iterations);
         string description() const;
+        vector<Mat> getWeights() const;
+        vector<Mat> getBias() const;
+        void setWeights(const vector<Mat>&);
+        void setBias(const vector<Mat>&);
 
 };
 

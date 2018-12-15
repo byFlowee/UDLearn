@@ -224,3 +224,23 @@ string NeuralNetwork::description() const
     
     return res;
 }
+
+vector<Mat> NeuralNetwork::getWeights() const
+{
+    return this->weights;
+}
+
+vector<Mat> NeuralNetwork::getBias() const
+{
+    return this->bias;
+}
+
+void NeuralNetwork::setWeights(const vector<Mat> &weights)
+{
+    this->weights = weights;
+}
+
+void NeuralNetwork::setBias(const vector<Mat> &bias)
+{
+    this->bias = bias;
+}

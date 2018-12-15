@@ -246,11 +246,11 @@ int main(int argc, char **argv)
         Mat inputs1(1, 4);
         Mat expectedOutputs1(1, 1);
 
-        inputs1.set(0, 0, atoi(line[0]));
-        inputs1.set(0, 1, atoi(line[1]));
-        inputs1.set(0, 2, atoi(line[2]));
-        inputs1.set(0, 3, atoi(line[3]));
-        expectedOutputs1.set(0, 0, atoi(line[4]));
+        inputs1.set(0, 0, atoi(line[0].c_str()));
+        inputs1.set(0, 1, atoi(line[1].c_str()));
+        inputs1.set(0, 2, atoi(line[2].c_str()));
+        inputs1.set(0, 3, atoi(line[3].c_str()));
+        expectedOutputs1.set(0, 0, atoi(line[4].c_str()));
 
         inputs.push_back(inputs1);
         expectedOutputs.push_back(expectedOutputs1);
