@@ -1,7 +1,7 @@
 COMPILER := g++
 OPTIONS := -Wall
-TARGET   := test
-OBJ 	 := GeneticNN.o DNA.o UtilG.o mat.o main.o
+TARGET   := main
+OBJ 	 := GeneticNN.o DNA.o UtilG.o mat.o neuralNetwork.o main.o
 
 main: $(OBJ)
 	$(COMPILER) $(OPTIONS) $(OBJ) -o $(TARGET)
@@ -11,6 +11,9 @@ main.o: main.cpp
 
 mat.o: ../NeuralNetwork/mat.h ../NeuralNetwork/mat.cpp
 	$(COMPILER) $(OPTIONS) -c ../NeuralNetwork/mat.cpp
+
+neuralNetwork.o: ../NeuralNetwork/neuralNetwork.h ../NeuralNetwork/neuralNetwork.cpp
+	$(COMPILER) $(OPTIONS) -c ../NeuralNetwork/neuralNetwork.cpp
 
 UtilG.o: UtilG.h UtilG.cpp ../NeuralNetwork/mat.h
 	$(COMPILER) $(OPTIONS) -c UtilG.cpp

@@ -41,55 +41,36 @@ Mat UtilG::flattenMatices(const vector<Mat>& v)
     return res;
 }
 
-/**
- * If A =
- * [ 1 2 3 ]
- * [ 4 5 6 ]
- *
- * and B =
- * [ 7 8 9 ]
- * 
- * callThisFunction(A, B) =
- * [ 1 2 3 ]
- * [ 4 5 6 ]
- * [ 7 8 9 ]
- * 
- * A.cols() == B.cols()
- *
- * If A.cols() != B.cols(), it returns an empty matrix.
- */
-Mat UtilG::unionMatrix(const Mat& a, const Mat& b)
+Mat UtilG::unionOfFlattenedMatrices(const Mat& a, const Mat& b)
 {
-    Mat res(a.rows() + b.rows(), a.cols());
+    Mat res(1, a.cols() + b.cols());
 
-    if (a.cols() == b.cols())
+    if (a.rows() == 1 && b.rows() == 1)
     {
-        for (int row = 0; row < a.rows(); row++)
+        int col = 0;
+
+        for (int i = 0; i < a.cols(); i++)
         {
-            for (int col = 0; col < a.cols(); col++)
-            {
-                res.set(row, col, a.get(row, col));
-            }
+            res.set(0, col, a.get(0, i));
+            col++;
         }
 
-        for (int row = a.rows() + 1; row < a.rows() + b.rows(); row++)
+        for (int i = 0; i < b.cols(); i++)
         {
-            for (int col = 0; col < b.cols(); col++)
-            {
-                res.set(row, col, a.get(row, col));
-            }
+            res.set(0, col, b.get(0, i));
+            col++;
         }
     }
 
     return res;
 }
 
-vector<vector<Mat>> unflattenMatrices(const vector<int> &topology, const Mat &flattened)
+vector<vector<Mat>> UtilG::unflattenMatrices(const vector<int> &topology, const Mat &flattened)
 {
     vector<vector<Mat>> res;
     vector<Mat> weights;
     vector<Mat> bias;
-    int flattenedRow = 0;
+    int flattenedCol = 0;
 
     for (size_t i = 0; i < topology.size() - 1; i++)
     {
@@ -101,27 +82,27 @@ vector<vector<Mat>> unflattenMatrices(const vector<int> &topology, const Mat &fl
         {
             for (int col = 0; col < matWeights.cols(); col++)
             {
-                matWeights.set(row, col, flattened.get(flattenedRow, 0));
+                matWeights.set(row, col, flattened.get(0, flattenedCol));
 
-                flattenedRow++;
+                flattenedCol++;
             }
-
-            weights.push_back(matWeights);
         }
+
+        weights.push_back(matWeights);
     }
 
     for (size_t i = 0; i < topology.size() - 1; i++)
     {
         Mat matBias(1, topology[i + 1]);
 
-        for (int row = 0; row < matBias.rows(); row++)
+        for (int col = 0; col < matBias.cols(); col++)
         {
-            matBias.set(row, 0, flattened.get(flattenedRow, 0));
+            matBias.set(0, col, flattened.get(0, flattenedCol));
 
-            flattenedRow++;
+            flattenedCol++;
         }
 
-        weights.push_back(matBias);
+        bias.push_back(matBias);
     }
 
     res.push_back(weights);
