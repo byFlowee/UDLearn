@@ -5,8 +5,11 @@
 #include <cstdlib>
 #include <ctime>
 #include <vector>
+#include <algorithm>
 
 #include "SDL.h"
+
+#include "../DataLoader/DataLoader.h"
 
 using namespace std;
 
@@ -19,6 +22,8 @@ bool manualInput(false);
 time_t lastTimeChangedMode(std::time(0));
 vector<int> lastRAM(128);
 int BallX_LastTick(0);
+vector<int> topology = {123, 20, 10, 3};
+int epochs = 3;
 
 
 
@@ -150,39 +155,45 @@ int getBallX()
 ///////////////////////////////////////////////////////////////////////////////
 /// Do Next Agent Step
 ///////////////////////////////////////////////////////////////////////////////
-float agentStep()
+float NN(DataLoader d)
 {
-    static int wide = alei.getRAM().get(108);
-    float reward = 0;
+    int reward = 0;
+    vector<double> ramValues;
+    vector<double> outputs;
 
-    if (alei.lives() != lastLives)
-    {
-        --lastLives;
-        alei.act(PLAYER_A_FIRE);
+    for(unsigned i = 5; i < 128; ++i) {
+        ramValues.push_back(alei.getRAM().get(i));
     }
 
-    // Apply rules.
-    int playerX = getPlayerX();
-    int ballX = getBallX();
+    cout << "Getting prediction..." << endl;
+    outputs = d.getPrediction(ramValues);
+    //cout << outputs.size() << " " << outputs[0] << " " << outputs[1] << " " << outputs[2] << endl;
     
-    if (BallX_LastTick < ballX) {
-        ballX += ((rand() % 3) + 1);
-    }
-    if (BallX_LastTick > ballX) {
-        ballX -= ((rand() % 3) - 1);
-    }
-    BallX_LastTick = getBallX();
+    //int maxElementIndex = max_element(ramValues.begin(),ramValues.end()) - ramValues.begin();
+    
+    
+    switch (4)
+    {
+        case 0:
+            reward += alei.act(PLAYER_A_FIRE);
+            break;
 
-    if (ballX < playerX + wide)
-    {
-        reward += alei.act(PLAYER_A_LEFT);
+        case 1:
+            reward += alei.act(PLAYER_A_LEFT);
+            break;
+
+        case 2:
+            reward += alei.act(PLAYER_A_RIGHT);
+            break;
+            
+        default:
+            break;
     }
-    else if ((ballX > playerX + wide) && (playerX + wide < 188))
-    {
-        reward += alei.act(PLAYER_A_RIGHT);
-    }
-   
-   return (reward + alei.act(PLAYER_A_NOOP));
+    
+
+    cout << "Reward: " << reward << endl;
+
+    return (reward + alei.act(PLAYER_A_NOOP));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -201,6 +212,10 @@ int main(int argc, char **argv)
     **/
     const bool display_media(argc >= 3 ? atoi(argv[2])==1 : false);
     const bool printRam(argc == 4 ? atoi(argv[3])==1 : false);
+
+    DataLoader d("../dattack/demon_attack.csv", topology);
+    d.trainJNet(topology.front(),topology.back(),epochs);
+    cout << "Training completed, starting game..." << endl;
 
     // Init rand seed
     srand(time(NULL));
@@ -234,7 +249,7 @@ int main(int argc, char **argv)
         // **********************************************
 
         // Total reward summation
-        totalReward += manualInput ? manualMode() : agentStep();
+        totalReward += NN(d);
    }
 
    std::cout << "Steps: " << step << std::endl;

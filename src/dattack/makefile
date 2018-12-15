@@ -12,6 +12,8 @@ ALE := ../../../ALE
 FLAGS := -I$(ALE)/src -I$(ALE)/src/controllers -I$(ALE)/src/os_dependent -I$(ALE)/src/environment -I$(ALE)/src/external -L$(ALE)
 CXX := g++
 FILE := da_bot
+LOADER := ../DataLoader/DataLoader
+NETWORK := ../NeuralNetwork/mat.cpp ../NeuralNetwork/neuralNetwork.cpp ../JNet/JNet.cpp ../JNet/Perceptron.cpp
 LDFLAGS := -lale -lz
 
 UNAME_S := $(shell uname -s)
@@ -31,7 +33,7 @@ endif
 all: da_bot
 
 da_bot:
-	$(CXX) $(DEFINES) $(FLAGS) $(FILE).cpp $(LDFLAGS) -o $(FILE)
+	$(CXX) $(DEFINES) $(FLAGS) $(FILE).cpp $(LOADER).cpp $(NETWORK) $(LDFLAGS) -o $(FILE) -g
 
 clean:
 	rm -rf da_bot *.o

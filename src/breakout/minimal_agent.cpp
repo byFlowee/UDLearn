@@ -8,8 +8,8 @@
 #include <fstream>
 
 #include "SDL.h"
-//#include "../NeuralNetwork/neuralNetwork.h"
-#include "DataLoader.h"
+
+#include "../DataLoader/DataLoader.h"
 
 using namespace std;
 
@@ -221,7 +221,7 @@ int main(int argc, char **argv)
     const bool display_media(argc >= 3 ? atoi(argv[2])==1 : false);
     const bool printRam(argc >= 4 ? atoi(argv[3])==1 : false);
 
-    DataLoader d("breakout.csv", topology);
+    DataLoader d("../breakout/breakout.csv", topology);
     d.trainJNet(topology.front(),topology.back(),epochs);
     //NeuralNetwork &nn = *d.getNN();
 
