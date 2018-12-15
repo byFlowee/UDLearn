@@ -12,7 +12,7 @@ ALE := ../../../ALE
 FLAGS := -I$(ALE)/src -I$(ALE)/src/controllers -I$(ALE)/src/os_dependent -I$(ALE)/src/environment -I$(ALE)/src/external -L$(ALE)
 CXX := g++
 FILE := minimal_agent
-LOADER := DataLoader
+LOADER := ../DataLoader/DataLoader
 NETWORK := ../NeuralNetwork/mat.cpp ../NeuralNetwork/neuralNetwork.cpp ../JNet/JNet.cpp ../JNet/Perceptron.cpp
 LDFLAGS := -lale -lz
 

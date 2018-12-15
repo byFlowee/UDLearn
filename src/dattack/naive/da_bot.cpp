@@ -19,7 +19,14 @@ ALEInterface alei;
 bool manualInput(false);
 int lastLives;
 time_t lastTimeChangedMode(std::time(0));
-vector<int> lastRAM(128);
+
+struct RAM_Info {
+    int value;
+    int appearances;
+    RAM_Info() : value(0), appearances(0) {}
+};
+
+vector<RAM_Info> lastRAM(128);
 ofstream csv;
 bool toCSV = false;
 vector<unsigned char> grayscale;
@@ -40,9 +47,9 @@ const bool bRandomisePlayerGPos(false);
 const bool bRandomiseEnemyGPos(false);
 
 enum BlockingHit {
-    ENotBlocking,
     EMoveRight,
-    EMoveLeft
+    EMoveLeft,
+    ENotBlocking
 };
 
 void write(double d)
@@ -76,56 +83,59 @@ void usage(char* pname)
 
 void printRAM()
 {
-    system("clear");
+    //system("clear");
 
     for (int i = 0; i < 128; i++)
     {
         if (i % 8 == 0)
         {
-            std::cout << std::endl;
+            //std::cout << std::endl;
         }
 
-        cout << "[";
+        //cout << "[";
 
         if (i < 10)
         {
-            cout << "  ";
+            //cout << "  ";
         }
         else if (i < 100)
         {
-            cout << " ";
+            //cout << " ";
         }
 
-        cout << i << "]";
+        //cout << i << "]";
 
-        stringstream ramValue;
-        int intRamValue = (int)alei.getRAM().get(i);
-        ramValue << hex << intRamValue;
+        //stringstream ramValue;
+        RAM_Info aux;
+        aux.value = (int)alei.getRAM().get(i);
+        //int intRamValue = (int)alei.getRAM().get(i);
+        //ramValue << hex << aux.value;
 
         // ANSI colour codes
-        if (intRamValue == lastRAM[i])
+        if (aux.value == lastRAM[i].value)
         {
             // Red color
-            cout << "\033[1;31m";
+            //cout << "\033[1;31m";
         }
         else
         {
             // Green color
-            cout << "\033[1;32m";
+            //cout << "\033[1;32m";
+            lastRAM[i].appearances++;
         }
 
         // Same length for al cases
-        if (intRamValue < 0x10)
+        if (aux.value < 0x10)
         {
-            cout << "0";
+            //cout << "0";
         }
 
-        cout << ramValue.str() << "\t";
+        //cout << ramValue.str() << "\t";
 
         // ANSI colour code close
-        cout << "\033[0m";
+        //cout << "\033[0m";
 
-        lastRAM[i] = intRamValue;
+        lastRAM[i].value = aux.value;
     }
 }
 
@@ -317,6 +327,7 @@ struct DirtyState {
     : Dirty(bDirty), Direction(bDirection) { }
 };
 
+DirtyState ms(false, ENotBlocking);
 DirtyState ds(false, ENotBlocking);
 float agentStep()
 {
@@ -367,13 +378,16 @@ float agentStep()
         }
         switch(ds.Direction){
             case EMoveLeft:
-                reward+= alei.act(PLAYER_A_LEFT);              
+                reward+= alei.act(PLAYER_A_LEFT);
+                ms.Direction = EMoveLeft;       
                 break;
             case EMoveRight:
                 reward+= alei.act(PLAYER_A_RIGHT);
+                ms.Direction = EMoveRight;
                 break;
             default:
                 reward+= reward+=alei.act(PLAYER_A_FIRE);
+                ms.Direction = ENotBlocking;                //action fire
         }
         
     } else {
@@ -384,13 +398,48 @@ float agentStep()
         const int en_pos = EnemyHandler();
         if(mypos < en_pos) {
             reward+= alei.act(PLAYER_A_RIGHT);
+            ms.Direction = EMoveRight;
         } else if (mypos > en_pos) {
             reward+= alei.act(PLAYER_A_LEFT);
+            ms.Direction = EMoveLeft;    
         } else {
             reward+=alei.act(PLAYER_A_FIRE);
+            ms.Direction = ENotBlocking;
         }
     }   
     return (reward + alei.act(PLAYER_A_NOOP));
+}
+
+void ramToCsv() {
+    //starting at 5 since the first 5 positions contain redundant information
+    for (unsigned i = 5; i < 127; ++i) {
+        write( ((double)alei.getRAM().get(i)) / 255);
+        write(",");
+    }
+    write((double)alei.getRAM().get(127));
+    write(",");
+
+    //ONE HOT ENCODING FOR THE OUTPUTS
+    if(ms.Direction == ENotBlocking)
+        write(1);
+    else
+        write(0);
+
+    write(",");
+
+    if(ms.Direction == EMoveLeft)
+        write(1);
+    else
+        write(0);
+
+    write(",");
+
+    if(ms.Direction == EMoveRight)
+        write(1);
+    else
+        write(0);
+
+    write("\n");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -413,8 +462,24 @@ int main(int argc, char **argv)
 
 	if (toCSV)
     {
-        csv.open("../boxing.csv");
-        // write("ballX,ballDirection,playerX,playerWidth,userInput\n"); TODO
+        csv.open("../demon_attack.csv");
+        
+        for (unsigned i = 5; i < 127; ++i) {
+            write(i);
+            write(",");
+        }
+
+        write(127);
+        write(",");
+
+        write("Fire");
+        write(",");
+
+        write("MoveLeft");
+        write(",");
+
+        write("MoveRight");
+        write("\n");
     }
 	
     // Init rand seed
@@ -443,10 +508,16 @@ int main(int argc, char **argv)
         // Debug mode ***********************************
         if(printRam) printRAM();
         if(display_media) checkKeys();
+        if(toCSV) ramToCsv();
         // **********************************************
 
         // Total reward summation
         totalReward += manualInput ? manualMode() : agentStep();
+   }
+
+   for (unsigned i = 0; i < lastRAM.size(); ++i) {
+        if(lastRAM[i].appearances > 50)
+            cout << "[" << i << "]" << lastRAM[i].appearances << endl;
    }
 
    std::cout << "Steps: " << step << std::endl;
