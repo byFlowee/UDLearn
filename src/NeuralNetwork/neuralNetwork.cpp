@@ -244,3 +244,8 @@ void NeuralNetwork::setBias(const vector<Mat> &bias)
 {
     this->bias = bias;
 }
+
+vector<int> NeuralNetwork::getTopology() const
+{
+    return this->size;
+}

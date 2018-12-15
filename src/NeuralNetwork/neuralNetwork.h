@@ -5,6 +5,7 @@
 using namespace std;
 
 #include <vector>
+#include <string>
 
 #include "mat.h"
 
@@ -36,6 +37,7 @@ class NeuralNetwork
         vector<Mat> getBias() const;
         void setWeights(const vector<Mat>&);
         void setBias(const vector<Mat>&);
+        vector<int> getTopology() const;
 
 };
 

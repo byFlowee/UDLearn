@@ -15,7 +15,7 @@ mat.o: ../NeuralNetwork/mat.h ../NeuralNetwork/mat.cpp
 neuralNetwork.o: ../NeuralNetwork/neuralNetwork.h ../NeuralNetwork/neuralNetwork.cpp
 	$(COMPILER) $(OPTIONS) -c ../NeuralNetwork/neuralNetwork.cpp
 
-UtilG.o: UtilG.h UtilG.cpp ../NeuralNetwork/mat.h
+UtilG.o: UtilG.h UtilG.cpp ../NeuralNetwork/mat.h ../NeuralNetwork/neuralNetwork.h
 	$(COMPILER) $(OPTIONS) -c UtilG.cpp
 
 DNA.o: DNA.h DNA.cpp UtilG.h

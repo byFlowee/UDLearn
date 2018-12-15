@@ -34,6 +34,7 @@ int main ()
     cout << endl;
     */
 
+    /*
     vector<int> topology = {2, 3, 4};
 
     NeuralNetwork nn(topology);
@@ -97,4 +98,58 @@ int main ()
     }
 
     return 0;
+    */
+
+    vector<int> topology = {2, 3, 4};
+
+    NeuralNetwork nn(topology);
+    
+    vector<Mat> nnWeights = nn.getWeights();
+    vector<Mat> nnBias = nn.getBias();
+
+    cout << endl;
+    cout << "Weights:" << endl << "-----------------------------" << endl;
+
+    for (size_t i = 0; i < nnWeights.size(); i++)
+    {
+        nnWeights[i].print();
+        cout << endl << "-----------------------------" << endl;
+    }
+
+    cout << endl;
+    cout << "Bias:" << endl << "-----------------------------" << endl;
+
+    for (size_t i = 0; i < nnBias.size(); i++)
+    {
+        nnBias[i].print();
+        cout << endl << "-----------------------------" << endl;
+    }
+
+    Mat representativeVector = UtilG::getARepresentativeVectorOfNeuralNetwork(nn);
+
+    cout << endl << endl;
+
+    representativeVector.set(0, 0, 0.1234);
+
+    UtilG::setRepresentativeVectorOnNeuralNetwork(representativeVector, nn);
+
+    nnWeights = nn.getWeights();
+    nnBias = nn.getBias();
+
+    cout << "Weights:" << endl << "-----------------------------" << endl;
+
+    for (size_t i = 0; i < nnWeights.size(); i++)
+    {
+        nnWeights[i].print();
+        cout << endl << "-----------------------------" << endl;
+    }
+
+    cout << endl;
+    cout << "Bias:" << endl << "-----------------------------" << endl;
+
+    for (size_t i = 0; i < nnBias.size(); i++)
+    {
+        nnBias[i].print();
+        cout << endl << "-----------------------------" << endl;
+    }
 }

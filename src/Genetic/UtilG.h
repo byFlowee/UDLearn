@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "../NeuralNetwork/mat.h"
+#include "../NeuralNetwork/neuralNetwork.h"
 
 class UtilG {
     public:
@@ -13,7 +14,9 @@ class UtilG {
         static Mat flattenMatices(const vector<Mat>&);
         static Mat unionOfFlattenedMatrices(const Mat&, const Mat&);
         static vector<vector<Mat>> unflattenMatrices(const vector<int>&, const Mat&);
-
+        static Mat getARepresentativeVectorOfNeuralNetwork(const NeuralNetwork&);
+        static Mat getRandomRepresentativeVectorOfNeuralNetwork(const vector<int>&);
+        static vector<vector<Mat>> setRepresentativeVectorOnNeuralNetwork(const Mat&, NeuralNetwork&);
 };
 
 #endif

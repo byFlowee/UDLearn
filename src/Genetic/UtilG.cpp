@@ -110,3 +110,35 @@ vector<vector<Mat>> UtilG::unflattenMatrices(const vector<int> &topology, const 
 
     return res;
 }
+
+Mat UtilG::getARepresentativeVectorOfNeuralNetwork(const NeuralNetwork &nn)
+{
+    vector<Mat> weights = nn.getWeights();
+    vector<Mat> bias = nn.getBias();
+
+    Mat flattenedWeights = UtilG::flattenMatices(weights);
+    Mat flattenedBias = UtilG::flattenMatices(bias);
+
+    Mat unionWeightsBias = UtilG::unionOfFlattenedMatrices(flattenedWeights, flattenedBias);
+
+    return unionWeightsBias;
+}
+
+Mat UtilG::getRandomRepresentativeVectorOfNeuralNetwork(const vector<int> &topology)
+{
+    NeuralNetwork nn(topology);
+
+    return UtilG::getARepresentativeVectorOfNeuralNetwork(nn);
+}
+
+vector<vector<Mat>> UtilG::setRepresentativeVectorOnNeuralNetwork(const Mat &unionWeightsBias, NeuralNetwork &nn)
+{
+    vector<int> topology = nn.getTopology();
+
+    vector<vector<Mat>> unflattenedWeightsAndBias = UtilG::unflattenMatrices(topology, unionWeightsBias);
+
+    nn.setWeights(unflattenedWeightsAndBias[0]);
+    nn.setBias(unflattenedWeightsAndBias[1]);
+
+    return unflattenedWeightsAndBias;
+}
