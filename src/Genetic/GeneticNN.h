@@ -5,24 +5,25 @@
 
 class GeneticNN {
     private:
-        unsigned totalPopulation;
+        unsigned populationSize;
         vector<DNA> population;
         vector<int> fitnessValues;
-        unsigned rows;
-        unsigned cols;
+        vector<unsigned> topology;
         unsigned maxGenerations;
-        unsigned generation;
+        unsigned currentGeneration;
+        unsigned DNASize;
+
         int fitness();
-        unsigned getRandomMostLikelyGeneIndex();
+        unsigned getRandomMostLikelyGeneIndex() const;
 
     public:
         GeneticNN(const vector<unsigned> &topology, unsigned = 0, unsigned = 50);
         void createPopulation();
         void computeFitness();
-        DNA crossover();
-        void getCurrentBest();
-        void mutate(DNA);
-        void newGeneration();
+        DNA crossover() const;
+        DNA getCurrentBestDNA() const;
+        void nextGeneration();
+        unsigned getCurrentGeneration() const;
 
 };
 

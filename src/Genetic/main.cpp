@@ -8,9 +8,8 @@
 
 using namespace std;
 
-int main ()
+void flattenMatrix()
 {
-    /*
     vector<Mat> a;
 
     for (int i = 0; i < 10; i++)
@@ -32,9 +31,10 @@ int main ()
     cout << "Flattened matrix:" << endl;
     flattened.print();
     cout << endl;
-    */
+}
 
-    /*
+void flattenManuallyNNWeightsAndBias()
+{
     vector<int> topology = {2, 3, 4};
 
     NeuralNetwork nn(topology);
@@ -96,10 +96,10 @@ int main ()
         unflattenedWeightsAndBias[1][i].print();
         cout << endl << "-----------------------------" << endl;
     }
+}
 
-    return 0;
-    */
-
+void flattenUtilGNNWeightsAndBias()
+{
     vector<int> topology = {2, 3, 4};
 
     NeuralNetwork nn(topology);
@@ -152,4 +152,71 @@ int main ()
         nnBias[i].print();
         cout << endl << "-----------------------------" << endl;
     }
+}
+
+void DNACrossoverAndMutation()
+{
+    Mat mA(1, 5);
+    Mat mB = UtilG::getRandomMatrix(1, 5);
+
+    DNA a(mA);
+    DNA b(mB);
+
+    cout << "DNA a:" << endl;
+    a.getGenes().print();
+
+    cout << endl;
+
+    cout << "DNA b:" << endl;
+    b.getGenes().print();
+
+    cout << endl;
+
+    Mat crossover1 = a.crossover(b).getGenes();
+    Mat crossover2 = b.crossover(a).getGenes();
+    Mat crossover3 = b.crossover(b).getGenes();
+
+    cout << "Crossover a->b:" << endl;
+    crossover1.print();
+    cout << endl;
+    cout << "Crossover b->a:" << endl;
+    crossover2.print();
+    cout << endl;
+    cout << "Crossover b->b:" << endl;
+    crossover3.print();
+    cout << endl;
+
+    cout << endl << "Mutation:" << endl;
+    srand(time(NULL));
+
+    for (int i = 0; i < 100; i++)
+    {
+        DNA mutated = a;
+
+        mutated.mutate();
+
+        if (a == mutated)
+        {
+            cout << "Same";
+        }
+        else
+        {
+            cout << endl;
+            cout << "Different!" << endl;
+            cout << "a: ";
+            a.getGenes().print();
+            cout << endl << "muteted: ";
+            mutated.getGenes().print();
+            cout << endl << endl;
+        }
+    }
+
+    cout << endl;
+}
+
+int main ()
+{
+    DNACrossoverAndMutation();
+
+    return 0;
 }

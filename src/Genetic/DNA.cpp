@@ -2,6 +2,12 @@
 #include "DNA.h"
 #include "UtilG.h"
 
+bool operator==(const DNA &d1, const DNA &d2)
+{
+    return (UtilG::compareDouble(d1.mutation, d2.mutation) && 
+            UtilG::compareDouble(d1.genes, d2.genes));
+}
+
 DNA::DNA() :
     mutation(0.01),
     genes(Mat(1, 1, 1.0))
@@ -30,13 +36,17 @@ DNA DNA::crossover(const DNA &a)
 {
     DNA res(a.genes, this->mutation);
 
-    for (int row = 0; row < this->genes.rows(); row++)
+    if (this->genes.rows() == a.genes.rows() &&
+        this->genes.cols() == a.genes.cols())
     {
-        for (int col = 0; col < this->genes.cols(); col++)
+        for (int row = 0; row < this->genes.rows(); row++)
         {
-            if (row + col % 2 == 0)
+            for (int col = 0; col < this->genes.cols(); col++)
             {
-                res.genes.set(row, col, this->genes.get(row, col));
+                if (row + col % 2 == 0)
+                {
+                    res.genes.set(row, col, this->genes.get(row, col));
+                }
             }
         }
     }
@@ -58,4 +68,9 @@ void DNA::mutate()
 			}
         }
     }
+}
+
+Mat DNA::getGenes() const
+{
+    return this->genes;
 }

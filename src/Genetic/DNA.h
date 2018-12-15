@@ -14,11 +14,14 @@ class DNA {
         Mat genes;
 
     public:
+        friend bool operator== (const DNA&, const DNA&);
+
         DNA();
         DNA(const Mat&, double = 0.01);
         void setMutation(double);
         DNA crossover(const DNA&);
         void mutate();
+        Mat getGenes() const;
 };
 
 #endif

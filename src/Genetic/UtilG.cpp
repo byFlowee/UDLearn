@@ -1,4 +1,6 @@
 
+#include <limits>
+
 #include "UtilG.h"
 
 Mat UtilG::getRandomMatrix(size_t rows, size_t cols)
@@ -141,4 +143,49 @@ vector<vector<Mat>> UtilG::setRepresentativeVectorOnNeuralNetwork(const Mat &uni
     nn.setBias(unflattenedWeightsAndBias[1]);
 
     return unflattenedWeightsAndBias;
+}
+
+bool UtilG::compareDouble(double d1, double d2)
+{
+    return abs(d1 - d2) < std::numeric_limits<double>::epsilon();
+}
+
+bool UtilG::compareDouble(const vector<double> &v1, const vector<double> &v2)
+{
+    if (v1.size() != v2.size())
+    {
+        return false;
+    }
+
+    for (size_t i = 0; i < v1.size(); i++)
+    {
+        if (!UtilG::compareDouble(v1[i], v2[i]))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool UtilG::compareDouble(const Mat &m1, const Mat &m2)
+{
+    if (m1.rows() != m2.rows() || 
+        m1.cols() != m2.cols())
+    {
+        return false;
+    }
+
+    for (int row = 0; row < m1.rows(); row++)
+    {
+        for (int col = 0; col < m1.cols(); col++)
+        {
+            if (!UtilG::compareDouble(m1.get(row, col), m2.get(row, col)))
+            {
+                return false;
+            }
+        }
+    }
+
+    return true;
 }
