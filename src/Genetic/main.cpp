@@ -7,7 +7,7 @@
 #include "DNA.h"
 #include "UtilG.h"
 #include "../NeuralNetwork/neuralNetwork.h"
-#include "../breakout/DataLoader.h"
+#include "../DataLoader/DataLoader.h"
 #include "Player.h"
 
 using namespace std;

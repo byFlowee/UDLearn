@@ -2,7 +2,7 @@ COMPILER := g++
 OPTIONS := -Wall
 TARGET   := main
 OBJ 	 := GeneticNN.o DNA.o UtilG.o mat.o neuralNetwork.o Player.o main.o
-OBJCPP 	 := GeneticNN.cpp DNA.cpp UtilG.cpp ../breakout/DataLoader.cpp ../JNet/JNet.cpp ../JNet/Perceptron.cpp ../NeuralNetwork/mat.cpp ../NeuralNetwork/neuralNetwork.cpp Player.cpp main.cpp
+OBJCPP 	 := GeneticNN.cpp DNA.cpp UtilG.cpp ../DataLoader/DataLoader.cpp ../JNet/JNet.cpp ../JNet/Perceptron.cpp ../NeuralNetwork/mat.cpp ../NeuralNetwork/neuralNetwork.cpp Player.cpp main.cpp
 
 
 
