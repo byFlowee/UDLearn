@@ -10,6 +10,7 @@
 #include "SDL.h"
 
 #include "../DataLoader/DataLoader.h"
+#include "../NeuralNetwork/neuralNetwork.h"
 
 using namespace std;
 
@@ -151,7 +152,6 @@ int getBallX()
    return alei.getRAM().get(99);// + ((rand() % 3) - 1);
 }
 
-
 ///////////////////////////////////////////////////////////////////////////////
 /// Do next agent step predicted by the Network
 ///////////////////////////////////////////////////////////////////////////////
@@ -204,6 +204,8 @@ float NN(DataLoader &d)
     return (reward + alei.act(PLAYER_A_NOOP));
 }
 
+
+
 ///////////////////////////////////////////////////////////////////////////////
 /// MAIN PROGRAM
 ///////////////////////////////////////////////////////////////////////////////
@@ -213,11 +215,12 @@ int main(int argc, char **argv)
     if (argc < 2)
         usage(argv[0]);
 
-    /** 
-    * argv[1] : rom
-    * argv[2] : media? true/>false<
-    * argv[3] : print_ram? true/>false<
-    **/
+    ////////////////////////////////////////
+    // argv[1] : rom
+    // argv[2] : media? true/>false<
+    // argv[3] : print_ram? true/>false<
+    ////////////////////////////////////////
+
     const bool display_media(argc >= 3 ? atoi(argv[2])==1 : false);
     const bool printRam(argc >= 4 ? atoi(argv[3])==1 : false);
 
@@ -243,10 +246,10 @@ int main(int argc, char **argv)
     alei.act(PLAYER_A_FIRE);
     int step;
 
-    /*
-    * Bot expl: This bot will try to adjust the player location based on the 
-    * last tick ball location and the current tick location
-    **/
+    //////////////////////////////////////////////////////////////////////////
+    // Bot expl: This bot will try to adjust the player location based on the 
+    // last tick ball location and the current tick location
+    //////////////////////////////////////////////////////////////////////////
     BallX_LastTick = getBallX();   
     for (step = 0; !alei.game_over() && step < maxSteps; ++step) 
     {
