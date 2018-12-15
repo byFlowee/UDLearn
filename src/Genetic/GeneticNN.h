@@ -1,23 +1,34 @@
 #ifndef _GeneticNN_
 #define _GeneticNN_
 
+#include <string>
+
 #include "DNA.h"
+#include "Player.h"
 
 class GeneticNN {
     private:
+
+        enum Game
+        {
+            breakout = 1
+        };
+
         unsigned populationSize;
         vector<DNA> population;
         vector<int> fitnessValues;
-        vector<unsigned> topology;
+        vector<int> topology;
         unsigned maxGenerations;
         unsigned currentGeneration;
         unsigned DNASize;
 
-        int fitness();
+        static Game currentGame;
+
+        int fitness(const DNA&);
         unsigned getRandomMostLikelyGeneIndex() const;
 
     public:
-        GeneticNN(const vector<unsigned> &topology, unsigned = 0, unsigned = 50);
+        GeneticNN(const vector<int> &topology, unsigned = 0, unsigned = 50);
         void createPopulation();
         void computeFitness();
         DNA crossover() const;

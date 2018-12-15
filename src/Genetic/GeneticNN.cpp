@@ -1,7 +1,13 @@
+
+#include <iostream>
+
 #include "GeneticNN.h"
 #include "UtilG.h"
+#include "../NeuralNetwork/neuralNetwork.h"
 
-GeneticNN::GeneticNN(const vector<unsigned> &topology, unsigned maxGenerations, unsigned population) :
+GeneticNN::Game GeneticNN::currentGame = GeneticNN::Game::breakout;
+
+GeneticNN::GeneticNN(const vector<int> &topology, unsigned maxGenerations, unsigned population) :
     population(population),
     fitnessValues(population)
 {
@@ -26,17 +32,34 @@ void GeneticNN::createPopulation()
     }                    
 }
 
-int GeneticNN::fitness()
+int GeneticNN::fitness(const DNA &dna)
 {
     //TODO
-    return 0;
+
+    int res = -1;
+
+    NeuralNetwork nn(this->topology);
+
+    vector<vector<Mat>> nnWeightsAndBias = UtilG::setRepresentativeVectorOnNeuralNetwork(dna.getGenes(), nn);
+
+    // Play game and set res to the score
+    switch (GeneticNN::currentGame)
+    {
+        case GeneticNN::Game::breakout:
+            res = Player::playBreakout(nn);
+            break;
+        default:
+            cerr << "ERROR: Unknown game." << endl;
+    }
+
+    return res;
 }
 
 void GeneticNN::computeFitness()
 {
     for (size_t i = 0; i < this->populationSize; ++i)
     {
-        this->fitnessValues[i] = this->fitness(); 
+        this->fitnessValues[i] = this->fitness(this->population[i]); 
     }
 }
 

@@ -1,7 +1,7 @@
 COMPILER := g++
 OPTIONS := -Wall
 TARGET   := main
-OBJ 	 := GeneticNN.o DNA.o UtilG.o mat.o neuralNetwork.o main.o
+OBJ 	 := GeneticNN.o DNA.o UtilG.o mat.o neuralNetwork.o Player.o main.o
 
 main: $(OBJ)
 	$(COMPILER) $(OPTIONS) $(OBJ) -o $(TARGET)
@@ -21,8 +21,11 @@ UtilG.o: UtilG.h UtilG.cpp ../NeuralNetwork/mat.h ../NeuralNetwork/neuralNetwork
 DNA.o: DNA.h DNA.cpp UtilG.h
 	$(COMPILER) $(OPTIONS) -c DNA.cpp
 
-GeneticNN.o: GeneticNN.h GeneticNN.cpp DNA.h UtilG.h
+GeneticNN.o: GeneticNN.h GeneticNN.cpp DNA.h UtilG.h ../NeuralNetwork/neuralNetwork.h Player.h
 	$(COMPILER) $(OPTIONS) -c GeneticNN.cpp
+
+Player.o: Player.h Player.cpp ../NeuralNetwork/neuralNetwork.h
+	$(COMPILER) $(OPTIONS) -c Player.cpp
 
 clean:
 	rm -rvf *.o $(TARGET) 
