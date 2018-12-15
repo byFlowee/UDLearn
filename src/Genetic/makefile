@@ -1,19 +1,25 @@
 COMPILER := g++
-CXXFLAGS := -Wall
+OPTIONS := -Wall
 TARGET   := test
-OBJ 	 := UtilG.o DNA.o GeneticNN.o
+OBJ 	 := GeneticNN.o DNA.o UtilG.o mat.o main.o
 
-main: GeneticNN.o DNA.o UtilG.o main.cpp
-	$(COMPILER) $(CXXFLAGS) $(OBJ) main.cpp -o $(TARGET)
+main: $(OBJ)
+	$(COMPILER) $(OPTIONS) $(OBJ) -o $(TARGET)
 
-UtilG.o: UtilG.h UtilG.cpp
-	$(COMPILER) $(CXXFLAGS) -I../NeuralNetwork/mat.o -c UtilG.cpp
+main.o: main.cpp
+	$(COMPILER) $(OPTIONS) -c main.cpp
+
+mat.o: ../NeuralNetwork/mat.h ../NeuralNetwork/mat.cpp
+	$(COMPILER) $(OPTIONS) -c ../NeuralNetwork/mat.cpp
+
+UtilG.o: UtilG.h UtilG.cpp ../NeuralNetwork/mat.h
+	$(COMPILER) $(OPTIONS) -c UtilG.cpp
 
 DNA.o: DNA.h DNA.cpp UtilG.h
-	$(COMPILER) $(CXXFLAGS) -c DNA.cpp
+	$(COMPILER) $(OPTIONS) -c DNA.cpp
 
-GeneticNN.o: GeneticNN.h GeneticNN.h
-	$(COMPILER) $(CXXFLAGS) -c GeneticNN.cpp
+GeneticNN.o: GeneticNN.h GeneticNN.cpp DNA.h UtilG.h
+	$(COMPILER) $(OPTIONS) -c GeneticNN.cpp
 
 clean:
 	rm -rvf *.o $(TARGET) 
