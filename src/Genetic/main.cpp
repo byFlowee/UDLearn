@@ -1,10 +1,14 @@
 
 #include <iostream>
+#include <unistd.h>
+#include <fcntl.h>
 
 #include "GeneticNN.h"
 #include "DNA.h"
 #include "UtilG.h"
 #include "../NeuralNetwork/neuralNetwork.h"
+#include "../breakout/DataLoader.h"
+#include "Player.h"
 
 using namespace std;
 
@@ -214,9 +218,74 @@ void DNACrossoverAndMutation()
     cout << endl;
 }
 
+int playBreakout(const vector<int> &topology)
+{
+    int score = 0;
+    GeneticNN geneticAlg(topology, 50, 5);
+    NeuralNetwork nn(topology);
+
+    geneticAlg.createPopulation();
+
+    for (int i = 1; i <= 50; i++)
+	{
+        geneticAlg.computeFitness();
+			
+        //String best = p.obtenerMejorFitness();
+        DNA best = geneticAlg.getCurrentBestDNA();
+        Mat genes = best.getGenes();
+
+        vector<vector<Mat>> weightsAndBias = UtilG::setRepresentativeVectorOnNeuralNetwork(genes, nn);
+
+        score = Player::playBreakout(nn);
+
+        //cout << "Generation " << geneticAlg.getCurrentGeneration() << ": " << best << endl;
+        cout << "--------------------------------------------------------------------" << endl;
+        cout << "--------------------------------------------------------------------" << endl;
+        cout << "------------------- Generation " << geneticAlg.getCurrentGeneration() << " | score = " << score << endl;
+        cout << "--------------------------------------------------------------------" << endl;
+        cout << "--------------------------------------------------------------------" << endl;
+        cout << endl;
+        
+        /*
+        if (best.equals(Main.PHRASE))
+        {
+            break;
+        }
+        */
+        
+        geneticAlg.nextGeneration();
+    }
+
+    return score;
+}
+
 int main ()
 {
-    DNACrossoverAndMutation();
+    vector<int> topology = {4, 4, 1};
+    //int epochs = 100;
+    //int score = 0;
+//
+    //DataLoader d("../breakout/breakout.csv", topology);
+    //NeuralNetwork &nn = *d.getNN();
+//
+    //d.trainNN(topology.front(), topology.back(), epochs);
+//
+    //score = Player::playBreakout(nn);
+//
+    //cout << "Main | score = " << score << endl;
+
+    setbuf(stdout, NULL);
+
+    // Redirect error output to /dev/null -> all messages in ALE are displayed in the error output.......
+    int save_out = dup(STDERR_FILENO);
+    int devNull = open("/dev/null", O_WRONLY);
+    dup2(devNull, STDERR_FILENO);
+
+    playBreakout(topology);
+
+    // Restore error output
+    dup2(save_out, STDERR_FILENO);
+
 
     return 0;
 }

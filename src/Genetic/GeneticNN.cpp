@@ -35,8 +35,6 @@ void GeneticNN::createPopulation()
 
 int GeneticNN::fitness(const DNA &dna)
 {
-    //TODO
-
     int res = -1;
 
     NeuralNetwork nn(this->topology);

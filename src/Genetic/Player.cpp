@@ -5,9 +5,9 @@
 #include "ale_interface.hpp"
 #include "SDL.h"
 
-ALEInterface alei;
+const string Player::BREAKOUT_ROM = "../breakout/breakout.bin";
 
-//int Player::playBreakout(NeuralNetwork &nn){return 1;}
+ALEInterface alei;
 
 int Player::breakoutGetPlayerX()
 {
@@ -21,9 +21,11 @@ int Player::breakoutGetBallX()
 
 int Player::playBreakout(NeuralNetwork &nn)
 {
-    int lastLives = alei.lives();
+    int lastLives = 0;
     float totalReward = .0f;
     int maxSteps = 15000;
+
+    alei.disableBufferedIO();
 
     // Init rand seed
     srand(time(NULL));
@@ -33,10 +35,14 @@ int Player::playBreakout(NeuralNetwork &nn)
     alei.setFloat("repeat_action_probability", 0);
     alei.setBool("sound", false);
     alei.setBool("display_screen", false);
-    alei.loadROM("breakout.bin");
+    alei.loadROM(Player::BREAKOUT_ROM);
+
+    lastLives = alei.lives();
 
     int score = 0;
     int BallX_LastTick = Player::breakoutGetBallX();
+
+    alei.act(PLAYER_A_FIRE);
 
     for (int step = 0; !alei.game_over() && step < maxSteps; ++step) 
     {
