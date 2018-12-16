@@ -3,6 +3,12 @@
 
 #include "mat.h"
 
+Mat& Mat::operator=(const Mat& mat)
+{
+	this->mat = mat.mat;
+
+	return *this;
+}
 
 /*
 void Mat::newMat(int rows, int cols, double defaultValue)

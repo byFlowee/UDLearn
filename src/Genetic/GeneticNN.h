@@ -10,7 +10,10 @@ class GeneticNN {
 
         enum Game
         {
-            breakout = 1
+            breakout = 1,
+            boxing = 2,
+            demonAttack = 3,
+            starGunner = 4
         };
 
         unsigned populationSize;
@@ -28,6 +31,7 @@ class GeneticNN {
 
     public:
         GeneticNN(const vector<int> &topology, unsigned = 0, unsigned = 50);
+        void setMutation(double);
         void createPopulation();
         void computeFitness();
         DNA crossover() const;

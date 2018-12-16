@@ -14,6 +14,8 @@ class Mat
         //void newMat(int rows, int cols, double defaultValue);
 
     public:
+        Mat& operator=(const Mat&);
+
         Mat(int rows, int cols, double defaultValue);
         Mat(int rows, int cols);
         void set(int row, int col, double value);

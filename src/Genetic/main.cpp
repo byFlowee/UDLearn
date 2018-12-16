@@ -225,16 +225,19 @@ NeuralNetwork playBreakout(const vector<int> &topology, int maxGenerations, int 
     GeneticNN geneticAlg(topology, maxGenerations, population);
     NeuralNetwork nn(topology);
     vector<vector<Mat>> weightsAndBias;
+    DNA best;
+    int bestScore = -1;
 
     geneticAlg.createPopulation();
+    geneticAlg.setMutation(0.05);
 
-    for (int i = 1; i <= maxGenerations; i++)
+    for (int i = 0; i < maxGenerations; i++)
 	{
         geneticAlg.computeFitness();
 			
         int fitnessValue = geneticAlg.getCurrentBestDNAFitness();
-        DNA best = geneticAlg.getCurrentBestDNA();
-        Mat genes = best.getGenes();
+        DNA currentBest = geneticAlg.getCurrentBestDNA();
+        Mat genes = currentBest.getGenes();
         vector<int> playerResults;
 
         // Weights and bias of the best Neural Network
@@ -249,23 +252,35 @@ NeuralNetwork playBreakout(const vector<int> &topology, int maxGenerations, int 
         //cout << "Generation " << geneticAlg.getCurrentGeneration() << ": " << best << endl;
         cout << "--------------------------------------------------------------------" << endl;
         cout << "--------------------------------------------------------------------" << endl;
-        cout << "------------------- Generation " << geneticAlg.getCurrentGeneration() << endl;
+        cout << "------------------- Generation " << geneticAlg.getCurrentGeneration() + 1 << endl;
         cout << "------------------- Best fitness = " << fitnessValue << endl;
         cout << "------------------- Score playing = " << score << endl;
         cout << "------------------- Steps playing = " << steps << endl;
         cout << "--------------------------------------------------------------------" << endl;
         cout << "--------------------------------------------------------------------" << endl;
         cout << endl;
-        
-        /*
-        if (best.equals(Main.PHRASE))
+
+        if (bestScore < score)
         {
+            bestScore = score;
+            best = currentBest;
+        }
+
+        if (score == 864)
+        {
+            cout << "MAX SCORE! 864!" << endl;
             break;
         }
-        */
         
         geneticAlg.nextGeneration();
     }
+
+    //Mat flattenedWeightsAndBiasBest = geneticAlg.getCurrentBestDNA().getGenes();
+    Mat flattenedWeightsAndBiasBest = best.getGenes();
+
+    cout << "Weights and Bias flattened of the best DNA found (score = " << bestScore << "): ";
+    flattenedWeightsAndBiasBest.print();
+    cout << endl << endl;
 
     // See best DNA of last generation
     cout << "Best neural network is playing!" << endl;

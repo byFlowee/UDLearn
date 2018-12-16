@@ -98,3 +98,24 @@ vector<int> Player::playBreakout(NeuralNetwork &nn, bool displayScreen)
 
     return res;
 }
+
+vector<int> Player::playBoxing(NeuralNetwork &nn, bool displayScreen)
+{
+    vector<int> res;
+
+    return res;
+}
+
+vector<int> Player::playDemonAttack(NeuralNetwork &nn, bool displayScreen)
+{
+    vector<int> res;
+
+    return res;
+}
+
+vector<int> Player::playStarGunner(NeuralNetwork &nn, bool displayScreen)
+{
+    vector<int> res;
+
+    return res;
+}

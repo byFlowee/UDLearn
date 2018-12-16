@@ -48,11 +48,28 @@ vector<int> GeneticNN::fitness(const DNA &dna)
         case GeneticNN::Game::breakout:
             res = Player::playBreakout(nn);
             break;
+        case GeneticNN::Game::boxing:
+            res = Player::playBoxing(nn);
+            break;
+        case GeneticNN::Game::demonAttack:
+            res = Player::playDemonAttack(nn);
+            break;
+        case GeneticNN::Game::starGunner:
+            res = Player::playStarGunner(nn);
+            break;
         default:
             cerr << "ERROR: Unknown game." << endl;
     }
 
     return res;
+}
+
+void GeneticNN::setMutation(double mutation)
+{
+    for (size_t i = 0; i < this->population.size(); i++)
+    {
+        this->population[i].setMutation(mutation);
+    }
 }
 
 void GeneticNN::computeFitness()
@@ -62,10 +79,20 @@ void GeneticNN::computeFitness()
         vector<int> currentFitness = this->fitness(this->population[i]);
 
         // Modify fitness function HERE!
+        
+        if (this->fitnessValues[i] == currentFitness[0])
+        {
+            this->fitnessValues[i] = currentFitness[0] / 2;
+        }
+        else
+        {
+            this->fitnessValues[i] = currentFitness[0];   // Score -> It improves in great steps
+        }
 
-        this->fitnessValues[i] = currentFitness[0];   // Score
-        //this->fitnessValues[i] = currentFitness[0] + currentFitness[1]; // Score + Steps
-        //this->fitnessValues[i] = currentFitness[0] * 10 + currentFitness[1]; // Score * 10 + Steps
+        //this->fitnessValues[i] = currentFitness[0];   // Score -> It improves in great steps
+        //this->fitnessValues[i] = currentFitness[0] * currentFitness[0];   // Score * Score -> 
+        //this->fitnessValues[i] = currentFitness[0] + currentFitness[1]; // Score + Steps -> It improves but when it detects a pattern that improves only steps, it doesn't improve the score
+        //this->fitnessValues[i] = currentFitness[0] * 10 + currentFitness[1]; // Score * 10 + Steps -> Same that Score + Steps
     }
 }
 
