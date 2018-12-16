@@ -16,6 +16,9 @@ class Player
 
     public:
         static vector<int> playBreakout(NeuralNetwork&, bool = false);
+        static vector<int> playBoxing(NeuralNetwork&, bool = false);
+        static vector<int> playDemonAttack(NeuralNetwork&, bool = false);
+        static vector<int> playStarGunner(NeuralNetwork&, bool = false);
     
 };
 

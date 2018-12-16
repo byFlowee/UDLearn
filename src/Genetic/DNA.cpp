@@ -8,6 +8,14 @@ bool operator==(const DNA &d1, const DNA &d2)
             UtilG::compareDouble(d1.genes, d2.genes));
 }
 
+DNA& DNA::operator=(const DNA& dna)
+{
+    this->mutation = mutation;
+    this->genes = genes;
+
+    return *this;
+}
+
 DNA::DNA() :
     mutation(0.01),
     genes(Mat(1, 1, 1.0))

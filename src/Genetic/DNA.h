@@ -15,6 +15,7 @@ class DNA {
 
     public:
         friend bool operator== (const DNA&, const DNA&);
+        DNA& operator=(const DNA&);
 
         DNA();
         DNA(const Mat&, double = 0.01);
