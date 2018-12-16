@@ -4,6 +4,7 @@
 #include "SDL.h"
 
 const string Player::BREAKOUT_ROM = "../breakout/breakout.bin";
+const string Player::DEMONATTACK_ROM = "../dattack/demon_attack.bin";
 
 ALEInterface alei;
 
@@ -109,6 +110,62 @@ vector<int> Player::playBoxing(NeuralNetwork &nn, bool displayScreen)
 vector<int> Player::playDemonAttack(NeuralNetwork &nn, bool displayScreen)
 {
     vector<int> res;
+    int lastLives = 0;
+    float totalReward = .0f;
+    int maxSteps = 15000;
+
+    alei.disableBufferedIO();
+
+    // Init rand seed
+    srand(time(NULL));
+
+    // Create alei object.
+    alei.setInt("random_seed", rand()%1000);
+    alei.setFloat("repeat_action_probability", 0);
+    alei.setBool("sound", false);
+    alei.setBool("display_screen", displayScreen);
+    alei.loadROM(Player::DEMONATTACK_ROM);
+
+    lastLives = alei.lives();
+
+    int score = 0;
+    int step = 0;
+
+
+    for (step = 0; !alei.game_over() && step < maxSteps; ++step) 
+    {   
+        float reward = 0;
+        
+        Mat inputs(1, 128);
+        Mat outputs(1, 3);
+
+        for (unsigned i = 0; i < 128; ++i) {
+            inputs.set(0, i, (double)alei.getRAM().get(i) / 255);                                                            
+        }
+
+        outputs = nn.forwardPropagation(inputs);
+
+        if (outputs.get(0, 0) > 0.5)
+        {
+            reward += alei.act(PLAYER_A_RIGHT);
+        }
+        else if (outputs.get(0, 1) > 0.5)
+        {
+            reward += alei.act(PLAYER_A_LEFT);
+        }
+        else if (outputs.get(0, 2) > 0.5)
+        {
+            reward += alei.act(PLAYER_A_FIRE);
+        }
+
+        reward = (reward + alei.act(PLAYER_A_NOOP));
+        totalReward += reward;
+    }
+
+    score = (int)totalReward;
+
+    res.push_back(score);
+    res.push_back(step);
 
     return res;
 }

@@ -10,8 +10,8 @@ bool operator==(const DNA &d1, const DNA &d2)
 
 DNA& DNA::operator=(const DNA& dna)
 {
-    this->mutation = mutation;
-    this->genes = genes;
+    this->mutation = dna.mutation;
+    this->genes = dna.genes;
 
     return *this;
 }

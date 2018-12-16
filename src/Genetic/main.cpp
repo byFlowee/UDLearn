@@ -218,7 +218,7 @@ void DNACrossoverAndMutation()
     cout << endl;
 }
 
-NeuralNetwork playBreakout(const vector<int> &topology, int maxGenerations, int population)
+NeuralNetwork play(const vector<int> &topology, int game, int maxGenerations, int population)
 {
     int score = 0;
     int steps = 0;
@@ -245,7 +245,19 @@ NeuralNetwork playBreakout(const vector<int> &topology, int maxGenerations, int 
 
         //score = Player::playBreakout(nn);
         //playerResults = Player::playBreakout(nn, true);   // If you want to see the best DNA of the generation. Can't be closed and continue.. It has to end.
-        playerResults = Player::playBreakout(nn);           // If you don't want to see the best DNA.
+
+        switch (game)
+        {
+            case 1:
+                playerResults = Player::playBreakout(nn);           // If you don't want to see the best DNA.
+                break;
+            case 3:
+                playerResults = Player::playDemonAttack(nn);           // If you don't want to see the best DNA.
+                break;
+            default:
+                cerr << "ERROR: game unknown." << endl;
+        }
+
         score = playerResults[0];
         steps = playerResults[1];
 
@@ -284,7 +296,17 @@ NeuralNetwork playBreakout(const vector<int> &topology, int maxGenerations, int 
 
     // See best DNA of last generation
     cout << "Best neural network is playing!" << endl;
-    Player::playBreakout(nn, true);
+    switch (game)
+    {
+        case 1:
+            Player::playBreakout(nn, true);
+            break;
+        case 3:
+            Player::playDemonAttack(nn, true);
+            break;
+        default:
+            cerr << "ERROR: game unknown." << endl;
+    }
 
     return nn;
 }
@@ -298,7 +320,8 @@ int main (int argc, char **argv)
         return 0;
     }
 
-    vector<int> topology = {4, 1};
+    vector<int> topologyBreakout = {4, 1};
+    vector<int> topologyDemonAttack = {128, 64, 3};
     
     //int epochs = 100;
     //int score = 0;
@@ -319,8 +342,8 @@ int main (int argc, char **argv)
     int devNull = open("/dev/null", O_WRONLY);
     dup2(devNull, STDERR_FILENO);
 
-    //playBreakout(topology, 50, 10);
-    playBreakout(topology, atoi(argv[1]), atoi(argv[2]));
+    //play(topologyBreakout, 1, atoi(argv[1]), atoi(argv[2]));
+    play(topologyDemonAttack, 3, atoi(argv[1]), atoi(argv[2]));
 
     // Restore error output
     dup2(save_out, STDERR_FILENO);
