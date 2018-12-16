@@ -1,0 +1,41 @@
+%% This is annot.tex.
+%% 
+%% You'll need to change the title and author fields to reflect your
+%% information.
+%%
+%% Author: Titus Barik (titus@barik.net)
+%% Homepage: http://www.barik.net/sw/ieee/
+%% Reference: http://www.ctan.org/tex-archive/info/simplified-latex/
+
+\documentclass [11pt]{article}
+
+\input{includes.tex}
+
+\title{Razonamiento Automático\\
+	Machine Learning}
+
+\author{Álvaro Jover Álvarez (aja10@alu.ua.es)\\
+	Jordi Amoros Moreno (jam80@alu.ua.es)\\
+	Cristian García Romero (cgr71@alu.ua.es)\\
+	Universidad de Alicante}
+\renewcommand{\contentsname}{Índice}
+
+\begin{document}
+%--------------- TITLE ---------------%
+\maketitle
+%--------------- TITLE ---------------%
+
+
+%--------------- INDEX ---------------%
+\tableofcontents
+\newpage
+%--------------- INDEX ---------------%
+
+
+%--------------- CONTENIDOS ---------------%
+\input{sections/dat_gen.tex}
+\input{sections/place.tex}
+\input{sections/desc.tex}
+\input{sections/concl.tex}
+%--------------- CONTENIDOS ---------------%
+\end{document}
