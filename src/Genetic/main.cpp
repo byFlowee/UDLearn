@@ -348,6 +348,16 @@ int main (int argc, char **argv)
     int devNull = open("/dev/null", O_WRONLY);
     dup2(devNull, STDERR_FILENO);
 
+    if (atoi(argv[1]) > 4 || atoi(argv[1]) < 1)
+    {
+        // Restore error output
+        dup2(save_out, STDERR_FILENO);
+
+        cerr << "ERROR: unknown game." << endl;
+
+        return 0;
+    }
+
     Game game = (Game)atoi(argv[1]);
 
     switch (game)
