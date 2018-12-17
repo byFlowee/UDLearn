@@ -10,7 +10,9 @@ class Player
 {
     private:
         static const string BREAKOUT_ROM;
+        static const string BOXING_ROM;
         static const string DEMONATTACK_ROM;
+        static const string STARGUNNER_ROM;
 
         static int breakoutGetPlayerX();
         static int breakoutGetBallX();

@@ -17,6 +17,7 @@ class UtilG {
         static Mat getARepresentativeVectorOfNeuralNetwork(const NeuralNetwork&);
         static Mat getRandomRepresentativeVectorOfNeuralNetwork(const vector<int>&);
         static vector<vector<Mat>> setRepresentativeVectorOnNeuralNetwork(const Mat&, NeuralNetwork&);
+        static Mat getMatFromVector(const vector<double>&);
         static bool compareDouble(double, double);
         static bool compareDouble(const vector<double>&, const vector<double>&);
         static bool compareDouble(const Mat&, const Mat&);

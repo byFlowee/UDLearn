@@ -78,6 +78,30 @@ void DNA::mutate()
     }
 }
 
+void DNA::mutatePermutation()
+{
+    for (int row = 0; row < this->genes.rows(); row++)
+    {
+        for (int col = 0; col < this->genes.cols(); col++)
+        {
+            double random = UtilG::getRandomDouble(0.0, 1.0);
+
+            if (random <= this->mutation)
+			{
+                int randomRow1 = rand() % this->genes.rows();
+                int randomCol1 = rand() % this->genes.cols();
+                int randomRow2 = rand() % this->genes.rows();
+                int randomCol2 = rand() % this->genes.cols();
+                double value1 = this->genes.get(randomRow1, randomCol1);
+                double value2 = this->genes.get(randomRow2, randomCol2);
+
+                this->genes.set(randomRow1, randomCol1, value2);
+                this->genes.set(randomRow2, randomCol2, value1);
+			}
+        }
+    }
+}
+
 Mat DNA::getGenes() const
 {
     return this->genes;

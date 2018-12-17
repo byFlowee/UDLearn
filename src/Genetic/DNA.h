@@ -22,6 +22,7 @@ class DNA {
         void setMutation(double);
         DNA crossover(const DNA&);
         void mutate();
+        void mutatePermutation();
         Mat getGenes() const;
 };
 

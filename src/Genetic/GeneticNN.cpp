@@ -6,12 +6,11 @@
 #include "../NeuralNetwork/neuralNetwork.h"
 #include "Player.h"
 
-GeneticNN::GeneticNN(const vector<int> &topology, Game game, unsigned maxGenerations, unsigned population) :
+GeneticNN::GeneticNN(const vector<int> &topology, Game game, unsigned population) :
     population(population),
     fitnessValues(population)
 {
     this->currentGeneration = 0;
-    this->maxGenerations = maxGenerations;
     this->populationSize = population;
     this->topology = topology;
     this->DNASize = 0;
@@ -29,7 +28,7 @@ void GeneticNN::createPopulation()
     for (size_t i = 0; i < this->populationSize; i++)
     {
         this->population[i] = DNA(UtilG::getRandomMatrix(1, this->DNASize));
-    }                    
+    }
 }
 
 vector<int> GeneticNN::fitness(const DNA &dna)
@@ -148,6 +147,7 @@ void GeneticNN::nextGeneration()
         DNA newDNA = this->crossover();
 
         newDNA.mutate();
+        newDNA.mutatePermutation();
 
         newPopulation[i] = newDNA;
     }

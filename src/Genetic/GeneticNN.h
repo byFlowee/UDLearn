@@ -19,7 +19,6 @@ class GeneticNN {
         vector<DNA> population;
         vector<int> fitnessValues;
         vector<int> topology;
-        unsigned maxGenerations;
         unsigned currentGeneration;
         unsigned DNASize;
         Game currentGame;
@@ -28,7 +27,7 @@ class GeneticNN {
         unsigned getRandomMostLikelyGeneIndex() const;
 
     public:
-        GeneticNN(const vector<int> &topology, Game, unsigned = 0, unsigned = 50);
+        GeneticNN(const vector<int> &topology, Game, unsigned = 50);
         void setMutation(double);
         void createPopulation();
         void computeFitness();

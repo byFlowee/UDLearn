@@ -4,7 +4,9 @@
 #include "SDL.h"
 
 const string Player::BREAKOUT_ROM = "../breakout/breakout.bin";
+const string Player::BOXING_ROM = "../boxing/boxing.bin";
 const string Player::DEMONATTACK_ROM = "../dattack/demon_attack.bin";
+const string Player::STARGUNNER_ROM = "../strgunner/star_gunner.bin";
 
 ALEInterface alei;
 
@@ -68,7 +70,7 @@ vector<int> Player::playBreakout(NeuralNetwork &nn, bool displayScreen)
         }
 
         Mat inputs(1, 4);
-        Mat outputs(1, 1);
+        Mat outputs(1, 2);
 
         inputs.set(0, 0, ballX);
         inputs.set(0, 1, direction);
@@ -77,11 +79,11 @@ vector<int> Player::playBreakout(NeuralNetwork &nn, bool displayScreen)
 
         outputs = nn.forwardPropagation(inputs);
 
-        if (outputs.get(0, 0) < 0.5)
+        if (outputs.get(0, 0) > 0.5)
         {
             reward += alei.act(PLAYER_A_RIGHT);
         }
-        else
+        else if (outputs.get(0, 1) > 0.5)
         {
             reward += alei.act(PLAYER_A_LEFT);
         }

@@ -145,6 +145,18 @@ vector<vector<Mat>> UtilG::setRepresentativeVectorOnNeuralNetwork(const Mat &uni
     return unflattenedWeightsAndBias;
 }
 
+Mat UtilG::getMatFromVector(const vector<double>& v)
+{
+    Mat res(1, v.size());
+
+    for (size_t i = 0; i < v.size(); i++)
+    {
+        res.set(0, i, v[i]);
+    }
+
+    return res;
+}
+
 bool UtilG::compareDouble(double d1, double d2)
 {
     return abs(d1 - d2) < std::numeric_limits<double>::epsilon();
