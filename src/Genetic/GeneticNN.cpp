@@ -6,9 +6,7 @@
 #include "../NeuralNetwork/neuralNetwork.h"
 #include "Player.h"
 
-GeneticNN::Game GeneticNN::currentGame = GeneticNN::Game::breakout;
-
-GeneticNN::GeneticNN(const vector<int> &topology, unsigned maxGenerations, unsigned population) :
+GeneticNN::GeneticNN(const vector<int> &topology, Game game, unsigned maxGenerations, unsigned population) :
     population(population),
     fitnessValues(population)
 {
@@ -17,6 +15,7 @@ GeneticNN::GeneticNN(const vector<int> &topology, unsigned maxGenerations, unsig
     this->populationSize = population;
     this->topology = topology;
     this->DNASize = 0;
+    this->currentGame = game;
 
     for (size_t i = 0; i < topology.size() - 1; i++)
     {
@@ -43,18 +42,18 @@ vector<int> GeneticNN::fitness(const DNA &dna)
     vector<vector<Mat>> nnWeightsAndBias = UtilG::setRepresentativeVectorOnNeuralNetwork(dna.getGenes(), nn);
 
     // Play game and set res to the score
-    switch (GeneticNN::currentGame)
+    switch (this->currentGame)
     {
-        case GeneticNN::Game::breakout:
+        case Game::breakout:
             res = Player::playBreakout(nn);
             break;
-        case GeneticNN::Game::boxing:
+        case Game::boxing:
             res = Player::playBoxing(nn);
             break;
-        case GeneticNN::Game::demonAttack:
+        case Game::demonAttack:
             res = Player::playDemonAttack(nn);
             break;
-        case GeneticNN::Game::starGunner:
+        case Game::starGunner:
             res = Player::playStarGunner(nn);
             break;
         default:
@@ -188,4 +187,9 @@ unsigned GeneticNN::getRandomMostLikelyGeneIndex() const
 unsigned GeneticNN::getCurrentGeneration() const
 {
     return this->currentGeneration;
+}
+
+void GeneticNN::setCurrentGame(Game game)
+{
+    this->currentGame = game;
 }

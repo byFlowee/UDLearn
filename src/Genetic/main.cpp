@@ -218,11 +218,11 @@ void DNACrossoverAndMutation()
     cout << endl;
 }
 
-NeuralNetwork play(const vector<int> &topology, int game, int maxGenerations, int population)
+NeuralNetwork play(const vector<int> &topology, Game game, int maxGenerations, int population)
 {
     int score = 0;
     int steps = 0;
-    GeneticNN geneticAlg(topology, maxGenerations, population);
+    GeneticNN geneticAlg(topology, game, maxGenerations, population);
     NeuralNetwork nn(topology);
     vector<vector<Mat>> weightsAndBias;
     DNA best;
@@ -248,11 +248,17 @@ NeuralNetwork play(const vector<int> &topology, int game, int maxGenerations, in
 
         switch (game)
         {
-            case 1:
+            case Game::breakout:
                 playerResults = Player::playBreakout(nn);           // If you don't want to see the best DNA.
                 break;
-            case 3:
+            case Game::boxing:
+                playerResults = Player::playBoxing(nn);           // If you don't want to see the best DNA.
+                break;
+            case Game::demonAttack:
                 playerResults = Player::playDemonAttack(nn);           // If you don't want to see the best DNA.
+                break;
+            case Game::starGunner:
+                playerResults = Player::playStarGunner(nn);           // If you don't want to see the best DNA.
                 break;
             default:
                 cerr << "ERROR: game unknown." << endl;
@@ -278,11 +284,13 @@ NeuralNetwork play(const vector<int> &topology, int game, int maxGenerations, in
             best = currentBest;
         }
 
+        /*
         if (score == 864)
         {
             cout << "MAX SCORE! 864!" << endl;
             break;
         }
+        */
         
         geneticAlg.nextGeneration();
     }
@@ -294,15 +302,23 @@ NeuralNetwork play(const vector<int> &topology, int game, int maxGenerations, in
     flattenedWeightsAndBiasBest.print();
     cout << endl << endl;
 
+    UtilG::setRepresentativeVectorOnNeuralNetwork(flattenedWeightsAndBiasBest, nn);
+
     // See best DNA of last generation
     cout << "Best neural network is playing!" << endl;
     switch (game)
     {
-        case 1:
+        case Game::breakout:
             Player::playBreakout(nn, true);
             break;
-        case 3:
+        case Game::boxing:
+            Player::playBoxing(nn, true);
+            break;
+        case Game::demonAttack:
             Player::playDemonAttack(nn, true);
+            break;
+        case Game::starGunner:
+            Player::playStarGunner(nn, true);
             break;
         default:
             cerr << "ERROR: game unknown." << endl;
@@ -313,27 +329,17 @@ NeuralNetwork play(const vector<int> &topology, int game, int maxGenerations, in
 
 int main (int argc, char **argv)
 {
-    if (argc != 3)
+    if (argc != 4)
     {
-        cerr << "ERROR: Usage: ./main maxGenerations population" << endl;
+        cerr << "ERROR: Usage: ./main <GAME = 1 (breakout), 2 (), 3 (demon attack), 4 ()> maxGenerations population" << endl;
 
         return 0;
     }
 
     vector<int> topologyBreakout = {4, 1};
-    vector<int> topologyDemonAttack = {128, 64, 3};
-    
-    //int epochs = 100;
-    //int score = 0;
-//
-    //DataLoader d("../breakout/breakout.csv", topology);
-    //NeuralNetwork &nn = *d.getNN();
-//
-    //d.trainNN(topology.front(), topology.back(), epochs);
-//
-    //score = Player::playBreakout(nn);
-//
-    //cout << "Main | score = " << score << endl;
+    vector<int> topologyBoxing = {};
+    vector<int> topologyDemonAttack = {128, 32, 3};
+    vector<int> topologyStarGunner = {};
 
     setbuf(stdout, NULL);
 
@@ -342,8 +348,25 @@ int main (int argc, char **argv)
     int devNull = open("/dev/null", O_WRONLY);
     dup2(devNull, STDERR_FILENO);
 
-    //play(topologyBreakout, 1, atoi(argv[1]), atoi(argv[2]));
-    play(topologyDemonAttack, 3, atoi(argv[1]), atoi(argv[2]));
+    Game game = (Game)atoi(argv[1]);
+
+    switch (game)
+    {
+        case Game::breakout:
+            play(topologyBreakout, game, atoi(argv[2]), atoi(argv[3]));
+            break;
+        case Game::boxing:
+            play(topologyBoxing, game, atoi(argv[2]), atoi(argv[3]));
+            break;
+        case Game::demonAttack:
+            play(topologyDemonAttack, game, atoi(argv[2]), atoi(argv[3]));
+            break;
+        case Game::starGunner:
+            play(topologyStarGunner, game, atoi(argv[2]), atoi(argv[3]));
+            break;
+        default:
+            cerr << "ERROR: unknown game." << endl;
+    }
 
     // Restore error output
     dup2(save_out, STDERR_FILENO);

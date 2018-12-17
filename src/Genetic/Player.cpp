@@ -112,7 +112,7 @@ vector<int> Player::playDemonAttack(NeuralNetwork &nn, bool displayScreen)
     vector<int> res;
     int lastLives = 0;
     float totalReward = .0f;
-    int maxSteps = 15000;
+    int maxSteps = 7500;
 
     alei.disableBufferedIO();
 
@@ -145,17 +145,30 @@ vector<int> Player::playDemonAttack(NeuralNetwork &nn, bool displayScreen)
 
         outputs = nn.forwardPropagation(inputs);
 
-        if (outputs.get(0, 0) > 0.5)
+        int prediction = 2;
+
+        for (int i = 0; i < 2; i++)
         {
-            reward += alei.act(PLAYER_A_RIGHT);
+            if (outputs.get(0, i) > outputs.get(0, i + 1))
+            {
+                prediction = i;
+            }
         }
-        else if (outputs.get(0, 1) > 0.5)
+        
+        switch (prediction)
         {
-            reward += alei.act(PLAYER_A_LEFT);
-        }
-        else if (outputs.get(0, 2) > 0.5)
-        {
-            reward += alei.act(PLAYER_A_FIRE);
+            case 0:
+                reward += alei.act(PLAYER_A_FIRE);
+                break;
+            case 1:
+                reward += alei.act(PLAYER_A_LEFT);
+                break;
+            case 2:
+                reward += alei.act(PLAYER_A_RIGHT); 
+                break;
+            default:
+                cout << "debug" << endl;
+                break;
         }
 
         reward = (reward + alei.act(PLAYER_A_NOOP));

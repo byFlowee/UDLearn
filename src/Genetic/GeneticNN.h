@@ -5,17 +5,16 @@
 
 #include "DNA.h"
 
+enum Game
+{
+    breakout = 1,
+    boxing = 2,
+    demonAttack = 3,
+    starGunner = 4
+};
+
 class GeneticNN {
     private:
-
-        enum Game
-        {
-            breakout = 1,
-            boxing = 2,
-            demonAttack = 3,
-            starGunner = 4
-        };
-
         unsigned populationSize;
         vector<DNA> population;
         vector<int> fitnessValues;
@@ -23,14 +22,13 @@ class GeneticNN {
         unsigned maxGenerations;
         unsigned currentGeneration;
         unsigned DNASize;
-
-        static Game currentGame;
+        Game currentGame;
 
         vector<int> fitness(const DNA&);
         unsigned getRandomMostLikelyGeneIndex() const;
 
     public:
-        GeneticNN(const vector<int> &topology, unsigned = 0, unsigned = 50);
+        GeneticNN(const vector<int> &topology, Game, unsigned = 0, unsigned = 50);
         void setMutation(double);
         void createPopulation();
         void computeFitness();
@@ -39,6 +37,7 @@ class GeneticNN {
         int getCurrentBestDNAFitness() const;
         void nextGeneration();
         unsigned getCurrentGeneration() const;
+        void setCurrentGame(Game);
 
 };
 
