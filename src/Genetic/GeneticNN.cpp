@@ -91,6 +91,13 @@ void GeneticNN::computeFitness()
         //this->fitnessValues[i] = currentFitness[0] * currentFitness[0];   // Score * Score -> 
         //this->fitnessValues[i] = currentFitness[0] + currentFitness[1]; // Score + Steps -> It improves but when it detects a pattern that improves only steps, it doesn't improve the score
         //this->fitnessValues[i] = currentFitness[0] * 10 + currentFitness[1]; // Score * 10 + Steps -> Same that Score + Steps
+
+        cout << "Progress: " << i*100/this->populationSize << "% (" << i << ") - ";
+
+        for (size_t j = 0; j < currentFitness.size(); ++j)
+            cout << currentFitness[j] << " ";
+        
+        cout << endl;
     }
 }
 

@@ -397,7 +397,7 @@ int main (int argc, char **argv)
     vector<int> topologyBoxing = {};
     //vector<int> topologyDemonAttack = {128, 3};
     //vector<int> topologyDemonAttack = {133, 3};
-    vector<int> topologyDemonAttack = {6, 3};
+    vector<int> topologyDemonAttack = {6, 4, 3};
     vector<int> topologyStarGunner = {};
 
     // Redirect error output to /dev/null -> all messages in ALE are displayed in the error output.......
@@ -405,7 +405,7 @@ int main (int argc, char **argv)
     int devNull = open("/dev/null", O_WRONLY);
     bool error = false;
     dup2(devNull, STDERR_FILENO);
-    double mutation = 0.05;
+    double mutation = 0.1;
 
     if (argc == 5)
     {
