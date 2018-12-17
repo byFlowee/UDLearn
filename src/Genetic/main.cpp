@@ -395,10 +395,10 @@ int main (int argc, char **argv)
 
     vector<int> topologyBreakout = {4, 2};
     vector<int> topologyBoxing = {};
-    vector<int> topologyDemonAttack = {128, 3};
+    //vector<int> topologyDemonAttack = {128, 3};
+    //vector<int> topologyDemonAttack = {133, 3};
+    vector<int> topologyDemonAttack = {6, 3};
     vector<int> topologyStarGunner = {};
-
-    //setbuf(stdout, NULL);
 
     // Redirect error output to /dev/null -> all messages in ALE are displayed in the error output.......
     int save_out = dup(STDERR_FILENO);
