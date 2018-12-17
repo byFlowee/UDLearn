@@ -212,7 +212,7 @@ Mat Mat::copy() const
 	return copy;
 }
 
-void Mat::print() const
+void Mat::print(string delimiter) const
 {
 	for (int i = 0; i < this->rows(); i++)
 	{
@@ -222,7 +222,7 @@ void Mat::print() const
 
 			if (j + 1 != this->cols())
 			{
-				cout << " ";
+				cout << delimiter;
 			}
 		}
 

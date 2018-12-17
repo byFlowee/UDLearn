@@ -5,6 +5,7 @@
 using namespace std;
 
 #include <vector>
+#include <string>
 
 class Mat
 {
@@ -30,7 +31,7 @@ class Mat
         Mat sum(const Mat &b) const;
         Mat sub(const Mat &b) const;
         Mat copy() const;
-        void print() const;
+        void print(string = " ") const;
 
 };
 
