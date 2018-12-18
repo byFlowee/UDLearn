@@ -55,10 +55,7 @@ DNA.o: DNA.h DNA.cpp UtilG.h
 GeneticNN.o: GeneticNN.h GeneticNN.cpp DNA.h UtilG.h ../NeuralNetwork/neuralNetwork.h Player.h
 	$(COMPILER) $(OPTIONS) -c GeneticNN.cpp
 
-#Player.o: Player.h Player.cpp
-	#$(COMPILER) $(OPTIONS) -c Player.cpp
-
-Player.o:
+Player.o: Player.h Player.cpp
 	$(CXX) $(DEFINES) $(FLAGS) $(NETWORK) $(LDFLAGS) -c Player.cpp
 
 clean:

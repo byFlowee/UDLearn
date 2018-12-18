@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <limits>
 
 #include "GeneticNN.h"
 #include "UtilG.h"
@@ -72,6 +73,8 @@ void GeneticNN::setMutation(double mutation)
 
 void GeneticNN::computeFitness()
 {
+    int bestFitness = numeric_limits<int>::min();
+
     for (size_t i = 0; i < this->populationSize; ++i)
     {
         vector<int> currentFitness = this->fitness(this->population[i]);
@@ -109,7 +112,18 @@ void GeneticNN::computeFitness()
                 return;
         }
 
-        cout << "Progress: " << i * 100 / this->populationSize << " % (" << i << ") - " << this->fitnessValues[i] << " - ";
+        cout << " - Progress: " << i * 100 / this->populationSize << "% (" << i << ")\t- ";
+
+        if (this->fitnessValues[i] > bestFitness)
+        {
+            bestFitness = this->fitnessValues[i];
+
+            cout << "\033[1;32m" << this->fitnessValues[i] << "\033[0m\t- ";
+        }
+        else
+        {
+            cout << this->fitnessValues[i] << "\t- ";
+        }
 
         for (size_t j = 0; j < currentFitness.size(); ++j)
             cout << currentFitness[j] << " ";
