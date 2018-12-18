@@ -77,22 +77,39 @@ void GeneticNN::computeFitness()
         vector<int> currentFitness = this->fitness(this->population[i]);
 
         // Modify fitness function HERE!
-        
-        if (this->fitnessValues[i] == currentFitness[0])
-        {
-            this->fitnessValues[i] = currentFitness[0] / 2;
-        }
-        else
-        {
-            this->fitnessValues[i] = currentFitness[0];   // Score -> It improves in great steps
-        }
 
         //this->fitnessValues[i] = currentFitness[0];   // Score -> It improves in great steps
         //this->fitnessValues[i] = currentFitness[0] * currentFitness[0];   // Score * Score -> 
         //this->fitnessValues[i] = currentFitness[0] + currentFitness[1]; // Score + Steps -> It improves but when it detects a pattern that improves only steps, it doesn't improve the score
         //this->fitnessValues[i] = currentFitness[0] * 10 + currentFitness[1]; // Score * 10 + Steps -> Same that Score + Steps
 
-        cout << "Progress: " << i*100/this->populationSize << "% (" << i << ") - ";
+        switch(this->currentGame)
+        {
+            case Game::breakout:
+                this->fitnessValues[i] = currentFitness[0];   // Score
+                break;
+            case Game::boxing:
+                // TODO
+                this->fitnessValues[i] = -666;
+                break;
+            case Game::demonAttack:
+                //this->fitnessValues[i] = currentFitness[0] * ((currentFitness[2] / 100.0) * (currentFitness[3] / 100.0));
+                //this->fitnessValues[i] = ((double)(currentFitness[0] * currentFitness[0]) / (500.0 * 500.0)) * ((currentFitness[2] / 1000.0) * (currentFitness[3] / 1000.0));
+
+                //this->fitnessValues[i] = ((double)(currentFitness[0] * currentFitness[0]) / (500.0 * 500.0)) * ((currentFitness[2] / 1000) * (currentFitness[3] / 1000)) * ((currentFitness[0] / 1000) + 1);
+
+                this->fitnessValues[i] = (currentFitness[0] / 10) * ((currentFitness[2] / 1000) * (currentFitness[3] / 1000));
+                break;
+            case Game::starGunner:
+                // TODO
+                this->fitnessValues[i] = -666;
+                break;
+            default:
+                cerr << "ERROR: unknown game." << endl;
+                return;
+        }
+
+        cout << "Progress: " << i * 100 / this->populationSize << " % (" << i << ") - " << this->fitnessValues[i] << " - ";
 
         for (size_t j = 0; j < currentFitness.size(); ++j)
             cout << currentFitness[j] << " ";
