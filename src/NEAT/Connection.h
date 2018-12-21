@@ -7,15 +7,20 @@ class Connection {
 		unsigned outputNode;
 		double weight;
 		bool expressed;
+		bool recurrent;
 		unsigned innovation;
+		unsigned static nextInnovation;
 
 	public:
-		Connection(unsigned, unsigned, double, bool, unsigned);
+		Connection(unsigned, unsigned, double, bool, bool, unsigned);
 		unsigned getInputId() { return this->inputNode; }
 		unsigned getOutputId() { return this->outputNode; }
+		unsigned getInnovation() { return this->innovation; }
+		unsigned static getNextInnovation() { return nextInnovation++; }
 		double getWeight() { return this->weight; }
-		void disableConnection();
-
+		void setWeight(double weight) { this->weight = weight; }
+		void disableConnection() { this->expressed = false;};
+		
 };
 
 #endif _CONNECTION_

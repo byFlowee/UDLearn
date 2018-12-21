@@ -5,7 +5,7 @@ enum Layer {
 	Input,
 	Hidden,
 	Output
-};
+};	
 
 class Node {
 	private:
