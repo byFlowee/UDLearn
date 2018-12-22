@@ -4,65 +4,99 @@
 
 bool operator==(const DNA &d1, const DNA &d2)
 {
-    return (UtilG::compareDouble(d1.mutation, d2.mutation) && 
+    return (UtilG::compareDouble(d1.mutationRate, d2.mutationRate) && 
+            UtilG::compareDouble(d1.crossoverRate, d2.crossoverRate) && 
             UtilG::compareDouble(d1.genes, d2.genes));
 }
 
 DNA& DNA::operator=(const DNA& dna)
 {
-    this->mutation = dna.mutation;
+    this->mutationRate = dna.mutationRate;
+    this->crossoverRate = dna.crossoverRate;
     this->genes = dna.genes;
 
     return *this;
 }
 
-DNA::DNA() :
-    mutation(0.01),
-    genes(Mat(1, 1, 1.0))
+DNA::DNA(int rows, int cols) :
+    mutationRate(0.01),
+    crossoverRate(0.7),
+    genes(Mat(rows, cols, 1.0))
 {
     // Default genes: [1.0]
 }
 
-DNA::DNA(const Mat& m, double mutation) :
-    mutation(mutation),
+DNA::DNA(const Mat& m, double mutationRate, double crossoverRate) :
+    mutationRate(mutationRate),
+    crossoverRate(crossoverRate),
     genes(m)
 {
 
 }
 
-void DNA::setMutation(double mutation)
+void DNA::setMutationRate(double mutationRate)
 {
-    this->mutation = mutation;
+    this->mutationRate = mutationRate;
+}
+
+void DNA::setCrossoverRate(double crossoverRate)
+{
+    this->crossoverRate = crossoverRate;
 }
 
 /**
- * Take care, this->mutation is the mutation
+ * Take care, this->mutationRate is the mutation
  *  that is going to get the crossover, not
  *  a.mutation
  */
-DNA DNA::crossover(const DNA &a)
+DNA DNA::crossover(const DNA &a, int ownFitness, int aFitness)
 {
-    DNA res(a.genes, this->mutation);
+    //DNA res(a.genes, this->mutationRate);
+    DNA res(a.genes.rows(), a.genes.cols());
 
-    if (this->genes.rows() == a.genes.rows() &&
-        this->genes.cols() == a.genes.cols())
+    double random = UtilG::getRandomDouble(0.0, 1.0);
+
+    if (random <= this->crossoverRate)
     {
-        for (int row = 0; row < this->genes.rows(); row++)
+        res.setMutationRate(this->mutationRate);
+        res.setCrossoverRate(this->crossoverRate);
+
+        if (this->genes.rows() == a.genes.rows() &&
+            this->genes.cols() == a.genes.cols())
         {
-            for (int col = 0; col < this->genes.cols(); col++)
+            for (int row = 0; row < this->genes.rows(); row++)
             {
-                if (row + col % 2 == 0)
+                for (int col = 0; col < this->genes.cols(); col++)
                 {
-                    res.genes.set(row, col, this->genes.get(row, col));
+                    /*
+                    if (row + col % 2 == 0)
+                    {
+                        res.genes.set(row, col, this->genes.get(row, col));
+                    }
+                    */
+
+                // Average
+                res.genes.set(row, col, (this->genes.get(row, col) + a.genes.get(row, col)) / 2.0);
                 }
             }
+        }
+    }
+    else
+    {
+        if (ownFitness > aFitness)
+        {
+            res = *this;
+        }
+        else
+        {
+            res = a;
         }
     }
 
     return res;
 }
 
-void DNA::mutate()
+void DNA::mutate(size_t factor)
 {
     for (int row = 0; row < this->genes.rows(); row++)
     {
@@ -70,9 +104,9 @@ void DNA::mutate()
         {
             double random = UtilG::getRandomDouble(0.0, 1.0);
 
-            if (random <= this->mutation)
+            if (random <= this->mutationRate)
 			{
-				this->genes.set(row, col, UtilG::getRandomDouble(0.0, 1.0));
+				this->genes.set(row, col, UtilG::getRandomDouble((double)factor * -1.0, (double)factor * 1.0));
 			}
         }
     }
@@ -86,7 +120,7 @@ void DNA::mutatePermutation()
         {
             double random = UtilG::getRandomDouble(0.0, 1.0);
 
-            if (random <= this->mutation)
+            if (random <= this->mutationRate)
 			{
                 int randomRow1 = rand() % this->genes.rows();
                 int randomCol1 = rand() % this->genes.cols();

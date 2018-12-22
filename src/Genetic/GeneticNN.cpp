@@ -7,15 +7,17 @@
 #include "../NeuralNetwork/neuralNetwork.h"
 #include "Player.h"
 
-GeneticNN::GeneticNN(const vector<int> &topology, Game game, unsigned population) :
+GeneticNN::GeneticNN(const vector<int> &topology, Game game, size_t population, size_t bestToAdd, size_t weightsFactor) :
     population(population),
-    fitnessValues(population)
+    fitnessValues(population),
+    topology(topology),
+    DNASize(0),
+    currentGame(game),
+    bestToAdd(bestToAdd),
+    weightsFactor(weightsFactor)
 {
     this->currentGeneration = 0;
     this->populationSize = population;
-    this->topology = topology;
-    this->DNASize = 0;
-    this->currentGame = game;
 
     for (size_t i = 0; i < topology.size() - 1; i++)
     {
@@ -30,7 +32,7 @@ void GeneticNN::createPopulation()
     
     for (size_t i = 0; i < this->populationSize; i++)
     {
-        this->population[i] = DNA(UtilG::getRandomMatrix(1, this->DNASize));
+        this->population[i] = DNA(UtilG::getRandomMatrix(1, this->DNASize, this->weightsFactor));
     }
 }
 
@@ -65,11 +67,19 @@ vector<int> GeneticNN::fitness(const DNA &dna)
     return res;
 }
 
-void GeneticNN::setMutation(double mutation)
+void GeneticNN::setMutationRate(double mutationRate)
 {
     for (size_t i = 0; i < this->population.size(); i++)
     {
-        this->population[i].setMutation(mutation);
+        this->population[i].setMutationRate(mutationRate);
+    }
+}
+
+void GeneticNN::setCrossoverRate(double crossoverRate)
+{
+    for (size_t i = 0; i < this->population.size(); i++)
+    {
+        this->population[i].setCrossoverRate(crossoverRate);
     }
 }
 
@@ -139,10 +149,13 @@ void GeneticNN::computeFitness()
 
 DNA GeneticNN::crossover() const
 {
-    DNA p1 = this->population[this->getRandomMostLikelyGeneIndex()];
-    DNA p2 = this->population[this->getRandomMostLikelyGeneIndex()];
+    size_t index1 = this->getRandomMostLikelyGeneIndex();
+    size_t index2 = this->getRandomMostLikelyGeneIndex();
+
+    DNA p1 = this->population[index1];
+    DNA p2 = this->population[index2];
     
-    return p1.crossover(p2);
+    return p1.crossover(p2, this->fitnessValues[index1], this->fitnessValues[index2]);
 }
 
 DNA GeneticNN::getCurrentBestDNA() const
@@ -185,11 +198,19 @@ void GeneticNN::nextGeneration()
     //  due to the fact that we need the original population to get the new population.
     vector<DNA> newPopulation(this->populationSize);
 
-    for (unsigned i = 0; i < this->populationSize; i++)
+    // Elitism.
+    DNA bestDNA = getCurrentBestDNA();
+    
+    for (size_t i = 0; i < min(this->bestToAdd, this->populationSize); i++)
+    {
+        newPopulation[i] = bestDNA;
+    }
+
+    for (size_t i = this->bestToAdd; i < this->populationSize; i++)
     {
         DNA newDNA = this->crossover();
 
-        newDNA.mutate();
+        newDNA.mutate(this->weightsFactor);
         newDNA.mutatePermutation();
 
         newPopulation[i] = newDNA;
@@ -199,7 +220,7 @@ void GeneticNN::nextGeneration()
     this->currentGeneration++;
 }
 
-unsigned GeneticNN::getRandomMostLikelyGeneIndex() const
+size_t GeneticNN::getRandomMostLikelyGeneIndex() const
 {
     int sum = 0;
 
@@ -227,7 +248,7 @@ unsigned GeneticNN::getRandomMostLikelyGeneIndex() const
     return index;
 }
 
-unsigned GeneticNN::getCurrentGeneration() const
+size_t GeneticNN::getCurrentGeneration() const
 {
     return this->currentGeneration;
 }

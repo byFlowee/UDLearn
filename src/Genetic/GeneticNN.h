@@ -15,27 +15,31 @@ enum Game
 
 class GeneticNN {
     private:
-        unsigned populationSize;
+        size_t populationSize;
         vector<DNA> population;
         vector<int> fitnessValues;
         vector<int> topology;
-        unsigned currentGeneration;
-        unsigned DNASize;
+        size_t currentGeneration;
+        size_t DNASize;
         Game currentGame;
+        // Elitism.
+        size_t bestToAdd;
+        size_t weightsFactor;
 
         vector<int> fitness(const DNA&);
-        unsigned getRandomMostLikelyGeneIndex() const;
+        size_t getRandomMostLikelyGeneIndex() const;
 
     public:
-        GeneticNN(const vector<int> &topology, Game, unsigned = 50);
-        void setMutation(double);
+        GeneticNN(const vector<int> &topology, Game, size_t = 50, size_t = 0, size_t = 1);
+        void setMutationRate(double);
+        void setCrossoverRate(double);
         void createPopulation();
         void computeFitness();
         DNA crossover() const;
         DNA getCurrentBestDNA() const;
         int getCurrentBestDNAFitness() const;
         void nextGeneration();
-        unsigned getCurrentGeneration() const;
+        size_t getCurrentGeneration() const;
         void setCurrentGame(Game);
 
 };

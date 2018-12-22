@@ -3,13 +3,13 @@
 
 #include "UtilG.h"
 
-Mat UtilG::getRandomMatrix(size_t rows, size_t cols)
+Mat UtilG::getRandomMatrix(size_t rows, size_t cols, size_t factor)
 {   
     Mat a(rows, cols);
 
     for (size_t r = 0; r < rows; ++r) {
         for (size_t c = 0; c < cols; ++c) {
-            a.set(r, c, UtilG::getRandomDouble(-1.0, 1.0));                        
+            a.set(r, c, UtilG::getRandomDouble(-1.0 * (double)factor, 1.0 * (double)factor));
         }    
     }
 

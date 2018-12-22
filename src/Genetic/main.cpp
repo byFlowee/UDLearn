@@ -176,9 +176,9 @@ void DNACrossoverAndMutation()
 
     cout << endl;
 
-    Mat crossover1 = a.crossover(b).getGenes();
-    Mat crossover2 = b.crossover(a).getGenes();
-    Mat crossover3 = b.crossover(b).getGenes();
+    Mat crossover1 = a.crossover(b, 0, 0).getGenes();
+    Mat crossover2 = b.crossover(a, 0, 0).getGenes();
+    Mat crossover3 = b.crossover(b, 0, 0).getGenes();
 
     cout << "Crossover a->b:" << endl;
     crossover1.print();
@@ -218,11 +218,11 @@ void DNACrossoverAndMutation()
     cout << endl;
 }
 
-NeuralNetwork play(const vector<int> &topology, Game game, int maxGenerations, int population, double mutation)
+NeuralNetwork play(const vector<int> &topology, Game game, int maxGenerations, int population, double mutationRate, size_t elitism, size_t weightsFactor)
 {
     int score = 0;
     int steps = 0;
-    GeneticNN geneticAlg(topology, game, population);
+    GeneticNN geneticAlg(topology, game, population, elitism, weightsFactor);
     NeuralNetwork nn(topology);
     vector<vector<Mat>> weightsAndBias;
     DNA best;
@@ -232,7 +232,7 @@ NeuralNetwork play(const vector<int> &topology, Game game, int maxGenerations, i
     bool improvedFitness = true;
 
     geneticAlg.createPopulation();
-    geneticAlg.setMutation(mutation);
+    geneticAlg.setMutationRate(mutationRate);
 
     for (int i = 0; i < maxGenerations; i++)
 	{
@@ -329,7 +329,7 @@ NeuralNetwork play(const vector<int> &topology, Game game, int maxGenerations, i
             cout << "MAX SCORE IN BREAKOUT: 864!" << endl;
             break;
         }
-        
+
         geneticAlg.nextGeneration();
     }
 
@@ -397,9 +397,6 @@ int main (int argc, char **argv)
 
     vector<int> topologyBreakout = {4, 2};
     vector<int> topologyBoxing = {};
-    //vector<int> topologyDemonAttack = {128, 3};
-    //vector<int> topologyDemonAttack = {133, 3};
-    //vector<int> topologyDemonAttack = {6, 4, 3};
     vector<int> topologyDemonAttack = {128, 3};
     vector<int> topologyStarGunner = {};
 
@@ -408,11 +405,14 @@ int main (int argc, char **argv)
     int devNull = open("/dev/null", O_WRONLY);
     bool error = false;
     dup2(devNull, STDERR_FILENO);
-    double mutation = 0.1;
+
+    double mutationRate = 0.1;
+    size_t elitism = 1;
+    size_t weightsFactor = 2;
 
     if (argc == 5)
     {
-        mutation = atof(argv[4]);
+        mutationRate = atof(argv[4]);
     }
 
     Game game = (Game)atoi(argv[1]);
@@ -420,16 +420,17 @@ int main (int argc, char **argv)
     switch (game)
     {
         case Game::breakout:
-            play(topologyBreakout, game, atoi(argv[2]), atoi(argv[3]), mutation);
+            //play(topologyBreakout, game, atoi(argv[2]), atoi(argv[3]), mutationRate, elitism, weightsFactor);
+            play(topologyBreakout, game, atoi(argv[2]), atoi(argv[3]), mutationRate, 1, 1);
             break;
         case Game::boxing:
-            play(topologyBoxing, game, atoi(argv[2]), atoi(argv[3]), mutation);
+            play(topologyBoxing, game, atoi(argv[2]), atoi(argv[3]), mutationRate, elitism, weightsFactor);
             break;
         case Game::demonAttack:
-            play(topologyDemonAttack, game, atoi(argv[2]), atoi(argv[3]), mutation);
+            play(topologyDemonAttack, game, atoi(argv[2]), atoi(argv[3]), mutationRate, elitism, weightsFactor);
             break;
         case Game::starGunner:
-            play(topologyStarGunner, game, atoi(argv[2]), atoi(argv[3]), mutation);
+            play(topologyStarGunner, game, atoi(argv[2]), atoi(argv[3]), mutationRate, elitism, weightsFactor);
             break;
         default:
             error = true;

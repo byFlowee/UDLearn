@@ -143,7 +143,7 @@ vector<int> Player::playDemonAttack(NeuralNetwork &nn, bool displayScreen)
         Mat inputs(1, 128);
         Mat outputs(1, 3);
 
-        for (unsigned i = 0; i < 128; ++i)
+        for (size_t i = 0; i < 128; ++i)
         {
             inputs.set(0, i, (double)alei.getRAM().get(i) / 255);                                                            
         }

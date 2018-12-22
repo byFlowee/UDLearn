@@ -9,7 +9,7 @@
 
 class UtilG {
     public:
-        static Mat getRandomMatrix(size_t, size_t);
+        static Mat getRandomMatrix(size_t, size_t, size_t = 1);
         static double getRandomDouble(double min, double max) { return min + ((double)rand() / RAND_MAX) * (max - min); };
         static Mat flattenMatices(const vector<Mat>&);
         static Mat unionOfFlattenedMatrices(const Mat&, const Mat&);
