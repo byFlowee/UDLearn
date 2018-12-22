@@ -26,6 +26,8 @@ GeneticNN::GeneticNN(const vector<int> &topology, Game game, unsigned population
 
 void GeneticNN::createPopulation()
 {
+    this->currentGeneration = 0;
+    
     for (size_t i = 0; i < this->populationSize; i++)
     {
         this->population[i] = DNA(UtilG::getRandomMatrix(1, this->DNASize));
@@ -98,10 +100,13 @@ void GeneticNN::computeFitness()
             case Game::demonAttack:
                 //this->fitnessValues[i] = currentFitness[0] * ((currentFitness[2] / 100.0) * (currentFitness[3] / 100.0));
                 //this->fitnessValues[i] = ((double)(currentFitness[0] * currentFitness[0]) / (500.0 * 500.0)) * ((currentFitness[2] / 1000.0) * (currentFitness[3] / 1000.0));
-
                 //this->fitnessValues[i] = ((double)(currentFitness[0] * currentFitness[0]) / (500.0 * 500.0)) * ((currentFitness[2] / 1000) * (currentFitness[3] / 1000)) * ((currentFitness[0] / 1000) + 1);
+                //this->fitnessValues[i] = (currentFitness[0] / 10) * ((currentFitness[2] / 1000) * (currentFitness[3] / 1000));
 
-                this->fitnessValues[i] = (currentFitness[0] / 10) * ((currentFitness[2] / 1000) * (currentFitness[3] / 1000));
+                //this->fitnessValues[i] = (currentFitness[0] / 10) * ((currentFitness[2] / (int)((currentFitness[1] * 500.0) / 15000.0)) * (currentFitness[3] / (int)((currentFitness[1] * 500.0) / 15000.0)) * (currentFitness[4] / (int)((currentFitness[1] * 1000.0) / 15000.0)));
+
+                this->fitnessValues[i] = (currentFitness[0] / 100) * (currentFitness[0] / 100) * ((currentFitness[2] + currentFitness[3]) / 1000) * (currentFitness[4] / 2000) * (min(currentFitness[2], currentFitness[3]) / 100);
+
                 break;
             case Game::starGunner:
                 // TODO

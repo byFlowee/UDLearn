@@ -516,8 +516,9 @@ int main(int argc, char **argv)
    }
 
    for (unsigned i = 0; i < lastRAM.size(); ++i) {
-        if(lastRAM[i].appearances > 50)
+        if(lastRAM[i].appearances > 100 && i != 61)
             cout << "[" << i << "]" << lastRAM[i].appearances << endl;
+            //cout << i << ", ";
    }
 
    std::cout << "Steps: " << step << std::endl;

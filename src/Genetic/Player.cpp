@@ -132,8 +132,9 @@ vector<int> Player::playDemonAttack(NeuralNetwork &nn, bool displayScreen)
 
     int score = 0;
     int step = 0;
-    int totalMoves = 0;
-    int totalNotMoving = 0;
+    int moveLeft = 0;
+    int moveRight = 0;
+    int notMoving = 0;
 
     for (step = 0; !alei.game_over() && step < maxSteps; ++step) 
     {   
@@ -176,15 +177,15 @@ vector<int> Player::playDemonAttack(NeuralNetwork &nn, bool displayScreen)
         switch (prediction)
         {
             case 0:
-                totalNotMoving++;
+                notMoving++;
                 reward += alei.act(PLAYER_A_FIRE);
                 break;
             case 1:
-                totalMoves++;
+                moveLeft++;
                 reward += alei.act(PLAYER_A_LEFT);
                 break;
             case 2:
-                totalMoves++;
+                moveRight++;
                 reward += alei.act(PLAYER_A_RIGHT); 
                 break;
             default:
@@ -200,8 +201,9 @@ vector<int> Player::playDemonAttack(NeuralNetwork &nn, bool displayScreen)
 
     res.push_back(score);
     res.push_back(step);
-    res.push_back(totalMoves);
-    res.push_back(totalNotMoving);
+    res.push_back(moveLeft);
+    res.push_back(moveRight);
+    res.push_back(notMoving);
 
     return res;
 }
