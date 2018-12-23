@@ -27,10 +27,10 @@
 26: Igual que 25
 27: *
 28: *
-29: *
-30: *
+29: Animacion del enemigo
+30: Animacion del enemigo
 31: Coordenada X del enemigo (en alguna otra variable debe de haber un offset)
-32: *
+32: Offset que se le suma a la coordenada X del enemigo
 33: Coordenada X de la bala del enemigo
 34: Coordenada Y de la bala del enemigo
 35: *
@@ -70,11 +70,11 @@
 69: *
 70: Corresponde a la animacion de cuando el jugador muere y vuelve a reaparecer. Conforme aumenta el valor, se ejecuta un frame de la animacion
 71: Coordenada Y del objetivo
-72: *
-73: *
+72: Coordenada Y del objetivo 2 (cuando son 2 enemigos). Parece aparecer a los 1100/1400 puntos
+73: Coordenada Y del objetivo 3 (cuando son 3 enemigos). Parece aparecer a los 5900 puntos
 74: Coordenada X del objetivo
-75: *
-76: *
+75: Coordenada X del objetivo 2 (cuando son 2 enemigos). Parece aparecer a los 1100/1400 puntos
+76: Coordenada X del objetivo 3 (cuando son 3 enemigos). Parece aparecer a los 5900 puntos
 77: *
 78: *
 79: *
@@ -87,25 +87,25 @@
 86: *
 87: *
 88: *
-89: Parece que en cierto rango de valores, activa la animacion de cuando destruimos el objetivo
-90: *
-91: *
+89: Parece que en cierto rango de valores, activa la animacion de cuando destruimos el objetivo. Cuando se congela este valor, el enemigo no muere y podemos dispararle y acumular muchos puntos :D
+90: Igual que 89 pero con el objetivo 2
+91: Igual que 89 pero con el objetivo 3
 92: *
 93: *
 94: *
 95: *
 96: *
 97: *
-98: *
-99: *
-100: *
+98: Parece ser la posicion donde el objetivo 1 va a aparecer, ya sea por primera vez o despues de morir
+99: Igual que 98 pero para el objetivo 2
+100: Igual que 98 pero para el objetivo 3
 101: *
 102: *
 103: *
 104: *
 105: *
 106: *
-107: *
+107: Cuando los objetivos estan apareciendo y desapareciendo para evitar que el jugador los vea, este valor va cambiando para indicar cual de los objetivos se muestra en un valor concreto. Posible formula: visibilidad = !(RAM[107] % cantidad_objetivos - id). Ejemplo con 3 objetivos (maximo): visibilidad = !(RAM[107] % 3 - id): si objetivo_id = 0 -> !(3 % 3 - 0) = !(0) = 1 = true | si objetivo_id = 1 -> !(3 % 3 - 1) = !(-1) = 0 = false | si objetivo_id = 2 -> !(3 % 3 - 2) = !(-2) = 0 = false
 108: *
 109: *
 110: *
