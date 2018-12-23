@@ -1,0 +1,130 @@
+0: Parece activar la animacion para convertir a los enemigos en moscas. Segun el valor, la animacion se aplica al enemigo mas lejano, al de en medio o al mas cercano
+1: Modifica el contador de la puntuacion (valor * 10000)
+2: *
+3: Modifica el contador de la puntuacion (valor * 100)
+4: *
+5: Modifica el contador de la puntuacion (valor * 1)
+6: *
+7: *
+8: *
+9: *
+10: *
+11: *
+12: *
+13: Al modificar este valor, el enemigo mas lejano al jugador, modifica su coordenada X
+14: Igual que 13 pero con el enemigo de en medio
+15: Igual que 13 pero con el enemigo mas cercano al jugador
+16: Coordenada X del jugador
+17: Modifica la coordenada X del enemigo mas lejano, pero solo parece moverse medio sprite, concretamente la parte derecha (sera para implementar el movimiento de las moscas?)
+18: Igual que 17 pero con el enemigo de en medio
+19: Igual que 17 pero con el enemigo mas cercano al jugador
+20: Coordenada X de las balas del enemigo
+21: Parece que cuando tiene cierto valor, el jugador dispara (parece ser el valor 249)
+22: Coordenada x de las balas del jugador
+23: *
+24: Al cambiar el valor, el enemigo mas cercano parece desaparecer en cierto rango de valores y aparece en otro cierto de rango de valores (quiza se utiliza para saber cuando el enemigo ha muerto?)
+25: Al cambiar el valor, la animacion de muerte del jugador se ejecuta. Rompe el juego
+26: *
+27: *
+28: Al cambiar el valor, los enemigos desaparecen y la animacion del disparo del jugador parece que "intenta" ejecutarse sin exito. Rompe el juego
+29: Al cambiar el valor, el sprite del enemigo mas cercano se pixela (cuando llega a cierto valor, las moscas aparecen)
+30: Igual que 29 pero con el enemigo de en medio
+31: Igual que 29 pero con el enemigo mas cercano
+32: Parece activar la animacion para convertir un enemigo en 2 moscas del enemigo mas lejano
+33: Igual que 29
+34: Igual que 30
+35: Igual que 31
+36: Igual que 32
+37: Igual que 32
+38: Parece activar la animacion de las balas cuando estan en la misma coordenada X que el jugador (quiza se utiliza para borrar las balas cuando llegan a la misma coordenada X que el jugador)
+39: Igual que 38 pero con mas altura
+40: Igual que 39 pero con mas altura
+41: Igual que 40 pero con mas altura
+42: Igual que 41 pero con mas altura
+43: Igual que 42 pero con mas altura
+44: Igual que 43 pero con mas altura
+45: Igual que 44 pero con mas altura (las balas ya llegan al enemigo)
+46: Igual que 45 pero con mas altura (las balas ya llegan al enemigo y la animacion del enemigo tapa las balas)
+47: Parece activar la animacion de cuando se mata a un enemigo, concretamente al mas lejano
+48: Igual que 47 pero con el enemigo de en medio
+49: Igual que 48 pero con el enemigo mas cercano
+50: Segun el valor el enemigo mas cercano desaparece y, ademas, segun el valor hay un sonido u otro
+51: *
+52: Parece que cuando mas cambia este valor, mas frecuente es que dispare el enemigo. Concretamente, al estar cambiandolo todo el rato, el enemigo no paraba de disparar
+53: WTF? Entra en una pantalla donde el marcador de puntos cambia a la frase "MAGIC" y el jugador se mueve solo y dispara solo. El jugador juega bastante mal, ya que parece que las balas le atraigan. Una vez se ha cambiado este valor, no se puede volver al juego normal
+54: Activa la animacion para convertir en mosca al jugador mas lejano y las moscas se mueven. Una vez se cambia este valor, las moscas se quedan
+55: Igual que 54 pero con el enemigo de en medio
+56: Igual que 54 pero con el enemigo mas cercano
+57: *
+58: *
+59: *
+60: Cambia el color del fondo
+61: *
+62: *
+63: *
+64: *
+65: *
+66: *
+67: *
+68: *
+69: Parece ser un offset en la coordenada Y del enemigo mas lejano. Cuando se reinicia, se coloca a la misma altura que el enemigo mas cercano
+70: Parece ser un offset en la coordenada Y de todos los enemigos. Cuando se llega a cierto valor, el juego se rompe
+71: Parece ser un offset en la coordenada Y del enemigo mas cercano
+72: *
+73: *
+74: *
+75: *
+76: Segun el valor, congela al enemigo mas cercano y cambia de alguna manera algun digito del contador de puntos
+77: Cambia el color de los enemigos
+78: Cambia el color de los enemigos
+79: *
+80: *
+81: Cambia el color del jugador, el contador de puntos y la barra donde estan situadas las vidas
+82: *
+83: *
+84: Cambia el color de las vidas
+85: *
+86: *
+87: *
+88: *
+89: *
+90: *
+91: *
+92: *
+93: *
+94: Pixela una de las posiciones reservadas para el contador de puntos (parece ser el del numero mas a la izquierda)
+95: *
+96: Igual que 94 pero para la siguiente posicion
+97: *
+98: Igual que 96 pero para la siguiente posicion
+99: *
+100: Igual que 98 pero para la siguiente posicion
+101: *
+102: Igual que 100 pero para la siguiente posicion
+203: *
+104: Igual que 102 pero para la siguiente posicion (es el numero posicionado mas a la derecha)
+105: *
+106: *
+107: *
+108: Parece duplicar la animacion de las balas del enemigo
+109: Al cambiar el valor pasan cosas raras: el marcador empieza a cambiar, el jugador empieza a morir, las vidas parecen variar, etc.
+110: *
+111: *
+112: *
+113: El jugador empieza a moverse y a disparar
+114: Igual que 109
+115: *
+116: Cambia el sonido y el color de las vidas
+117: *
+118: *
+119: Cambia el color de la barra donde estan situadas las vidas
+120: *
+121: *
+122: *
+123: *
+124: *
+125: *
+126: *
+127: *
+
+*: Parece no tener ningun resultado al cambiar el valor

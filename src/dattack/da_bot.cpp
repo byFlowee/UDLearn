@@ -116,6 +116,105 @@ void checkKeys()
     }
 }
 
+int currentValueOfRAM = 0;
+int stepsInitialization = 1;
+
+void checkAllValuesOfRAM()
+{
+    if (currentValueOfRAM >= 128)
+    {
+        currentValueOfRAM = 0;
+    }
+
+    byte_t *byte = alei.getRAM().array() + sizeof(byte_t) * currentValueOfRAM;
+    string next = "";
+    int newValue = alei.getRAM().get(currentValueOfRAM);
+    int steps = stepsInitialization;
+    int oldValue = alei.getRAM().get(currentValueOfRAM);;
+    bool skip = false;
+    bool changeValue = true;
+
+    stepsInitialization = 1;
+
+    do
+    {
+        if (newValue >= 256)
+        {
+            newValue = 0;
+        }
+
+        cout << endl;
+        cout << "RAM position = " << currentValueOfRAM << endl;
+        cout << "RAM(" << currentValueOfRAM << ") = " << (int)*byte << endl;
+
+        if (changeValue)
+        {
+            *byte = (byte_t)newValue;
+            alei.processBackRAM();
+        }
+        
+        alei.act(PLAYER_A_NOOP);
+
+        cout << "New value of RAM(" << currentValueOfRAM << ") = " << (int)alei.getRAM().get(currentValueOfRAM) << endl;
+
+        --steps;
+
+        if (steps <= 0)
+        {
+            skip = false;
+            changeValue = true;
+
+            cout << endl;
+            cout << "Write \"next\", \"exit\", \"reset\", \"skip<NUMBER>\" or \"goto<NUMBER>\" to exit or a number of steps: ";
+            cin >> next;
+
+            if (next.substr(0, 4) != "next" && next != "exit" && next.substr(0, 4) != "goto" && next != "reset" && next.substr(0, 4) != "skip")
+            {
+                steps = atoi(next.c_str());
+            }
+            else if (next.substr(0, 4) == "next" && next.size() > 4)
+            {
+                stepsInitialization = atoi(next.substr(4, next.size()).c_str());
+            }
+            else if (next.substr(0, 4) == "skip" && next.size() > 4)
+            {
+                steps = atoi(next.substr(4, next.size()).c_str());
+                skip = true;
+            }
+            else if (next == "reset")
+            {
+                *byte = (byte_t)oldValue;
+                skip = true;
+                changeValue = false;
+                stepsInitialization = 1;
+                newValue = oldValue;
+                alei.processBackRAM();
+            }
+        }
+
+        if (!skip)
+        {
+            newValue++;
+        }
+    }
+    while (next.substr(0, 4) != "next" && next != "exit" && next.substr(0, 4) != "goto");
+
+    if (next == "exit")
+    {
+        exit(0);
+    }
+    else if (next.substr(0, 4) == "goto")
+    {
+        currentValueOfRAM = atoi(next.substr(4, next.size()).c_str()) - 1;
+    }
+
+    *byte = (byte_t)oldValue;
+    alei.processBackRAM();
+    alei.act(PLAYER_A_NOOP);
+
+    currentValueOfRAM++;
+}
+
 float manualMode()
 {
     Uint8* keystate = SDL_GetKeyState(NULL);
@@ -135,6 +234,8 @@ float manualMode()
     {
         reward += alei.act(PLAYER_A_RIGHT);
     }
+
+    checkAllValuesOfRAM();
 
     return (reward + alei.act(PLAYER_A_NOOP));
 }
@@ -213,9 +314,9 @@ int main(int argc, char **argv)
     const bool display_media(argc >= 3 ? atoi(argv[2])==1 : false);
     const bool printRam(argc == 4 ? atoi(argv[3])==1 : false);
 
-    DataLoader d("../dattack/demon_attack.csv", topology);
-    d.trainJNet(topology.front(),topology.back(),epochs);
-    cout << "Training completed, starting game..." << endl;
+    //DataLoader d("../dattack/demon_attack.csv", topology);
+    //d.trainJNet(topology.front(),topology.back(),epochs);
+    //cout << "Training completed, starting game..." << endl;
 
     // Init rand seed
     srand(time(NULL));
@@ -249,7 +350,8 @@ int main(int argc, char **argv)
         // **********************************************
 
         // Total reward summation
-        totalReward += NN(d);
+        //totalReward += NN(d);
+        totalReward += manualMode();
    }
 
    std::cout << "Steps: " << step << std::endl;
