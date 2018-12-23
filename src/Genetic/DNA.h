@@ -22,7 +22,7 @@ class DNA {
         DNA(const Mat&, double = 0.01, double = 0.7);
         void setMutationRate(double);
         void setCrossoverRate(double);
-        DNA crossover(const DNA&, int, int);
+        DNA crossover(const DNA&, double, double);
         void mutate(size_t = 1);
         void mutatePermutation();
         Mat getGenes() const;

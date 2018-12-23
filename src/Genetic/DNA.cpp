@@ -49,7 +49,7 @@ void DNA::setCrossoverRate(double crossoverRate)
  *  that is going to get the crossover, not
  *  a.mutation
  */
-DNA DNA::crossover(const DNA &a, int ownFitness, int aFitness)
+DNA DNA::crossover(const DNA &a, double ownFitness, double aFitness)
 {
     //DNA res(a.genes, this->mutationRate);
     DNA res(a.genes.rows(), a.genes.cols());

@@ -1,0 +1,130 @@
+0: Contador
+1: Color P1
+2: Color P2
+3: Color cuadrilatero
+4: Color contador y logo ActiVision
+5: *
+6: *
+7: Hace algo con los pixeles de las letras (contador P1, 2ª cifra del tiempo y mitad izquierda del logo de ActiVision)
+8: *
+9: Hace algo con los pixeles de las letras (contador P2, 4ª cifra del tiempo y final del logo de ActiVision)
+10: *
+11: Parecido a 7
+12: *
+13: Parecido a 9
+14: *
+15: *
+16: Valor de los minutos del contador
+17: Valor de los segundos del contador
+18: Puntos de P1
+19: Puntos de P2
+20: *
+21: Sonido que se escucha
+22: *
+23: *
+24: *
+25: *
+26: *
+27: *
+28: Parece hacer que P2 tenga una especie de flickering
+29: *
+30: *
+31: *
+32: Coordenada X de P1
+33: Coordenada X de P2
+34: Coordenada Y de P1
+35: Coordenada Y de P2
+36: *
+37: Parece hacer que P1 tenga una especie de flickering mas notorio que 28
+38: *
+39: Parece hacer que P1 tenga una especia de flickering mas notorio que 37
+40: *
+41: Como 28
+42: *
+43: Como 39 pero con P2
+44: *
+45: *
+46: *
+47: *
+48: *
+49: *
+50: *
+51: *
+52: *
+53: *
+54: *
+55: La animacion de P1 parece intentar dar un punch pero no se ve bien
+56: La animacion de P1 no se ve bien
+57: La animacion de P1 parece intentar dar un punch (mano de abajo) pero no se ve bien
+58: *
+59: *
+60: *
+61: *
+62: *
+63: *
+64: *
+65: *
+66: *
+67: *
+68: *
+69: *
+70: *
+71: *
+72: *
+73: *
+74: *
+75: *
+76: *
+77: *
+78: *
+79: *
+80: *
+81: *
+82: *
+83: *
+84: *
+85: *
+86: *
+87: *
+88: *
+89: *
+90: Reinicia la partida una vez se cambia su valor y parece tener "diferentes modos" ([PATRON] 1: solo P1 tiene contador. 2: El contador de tiempo empieza en 2 minutos. 3: No hace nada). El cambiar este valor parece que rompe el juego
+91: *
+92: *
+93: *
+94: *
+95: *
+96: Parece que es un valor que se suma a la coordenada X de P2 (quiza es para intentar evitar los punchs de P1?). Cuando se varia este valor hay un rango de valores en los que P2 se aleja (casi todo el tiempo) y otro rango en el que se acerca
+97: Como 96
+98: Como 96 pero con la coordenada Y
+99: *
+100: *
+101: *
+102: *
+103: *
+104: *
+105: *
+106: *
+107: *
+108: *
+109: *
+110: *
+111: *
+112: *
+113: *
+114: *
+115: *
+116: *
+117: *
+118: *
+119: *
+120: *
+121: *
+122: *
+123: *
+124: *
+125: *
+126: *
+127: *
+
+*: Parece no tener ningun resultado al cambiar el valor

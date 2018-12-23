@@ -195,6 +195,18 @@ int getP2_Y() // refactor
    return alei.getRAM().get(35) + ((rand() % 5) - 1);
 }
 
+int getP1_score()
+{
+    return alei.getRAM().get(18);
+}
+
+int getP2_score()
+{
+    return alei.getRAM().get(19);
+}
+
+
+
 ///////////////////////////////////////////////////////////////////////////////
 /// Do Next Agent Step
 ///////////////////////////////////////////////////////////////////////////////

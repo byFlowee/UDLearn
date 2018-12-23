@@ -17,7 +17,7 @@ class GeneticNN {
     private:
         size_t populationSize;
         vector<DNA> population;
-        vector<int> fitnessValues;
+        vector<double> fitnessValues;
         vector<int> topology;
         size_t currentGeneration;
         size_t DNASize;
@@ -28,6 +28,7 @@ class GeneticNN {
 
         vector<int> fitness(const DNA&);
         size_t getRandomMostLikelyGeneIndex() const;
+        double getFitnessValue(const vector<int>&);
 
     public:
         GeneticNN(const vector<int> &topology, Game, size_t = 50, size_t = 0, size_t = 1);
@@ -35,9 +36,10 @@ class GeneticNN {
         void setCrossoverRate(double);
         void createPopulation();
         void computeFitness();
+        void fitnessSharing();
         DNA crossover() const;
         DNA getCurrentBestDNA() const;
-        int getCurrentBestDNAFitness() const;
+        double getCurrentBestDNAFitness() const;
         void nextGeneration();
         size_t getCurrentGeneration() const;
         void setCurrentGame(Game);

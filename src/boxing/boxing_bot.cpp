@@ -123,6 +123,79 @@ void checkKeys()
     }
 }
 
+int currentValueOfRAM = 0;
+int stepsInitialization = 1;
+
+void checkAllValuesOfRAM()
+{
+    if (currentValueOfRAM >= 128)
+    {
+        currentValueOfRAM = 0;
+    }
+
+    byte_t *byte = alei.getRAM().array() + sizeof(byte_t) * currentValueOfRAM;
+    string next = "";
+    int newValue = alei.getRAM().get(currentValueOfRAM);
+    int steps = stepsInitialization;
+    int oldValue = alei.getRAM().get(currentValueOfRAM);;
+
+    stepsInitialization = 1;
+
+    do
+    {
+        if (newValue >= 256)
+        {
+            newValue = 0;
+        }
+
+        cout << endl;
+        cout << "RAM position = " << currentValueOfRAM << endl;
+        cout << "RAM(" << currentValueOfRAM << ") = " << (int)*byte << endl;
+
+        *byte = (byte_t)newValue;
+        alei.processBackRAM();
+        alei.act(PLAYER_A_NOOP);
+
+        cout << "New value of RAM(" << currentValueOfRAM << ") = " << (int)alei.getRAM().get(currentValueOfRAM) << endl;
+
+        --steps;
+
+        if (steps <= 0)
+        {
+            cout << endl;
+            cout << "Write \"next\", \"exit\" or \"goto<NUMBER>\" to exit or a number of steps: ";
+            cin >> next;
+
+            if (next.substr(0, 4) != "next" && next != "exit" && next.substr(0, 4) != "goto")
+            {
+                steps = atoi(next.c_str());
+            }
+            else if (next.substr(0, 4) == "next" && next.size() > 4)
+            {
+                stepsInitialization = atoi(next.substr(4, next.size()).c_str());
+            }
+        }
+
+        newValue++;
+    }
+    while (next.substr(0, 4) != "next" && next != "exit" && next.substr(0, 4) != "goto");
+
+    if (next == "exit")
+    {
+        exit(0);
+    }
+    else if (next.substr(0, 4) == "goto")
+    {
+        currentValueOfRAM = atoi(next.substr(4, next.size()).c_str()) - 1;
+    }
+
+    *byte = (byte_t)oldValue;
+    alei.processBackRAM();
+    alei.act(PLAYER_A_NOOP);
+
+    currentValueOfRAM++;
+}
+
 float manualMode()
 {
     Uint8* keystate = SDL_GetKeyState(NULL);
@@ -149,6 +222,57 @@ float manualMode()
     {
         reward += alei.act(PLAYER_A_DOWN);
     }
+
+    if (keystate[SDLK_l])
+    {
+        string empty;
+
+        cout << endl;
+        cout << "Write something and press enter." << endl;
+        cin >> empty;
+    }
+
+    if (keystate[SDLK_k])
+    {
+        unsigned position;
+        int value;
+
+        cout << endl;
+        cout << "What RAM position to modify? ";
+        cin >> position;
+        cout << "Value? ";
+        cin >> value;
+
+        cout << "(position, value) = (" << position << ", " << value << ")" << endl;
+
+        byte_t *byte = alei.getRAM().array() + sizeof(byte_t) * position;
+
+        cout << "Current value = " << (int)*byte << endl;
+
+        *byte = (byte_t)value;
+
+        //cout << "New value = " << (int)*byte << endl;
+        cout << "New value = " << (int)alei.getRAM().get(position) << endl;
+
+        /**
+         * DANGER!!!!!!!!!!
+         * 
+         * Method implementated in local, not in official ALE!!!
+         * 
+         * Goal: update the RAM of the Atari
+         * 
+         * https://github.com/mgbellemare/Arcade-Learning-Environment/pull/247
+         */
+        alei.processBackRAM();
+
+        string empty;
+
+        cout << endl;
+        cout << "Write something and press enter." << endl;
+        cin >> empty;
+    }
+
+    //checkAllValuesOfRAM();
 
     return (reward + alei.act(PLAYER_A_NOOP));
 }
@@ -241,6 +365,9 @@ int main(int argc, char **argv)
 
     // Main loop
     int step;
+
+    // For testing purposes
+    //manualInput = true;
 
     /*
     * Bot expl: 

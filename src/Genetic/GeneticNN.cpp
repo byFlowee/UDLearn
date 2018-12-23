@@ -83,49 +83,166 @@ void GeneticNN::setCrossoverRate(double crossoverRate)
     }
 }
 
+void GeneticNN::fitnessSharing()
+{
+    const int scoreDivision = 5;
+    const int stepsDivision = 5;
+    int maxScore = numeric_limits<int>::min();
+    int maxSteps = numeric_limits<int>::min();
+    vector<int> nicheID(this->populationSize);
+    vector<int> sumSameNicheID(scoreDivision * stepsDivision, 0);
+    vector<int> allScores;
+    vector<int> allSteps;
+    double bestFitness = numeric_limits<double>::min();
+
+    cout << endl;
+    cout << "   Fitness Sharing" << endl;
+    cout << "   ---------------" << endl;
+
+    for (size_t i = 0; i < this->populationSize; i++)
+    {
+        vector<int> currentFitness = this->fitness(this->population[i]);
+        int currentScore = currentFitness[0];
+        int currentSteps = currentFitness[1];
+
+        this->fitnessValues[i] = this->getFitnessValue(currentFitness);
+
+        allScores.push_back(currentScore);
+        allSteps.push_back(currentSteps);
+
+        if (currentScore > maxScore)
+        {
+            maxScore = currentScore;
+        }
+        if (currentSteps > maxSteps)
+        {
+            maxSteps = currentSteps;
+        }
+
+        cout << " - Progress: " << i * 100 / this->populationSize << "% (" << i << ")\t- ";
+
+        if (this->fitnessValues[i] > bestFitness)
+        {
+            bestFitness = this->fitnessValues[i];
+
+            cout << "\033[1;32m" << this->fitnessValues[i] << "\033[0m\t- ";
+        }
+        else
+        {
+            cout << this->fitnessValues[i] << "\t- ";
+        }
+
+        for (size_t j = 0; j < currentFitness.size(); ++j)
+            cout << currentFitness[j] << " ";
+        
+        cout << endl;
+    }
+
+    cout << endl;
+    cout << "   Niche ID Summary" << endl;
+    cout << "   ----------------" << endl;
+
+    for (size_t i = 0; i < this->populationSize; i++)
+    {
+        int row = 0;
+
+        for (int j = 1; j <= scoreDivision; j++)
+        {
+            if ((double)(maxScore * j) / (double)scoreDivision >= (double)allScores[i])
+            {
+                row = j;
+                break;
+            }
+        }
+
+        int col = 0;
+
+        for (int j = 1; j <= stepsDivision; j++)
+        {
+            if ((double)(maxSteps * j) / (double)stepsDivision >= (double)allSteps[i])
+            {
+                col = j;
+                break;
+            }
+        }
+
+        int currentNicheID = (row - 1) * stepsDivision + col;
+
+        sumSameNicheID[currentNicheID - 1]++;
+        nicheID[i] = currentNicheID;
+
+        cout << " - [Score, Steps, Row, Col, currentNicheID] = [" << allScores[i] << ", " << allSteps[i] << ", " << row << ", " << col << ", " << currentNicheID << "]" << endl;
+    }
+
+    cout << endl;
+    cout << "   Fitness Update - Sharing Fitness" << endl;
+    cout << "   --------------------------------" << endl;
+    
+    for (size_t i = 0; i < this->populationSize; i++)
+    {
+        double fitnessSharingValue = this->fitnessValues[i] / (double)sumSameNicheID[nicheID[i] - 1];
+
+        cout << " - [Not Sharing Fitness -> Sharing Fitness] = [" << this->fitnessValues[i] << " -> " << fitnessSharingValue << "]" << endl;
+
+        this->fitnessValues[i] = fitnessSharingValue;
+    }
+
+    cout << "   -------------------" << endl;
+    cout << "   End Fitness Sharing" << endl;
+    cout << endl;
+}
+
+double GeneticNN::getFitnessValue(const vector<int> &currentFitness)
+{
+    // Modify fitness function HERE!
+
+    double fitness = 0.0;
+
+    switch(this->currentGame)
+    {
+        case Game::breakout:
+            fitness = currentFitness[0];   // Score
+            break;
+        case Game::boxing:
+            // TODO
+            fitness = -666;
+            break;
+        case Game::demonAttack:
+            //fitness = currentFitness[0] * ((currentFitness[2] / 100.0) * (currentFitness[3] / 100.0));
+            //fitness = ((double)(currentFitness[0] * currentFitness[0]) / (500.0 * 500.0)) * ((currentFitness[2] / 1000.0) * (currentFitness[3] / 1000.0));
+            //fitness = ((double)(currentFitness[0] * currentFitness[0]) / (500.0 * 500.0)) * ((currentFitness[2] / 1000) * (currentFitness[3] / 1000)) * ((currentFitness[0] / 1000) + 1);
+            //fitness = (currentFitness[0] / 10) * ((currentFitness[2] / 1000) * (currentFitness[3] / 1000));
+
+            //fitness = (currentFitness[0] / 10) * ((currentFitness[2] / (int)((currentFitness[1] * 500.0) / 15000.0)) * (currentFitness[3] / (int)((currentFitness[1] * 500.0) / 15000.0)) * (currentFitness[4] / (int)((currentFitness[1] * 1000.0) / 15000.0)));
+
+            //fitness = (currentFitness[0] / 100) * (currentFitness[0] / 100) * ((currentFitness[2] + currentFitness[3]) / 1000) * (currentFitness[4] / 2000) * (min(currentFitness[2], currentFitness[3]) / 100);
+
+            //fitness = (currentFitness[0] / 10) * (currentFitness[4] / 500) * (min(currentFitness[2], currentFitness[3]) / 100);
+
+            fitness = currentFitness[0];
+
+            break;
+        case Game::starGunner:
+            // TODO
+            fitness = -666;
+            break;
+        default:
+            //cerr << "ERROR: game unknown." << endl;   // Standard error output is redirected to /dev/null
+            cout << "ERROR: game unknown." << endl;
+    }
+
+    return fitness;
+}
+
 void GeneticNN::computeFitness()
 {
-    int bestFitness = numeric_limits<int>::min();
+    int bestFitness = numeric_limits<double>::min();
 
     for (size_t i = 0; i < this->populationSize; ++i)
     {
         vector<int> currentFitness = this->fitness(this->population[i]);
 
-        // Modify fitness function HERE!
-
-        //this->fitnessValues[i] = currentFitness[0];   // Score -> It improves in great steps
-        //this->fitnessValues[i] = currentFitness[0] * currentFitness[0];   // Score * Score -> 
-        //this->fitnessValues[i] = currentFitness[0] + currentFitness[1]; // Score + Steps -> It improves but when it detects a pattern that improves only steps, it doesn't improve the score
-        //this->fitnessValues[i] = currentFitness[0] * 10 + currentFitness[1]; // Score * 10 + Steps -> Same that Score + Steps
-
-        switch(this->currentGame)
-        {
-            case Game::breakout:
-                this->fitnessValues[i] = currentFitness[0];   // Score
-                break;
-            case Game::boxing:
-                // TODO
-                this->fitnessValues[i] = -666;
-                break;
-            case Game::demonAttack:
-                //this->fitnessValues[i] = currentFitness[0] * ((currentFitness[2] / 100.0) * (currentFitness[3] / 100.0));
-                //this->fitnessValues[i] = ((double)(currentFitness[0] * currentFitness[0]) / (500.0 * 500.0)) * ((currentFitness[2] / 1000.0) * (currentFitness[3] / 1000.0));
-                //this->fitnessValues[i] = ((double)(currentFitness[0] * currentFitness[0]) / (500.0 * 500.0)) * ((currentFitness[2] / 1000) * (currentFitness[3] / 1000)) * ((currentFitness[0] / 1000) + 1);
-                //this->fitnessValues[i] = (currentFitness[0] / 10) * ((currentFitness[2] / 1000) * (currentFitness[3] / 1000));
-
-                //this->fitnessValues[i] = (currentFitness[0] / 10) * ((currentFitness[2] / (int)((currentFitness[1] * 500.0) / 15000.0)) * (currentFitness[3] / (int)((currentFitness[1] * 500.0) / 15000.0)) * (currentFitness[4] / (int)((currentFitness[1] * 1000.0) / 15000.0)));
-
-                this->fitnessValues[i] = (currentFitness[0] / 100) * (currentFitness[0] / 100) * ((currentFitness[2] + currentFitness[3]) / 1000) * (currentFitness[4] / 2000) * (min(currentFitness[2], currentFitness[3]) / 100);
-
-                break;
-            case Game::starGunner:
-                // TODO
-                this->fitnessValues[i] = -666;
-                break;
-            default:
-                cerr << "ERROR: unknown game." << endl;
-                return;
-        }
+        this->fitnessValues[i] = this->getFitnessValue(currentFitness);
 
         cout << " - Progress: " << i * 100 / this->populationSize << "% (" << i << ")\t- ";
 
@@ -160,14 +277,14 @@ DNA GeneticNN::crossover() const
 
 DNA GeneticNN::getCurrentBestDNA() const
 {
-    int best = -1;
+    double bestFitness = numeric_limits<double>::min();
     int index = 0;
 
     for (size_t i = 0; i < this->fitnessValues.size(); i++)
     {
-        if (this->fitnessValues[i] > best)
+        if (this->fitnessValues[i] > bestFitness)
         {
-            best = this->fitnessValues[i];
+            bestFitness = this->fitnessValues[i];
             index = i;
         }
     }
@@ -175,16 +292,16 @@ DNA GeneticNN::getCurrentBestDNA() const
     return this->population[index];
 }
 
-int GeneticNN::getCurrentBestDNAFitness() const
+double GeneticNN::getCurrentBestDNAFitness() const
 {
-    int best = -1;
+    double bestFitness = numeric_limits<double>::min();
     int index = 0;
 
     for (size_t i = 0; i < this->fitnessValues.size(); i++)
     {
-        if (this->fitnessValues[i] > best)
+        if (this->fitnessValues[i] > bestFitness)
         {
-            best = this->fitnessValues[i];
+            bestFitness = this->fitnessValues[i];
             index = i;
         }
     }
@@ -222,7 +339,7 @@ void GeneticNN::nextGeneration()
 
 size_t GeneticNN::getRandomMostLikelyGeneIndex() const
 {
-    int sum = 0;
+    double sum = 0.0;
 
     for (size_t i = 0; i < this->fitnessValues.size(); i++)
     {
@@ -236,7 +353,7 @@ size_t GeneticNN::getRandomMostLikelyGeneIndex() const
 
     for (size_t i = 0; i < this->fitnessValues.size(); i++)
     {
-        random -= (double)this->fitnessValues[i] / (double)sum;     // random -= fitness normalized
+        random -= this->fitnessValues[i] / sum;     // random -= fitness normalized
 
         if (random < 0.0)
         {

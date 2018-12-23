@@ -227,7 +227,7 @@ NeuralNetwork play(const vector<int> &topology, Game game, int maxGenerations, i
     vector<vector<Mat>> weightsAndBias;
     DNA best;
     int bestScore = -1;
-    int fitnessValue = 0;
+    double fitnessValue = 0.0;
     bool improvedScore = true;
     bool improvedFitness = true;
 
@@ -236,9 +236,10 @@ NeuralNetwork play(const vector<int> &topology, Game game, int maxGenerations, i
 
     for (int i = 0; i < maxGenerations; i++)
 	{
-        geneticAlg.computeFitness();
+        //geneticAlg.computeFitness();
+        geneticAlg.fitnessSharing();
 
-        int fitnessAux = geneticAlg.getCurrentBestDNAFitness();
+        double fitnessAux = geneticAlg.getCurrentBestDNAFitness();
 
         if (fitnessAux > fitnessValue)
         {
@@ -275,7 +276,8 @@ NeuralNetwork play(const vector<int> &topology, Game game, int maxGenerations, i
                 playerResults = Player::playStarGunner(nn);           // If you don't want to see the best DNA.
                 break;
             default:
-                cerr << "ERROR: game unknown." << endl;
+                //cerr << "ERROR: game unknown." << endl;   // Standard error output is redirected to /dev/null
+                cout << "ERROR: game unknown." << endl;
         }
 
         if (playerResults[0] > score)
@@ -358,7 +360,8 @@ NeuralNetwork play(const vector<int> &topology, Game game, int maxGenerations, i
             Player::playStarGunner(nn, true);
             break;
         default:
-            cerr << "ERROR: game unknown." << endl;
+            //cerr << "ERROR: game unknown." << endl;   // Standard error output is redirected to /dev/null
+            cout << "ERROR: game unknown." << endl;
     }
 
     return nn;
@@ -404,6 +407,7 @@ int main (int argc, char **argv)
     int save_out = dup(STDERR_FILENO);
     int devNull = open("/dev/null", O_WRONLY);
     bool error = false;
+
     dup2(devNull, STDERR_FILENO);
 
     double mutationRate = 0.1;
@@ -421,7 +425,7 @@ int main (int argc, char **argv)
     {
         case Game::breakout:
             //play(topologyBreakout, game, atoi(argv[2]), atoi(argv[3]), mutationRate, elitism, weightsFactor);
-            play(topologyBreakout, game, atoi(argv[2]), atoi(argv[3]), mutationRate, 1, 1);
+            play(topologyBreakout, game, atoi(argv[2]), atoi(argv[3]), mutationRate, 1, 1); // Max. score with this configuration in ~5 generations with a population of 200.
             break;
         case Game::boxing:
             play(topologyBoxing, game, atoi(argv[2]), atoi(argv[3]), mutationRate, elitism, weightsFactor);
