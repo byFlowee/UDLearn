@@ -1,0 +1,130 @@
+0: Parece que en un cierto rango de valores, muestra la pantalla inicial y en otro rango de valores, muestra el juego
+1: *
+2: Rompe el juego
+3: Parece reiniciar el juego. Rompe el juego
+4: Modifica la 4ª cifra del contador de puntos
+5: Modifica la 5ª cifra del contador de puntos
+6: Modifica la 6ª cifra del contador de puntos
+7: Parece no hacer nada, pero al dar la vuelta, el juego se rompe
+8: *
+9: Parece no hacer nada, pero al dar la vuelta modifica el contador de puntos y rompe el juego
+10: *
+11: *
+12: *
+13: Parece modificar las coordenadas X e Y del objetivo de una manera bastante rara pero que parece tener un patron. No modifica las coordenadas de 1 en 1, sino dando saltos
+14: Coordenada Y del jugador
+15: Parece modificar el contador de puntos, pero al aumentarlo unas pocas veces, el juego se rompe
+16: *
+17: *
+18: *
+19: Le hace algo raro al sprite del jugador por la parte de arriba
+20: Igual que 19
+21: Coordenada X del jugador
+22: Cambia el color del jugador y de las vidas
+23: Igual que 19 pero con el sprite del objetivo
+24: Igual que 23
+25: Igual que 19 pero con el sprite del objetivo y por la parte de abajo
+26: Igual que 25
+27: *
+28: *
+29: *
+30: *
+31: Coordenada X del enemigo (en alguna otra variable debe de haber un offset)
+32: *
+33: Coordenada X de la bala del enemigo
+34: Coordenada Y de la bala del enemigo
+35: *
+36: *
+37: *
+38: *
+39: *
+40: Coordenada X de la bala del jugador
+41: Coordenada Y de la bala del jugador
+42: Parece hacerle algo al sprite de la barra de abajo. Si la parte de abajo es |     |, coge y hace una division en 2 |  |  | y coge la parte de la izquierda y la parte de la derecha del medio y vuelve a dividir en 4 secciones, y hace como un contador binario con 4 bits, alternando entre color negro para el 0 y color verde para el 1 (?)
+43: Modifica la 1ª linea de pixeles del sprite de las montañas (empezando desde abajo)
+44: Igual que 43 pero con la 2ª linea de pixeles
+45: Igual que 43 pero con la 3ª linea de pixeles
+46: Igual que 43 pero con la 4ª linea de pixeles
+47: Igual que 43 pero con la 5ª linea de pixeles
+48: Igual que 43 pero con la 6ª linea de pixeles
+49: Igual que 43 pero con la 7ª linea de pixeles
+50: Igual que 43 pero con la 8ª, y ultima, linea de pixeles. Tambien hace algo parecido a 42
+51: Algo parecido a 42
+52: Parecido a 43
+53: Parecido a 44
+54: Parecido a 45
+55: Parecido a 46
+56: Parecido a 47
+57: Parecido a 48
+58: Parecido a 49
+59: Parecido a 50
+60: Parecido a 51
+61: Parecido a 43
+62: Parecido a 44
+63: Parecido a 45
+64: Parecido a 46
+65: Parecido a 47
+66: Parecido a 48
+67: Parecido a 49
+68: Parecido a 50
+69: *
+70: Corresponde a la animacion de cuando el jugador muere y vuelve a reaparecer. Conforme aumenta el valor, se ejecuta un frame de la animacion
+71: Coordenada Y del objetivo
+72: *
+73: *
+74: Coordenada X del objetivo
+75: *
+76: *
+77: *
+78: *
+79: *
+80: *
+81: *
+82: *
+83: *
+84: *
+85: *
+86: *
+87: *
+88: *
+89: Parece que en cierto rango de valores, activa la animacion de cuando destruimos el objetivo
+90: *
+91: *
+92: *
+93: *
+94: *
+95: *
+96: *
+97: *
+98: *
+99: *
+100: *
+101: *
+102: *
+103: *
+104: *
+105: *
+106: *
+107: *
+108: *
+109: *
+110: *
+111: Cambia el color de las montañas
+112: *
+113: *
+114: *
+115: *
+116: *
+117: *
+118: *
+119: *
+120: *
+121: *
+122: *
+123: *
+124: *
+125: *
+126: *
+127: *
+
+*: Parece no tener ningun resultado al cambiar el valor

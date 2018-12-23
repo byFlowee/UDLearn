@@ -235,7 +235,7 @@ float manualMode()
         reward += alei.act(PLAYER_A_RIGHT);
     }
 
-    checkAllValuesOfRAM();
+    //checkAllValuesOfRAM();
 
     return (reward + alei.act(PLAYER_A_NOOP));
 }
@@ -314,9 +314,9 @@ int main(int argc, char **argv)
     const bool display_media(argc >= 3 ? atoi(argv[2])==1 : false);
     const bool printRam(argc == 4 ? atoi(argv[3])==1 : false);
 
-    //DataLoader d("../dattack/demon_attack.csv", topology);
-    //d.trainJNet(topology.front(),topology.back(),epochs);
-    //cout << "Training completed, starting game..." << endl;
+    DataLoader d("../dattack/demon_attack.csv", topology);
+    d.trainJNet(topology.front(),topology.back(),epochs);
+    cout << "Training completed, starting game..." << endl;
 
     // Init rand seed
     srand(time(NULL));
@@ -350,8 +350,8 @@ int main(int argc, char **argv)
         // **********************************************
 
         // Total reward summation
-        //totalReward += NN(d);
-        totalReward += manualMode();
+        totalReward += NN(d);
+        //totalReward += manualMode();
    }
 
    std::cout << "Steps: " << step << std::endl;

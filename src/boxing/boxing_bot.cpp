@@ -138,6 +138,8 @@ void checkAllValuesOfRAM()
     int newValue = alei.getRAM().get(currentValueOfRAM);
     int steps = stepsInitialization;
     int oldValue = alei.getRAM().get(currentValueOfRAM);;
+    bool skip = false;
+    bool changeValue = true;
 
     stepsInitialization = 1;
 
@@ -152,8 +154,12 @@ void checkAllValuesOfRAM()
         cout << "RAM position = " << currentValueOfRAM << endl;
         cout << "RAM(" << currentValueOfRAM << ") = " << (int)*byte << endl;
 
-        *byte = (byte_t)newValue;
-        alei.processBackRAM();
+        if (changeValue)
+        {
+            *byte = (byte_t)newValue;
+            alei.processBackRAM();
+        }
+        
         alei.act(PLAYER_A_NOOP);
 
         cout << "New value of RAM(" << currentValueOfRAM << ") = " << (int)alei.getRAM().get(currentValueOfRAM) << endl;
@@ -162,11 +168,14 @@ void checkAllValuesOfRAM()
 
         if (steps <= 0)
         {
+            skip = false;
+            changeValue = true;
+
             cout << endl;
-            cout << "Write \"next\", \"exit\" or \"goto<NUMBER>\" to exit or a number of steps: ";
+            cout << "Write \"next\", \"exit\", \"reset\", \"skip<NUMBER>\" or \"goto<NUMBER>\" to exit or a number of steps: ";
             cin >> next;
 
-            if (next.substr(0, 4) != "next" && next != "exit" && next.substr(0, 4) != "goto")
+            if (next.substr(0, 4) != "next" && next != "exit" && next.substr(0, 4) != "goto" && next != "reset" && next.substr(0, 4) != "skip")
             {
                 steps = atoi(next.c_str());
             }
@@ -174,9 +183,26 @@ void checkAllValuesOfRAM()
             {
                 stepsInitialization = atoi(next.substr(4, next.size()).c_str());
             }
+            else if (next.substr(0, 4) == "skip" && next.size() > 4)
+            {
+                steps = atoi(next.substr(4, next.size()).c_str());
+                skip = true;
+            }
+            else if (next == "reset")
+            {
+                *byte = (byte_t)oldValue;
+                skip = true;
+                changeValue = false;
+                stepsInitialization = 1;
+                newValue = oldValue;
+                alei.processBackRAM();
+            }
         }
 
-        newValue++;
+        if (!skip)
+        {
+            newValue++;
+        }
     }
     while (next.substr(0, 4) != "next" && next != "exit" && next.substr(0, 4) != "goto");
 

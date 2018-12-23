@@ -111,14 +111,120 @@ void checkKeys()
     }
 }
 
+int currentValueOfRAM = 0;
+int stepsInitialization = 1;
+
+void checkAllValuesOfRAM()
+{
+    if (currentValueOfRAM >= 128)
+    {
+        currentValueOfRAM = 0;
+    }
+
+    byte_t *byte = alei.getRAM().array() + sizeof(byte_t) * currentValueOfRAM;
+    string next = "";
+    int newValue = alei.getRAM().get(currentValueOfRAM);
+    int steps = stepsInitialization;
+    int oldValue = alei.getRAM().get(currentValueOfRAM);;
+    bool skip = false;
+    bool changeValue = true;
+
+    stepsInitialization = 1;
+
+    do
+    {
+        if (newValue >= 256)
+        {
+            newValue = 0;
+        }
+
+        cout << endl;
+        cout << "RAM position = " << currentValueOfRAM << endl;
+        cout << "RAM(" << currentValueOfRAM << ") = " << (int)*byte << endl;
+
+        if (changeValue)
+        {
+            *byte = (byte_t)newValue;
+            alei.processBackRAM();
+        }
+        
+        alei.act(PLAYER_A_NOOP);
+
+        cout << "New value of RAM(" << currentValueOfRAM << ") = " << (int)alei.getRAM().get(currentValueOfRAM) << endl;
+
+        --steps;
+
+        if (steps <= 0)
+        {
+            skip = false;
+            changeValue = true;
+
+            cout << endl;
+            cout << "Write \"next\", \"exit\", \"reset\", \"skip<NUMBER>\", \"shoot\" or \"goto<NUMBER>\" or a number of steps: " << endl;
+            cin >> next;
+
+            if (next.substr(0, 4) != "next" && next != "exit" && next.substr(0, 4) != "goto" && next != "shoot" && next != "reset" && next.substr(0, 4) != "skip")
+            {
+                steps = atoi(next.c_str());
+            }
+            else if (next.substr(0, 4) == "next" && next.size() > 4)
+            {
+                stepsInitialization = atoi(next.substr(4, next.size()).c_str());
+            }
+            else if (next.substr(0, 4) == "skip" && next.size() > 4)
+            {
+                steps = atoi(next.substr(4, next.size()).c_str());
+                skip = true;
+            }
+            else if (next == "reset")
+            {
+                *byte = (byte_t)oldValue;
+                skip = true;
+                changeValue = false;
+                stepsInitialization = 1;
+                newValue = oldValue;
+                alei.processBackRAM();
+            }
+            else if (next == "shoot")
+            {
+                alei.act(PLAYER_A_FIRE);
+                steps = 1;
+                skip = true;
+            }
+        }
+
+        if (!skip)
+        {
+            newValue++;
+        }
+    }
+    while (next.substr(0, 4) != "next" && next != "exit" && next.substr(0, 4) != "goto");
+
+    if (next == "exit")
+    {
+        exit(0);
+    }
+    else if (next.substr(0, 4) == "goto")
+    {
+        currentValueOfRAM = atoi(next.substr(4, next.size()).c_str()) - 1;
+    }
+
+    *byte = (byte_t)oldValue;
+    alei.processBackRAM();
+    alei.act(PLAYER_A_NOOP);
+
+    currentValueOfRAM++;
+}
+
+int counter = 300;
+
 float manualMode()
 {
     Uint8* keystate = SDL_GetKeyState(NULL);
     float reward = 0;
 
-    if(keystate[SDLK_SPACE] && alei.lives() != lastLives)
+    if(keystate[SDLK_SPACE])
     {
-        --lastLives;
         alei.act(PLAYER_A_FIRE);
     }
 
@@ -130,6 +236,43 @@ float manualMode()
     {
         reward += alei.act(PLAYER_A_RIGHT);
     }
+    if(keystate[SDLK_UP])
+    {
+        reward += alei.act(PLAYER_A_UP);
+    }
+    if(keystate[SDLK_DOWN])
+    {
+        reward += alei.act(PLAYER_A_DOWN);
+    }
+
+    /**
+     * Testing:
+     * 1:
+     *      20 steps
+     *      reset
+     * 2:
+     *      Shoot
+     *      10 steps
+     *      reset
+     * 3:
+     *      255 steps
+     * 
+     * 
+     * 20
+     * reset
+     * shoot
+     * 10
+     * reset
+     * 255
+     */
+
+    while (counter != 0)
+    {
+        counter--;
+        return (reward + alei.act(PLAYER_A_NOOP));
+    }
+
+    checkAllValuesOfRAM();
 
     return (reward + alei.act(PLAYER_A_NOOP));
 }
@@ -220,6 +363,9 @@ int main(int argc, char **argv)
     // Main loop
     alei.act(PLAYER_A_FIRE);
     int step;
+
+    // For testint purposes
+    manualInput = true;
 
     /*
     * Bot expl: This bot will try to adjust the player location based on the 
