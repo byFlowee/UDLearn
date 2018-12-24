@@ -218,7 +218,7 @@ void DNACrossoverAndMutation()
     cout << endl;
 }
 
-NeuralNetwork play(const vector<int> &topology, Game game, int maxGenerations, int population, double mutationRate, size_t elitism, size_t weightsFactor)
+NeuralNetwork play(const vector<int> &topology, Game game, int maxGenerations, int population, double mutationRate, size_t elitism, size_t weightsFactor, bool fitnessSharing)
 {
     int score = 0;
     int steps = 0;
@@ -236,8 +236,15 @@ NeuralNetwork play(const vector<int> &topology, Game game, int maxGenerations, i
 
     for (int i = 0; i < maxGenerations; i++)
 	{
-        //geneticAlg.computeFitness();
-        geneticAlg.fitnessSharing();
+        
+        if (fitnessSharing)
+        {
+            geneticAlg.fitnessSharing();
+        }
+        else
+        {
+            geneticAlg.computeFitness();
+        }
 
         double fitnessAux = geneticAlg.getCurrentBestDNAFitness();
 
@@ -399,9 +406,9 @@ int main (int argc, char **argv)
     //Player::playBreakout(nn864Breakout, true);
 
     vector<int> topologyBreakout = {4, 2};
-    vector<int> topologyBoxing = {};
-    vector<int> topologyDemonAttack = {128, 3};
-    vector<int> topologyStarGunner = {};
+    vector<int> topologyBoxing = {2, 5};
+    vector<int> topologyDemonAttack = {11, 3};
+    vector<int> topologyStarGunner = {12, 5};
 
     // Redirect error output to /dev/null -> all messages in ALE are displayed in the error output.......
     int save_out = dup(STDERR_FILENO);
@@ -412,7 +419,7 @@ int main (int argc, char **argv)
 
     double mutationRate = 0.1;
     size_t elitism = 1;
-    size_t weightsFactor = 2;
+    size_t weightsFactor = 1;
 
     if (argc == 5)
     {
@@ -424,17 +431,17 @@ int main (int argc, char **argv)
     switch (game)
     {
         case Game::breakout:
-            //play(topologyBreakout, game, atoi(argv[2]), atoi(argv[3]), mutationRate, elitism, weightsFactor);
-            play(topologyBreakout, game, atoi(argv[2]), atoi(argv[3]), mutationRate, 1, 1); // Max. score with this configuration in ~5 generations with a population of 200.
+            //play(topologyBreakout, game, atoi(argv[2]), atoi(argv[3]), mutationRate, elitism, weightsFactor, false);
+            play(topologyBreakout, game, atoi(argv[2]), atoi(argv[3]), mutationRate, 1, 1, false); // Max. score with this configuration in ~5 generations with a population of 200.
             break;
         case Game::boxing:
-            play(topologyBoxing, game, atoi(argv[2]), atoi(argv[3]), mutationRate, elitism, weightsFactor);
+            play(topologyBoxing, game, atoi(argv[2]), atoi(argv[3]), mutationRate, elitism, weightsFactor, false);
             break;
         case Game::demonAttack:
-            play(topologyDemonAttack, game, atoi(argv[2]), atoi(argv[3]), mutationRate, elitism, weightsFactor);
+            play(topologyDemonAttack, game, atoi(argv[2]), atoi(argv[3]), mutationRate, elitism, weightsFactor, true);
             break;
         case Game::starGunner:
-            play(topologyStarGunner, game, atoi(argv[2]), atoi(argv[3]), mutationRate, elitism, weightsFactor);
+            play(topologyStarGunner, game, atoi(argv[2]), atoi(argv[3]), mutationRate, elitism, weightsFactor, false);
             break;
         default:
             error = true;

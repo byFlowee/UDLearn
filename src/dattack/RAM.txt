@@ -50,7 +50,7 @@
 49: Igual que 48 pero con el enemigo mas cercano
 50: Segun el valor el enemigo mas cercano desaparece y, ademas, segun el valor hay un sonido u otro
 51: *
-52: Parece que cuando mas cambia este valor, mas frecuente es que dispare el enemigo. Concretamente, al estar cambiandolo todo el rato, el enemigo no paraba de disparar
+52: Indica el numero de balas que al enemigo le queda por disparar. Si es distinto de 0, es que esta disparando.
 53: WTF? Entra en una pantalla donde el marcador de puntos cambia a la frase "MAGIC" y el jugador se mueve solo y dispara solo. El jugador juega bastante mal, ya que parece que las balas le atraigan. Una vez se ha cambiado este valor, no se puede volver al juego normal
 54: Activa la animacion para convertir en mosca al jugador mas lejano y las moscas se mueven. Una vez se cambia este valor, las moscas se quedan
 55: Igual que 54 pero con el enemigo de en medio

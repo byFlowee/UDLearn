@@ -204,8 +204,7 @@ double GeneticNN::getFitnessValue(const vector<int> &currentFitness)
             fitness = currentFitness[0];   // Score
             break;
         case Game::boxing:
-            // TODO
-            fitness = -666;
+            fitness = currentFitness[0];
             break;
         case Game::demonAttack:
             //fitness = currentFitness[0] * ((currentFitness[2] / 100.0) * (currentFitness[3] / 100.0));
@@ -223,8 +222,7 @@ double GeneticNN::getFitnessValue(const vector<int> &currentFitness)
 
             break;
         case Game::starGunner:
-            // TODO
-            fitness = -666;
+            fitness = currentFitness[0];
             break;
         default:
             //cerr << "ERROR: game unknown." << endl;   // Standard error output is redirected to /dev/null

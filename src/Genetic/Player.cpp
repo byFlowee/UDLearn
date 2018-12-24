@@ -1,4 +1,6 @@
 
+#include <limits>
+
 #include "Player.h"
 #include "ale_interface.hpp"
 #include "SDL.h"
@@ -12,12 +14,12 @@ ALEInterface alei;
 
 int Player::breakoutGetPlayerX()
 {
-   return alei.getRAM().get(72);// + ((rand() % 3) - 1);
+   return alei.getRAM().get(72);
 }
 
 int Player::breakoutGetBallX()
 {
-   return alei.getRAM().get(99);// + ((rand() % 3) - 1);
+   return alei.getRAM().get(99);
 }
 
 vector<int> Player::playBreakout(NeuralNetwork &nn, bool displayScreen)
@@ -62,10 +64,12 @@ vector<int> Player::playBreakout(NeuralNetwork &nn, bool displayScreen)
         int ballX = Player::breakoutGetBallX();
         double direction = 0.5;
         
-        if (BallX_LastTick < ballX) {
+        if (BallX_LastTick < ballX)
+        {
             direction = 0.0;
         }
-        if (BallX_LastTick > ballX) {
+        if (BallX_LastTick > ballX)
+        {
             direction = 1.0;
         }
 
@@ -79,13 +83,29 @@ vector<int> Player::playBreakout(NeuralNetwork &nn, bool displayScreen)
 
         outputs = nn.forwardPropagation(inputs);
 
-        if (outputs.get(0, 0) > 0.5)
+        int prediction = 0;
+        double maxValue = numeric_limits<double>::min();
+
+        for (int i = 0; i < outputs.cols(); i++)
         {
-            reward += alei.act(PLAYER_A_RIGHT);
+            if (outputs.get(0, i) > maxValue)
+            {
+                maxValue = outputs.get(0, i);
+                prediction = i;
+            }
         }
-        else if (outputs.get(0, 1) > 0.5)
+        
+        switch (prediction)
         {
-            reward += alei.act(PLAYER_A_LEFT);
+            case 0:
+                reward += alei.act(PLAYER_A_RIGHT);
+                break;
+            case 1:
+                reward += alei.act(PLAYER_A_LEFT);
+                break;
+            default:
+                cout << "Breakout: unknown action." << endl;
+                break;
         }
 
         BallX_LastTick = Player::breakoutGetBallX();
@@ -105,6 +125,83 @@ vector<int> Player::playBreakout(NeuralNetwork &nn, bool displayScreen)
 vector<int> Player::playBoxing(NeuralNetwork &nn, bool displayScreen)
 {
     vector<int> res;
+    float totalReward = .0f;
+    int maxSteps = 3571;
+
+    alei.disableBufferedIO();
+
+    // Init rand seed
+    srand(time(NULL));
+
+    // Create alei object.
+    alei.setInt("random_seed", rand()%1000);
+    alei.setFloat("repeat_action_probability", 0);
+    alei.setBool("sound", false);
+    alei.setBool("display_screen", displayScreen);
+    alei.loadROM(Player::BOXING_ROM);
+
+    int score = 0;
+    int step = 0;
+
+    for (step = 0; !alei.game_over() && step < maxSteps; ++step) 
+    {   
+        float reward = 0;
+        
+        Mat inputs(1, 2);
+        Mat outputs(1, 5);
+
+        //inputs.set(0, 0, (double)alei.getRAM().get(32) / 255.0);    // X coordinate of P1
+        //inputs.set(0, 1, (double)alei.getRAM().get(33) / 255.0);    // X coordinate of P2
+        //inputs.set(0, 2, (double)alei.getRAM().get(34) / 255.0);    // Y coordinate of P1
+        //inputs.set(0, 3, (double)alei.getRAM().get(35) / 255.0);    // Y coordinate of P2
+        inputs.set(0, 0, ((double)alei.getRAM().get(32) - (double)alei.getRAM().get(33)) / 510.0);
+        inputs.set(0, 0, ((double)alei.getRAM().get(34) - (double)alei.getRAM().get(35)) / 510.0);
+
+
+        outputs = nn.forwardPropagation(inputs);
+
+        int prediction = 0;
+        double maxValue = numeric_limits<double>::min();
+
+        for (int i = 0; i < outputs.cols(); i++)
+        {
+            if (outputs.get(0, i) > maxValue)
+            {
+                maxValue = outputs.get(0, i);
+                prediction = i;
+            }
+        }
+        
+        switch (prediction)
+        {
+            case 0:
+                reward += alei.act(PLAYER_A_FIRE);
+                break;
+            case 1:
+                reward += alei.act(PLAYER_A_LEFT);
+                break;
+            case 2:
+                reward += alei.act(PLAYER_A_RIGHT);
+                break;
+            case 3:
+                reward += alei.act(PLAYER_A_UP);
+                break;
+            case 4:
+                reward += alei.act(PLAYER_A_DOWN);
+                break;
+            default:
+                cout << "Boxing: unknown action." << endl;
+                break;
+        }
+
+        reward = (reward + alei.act(PLAYER_A_NOOP));
+        totalReward += reward;
+    }
+
+    score = (int)totalReward;
+
+    res.push_back(score);
+    res.push_back(step);
 
     return res;
 }
@@ -112,7 +209,6 @@ vector<int> Player::playBoxing(NeuralNetwork &nn, bool displayScreen)
 vector<int> Player::playDemonAttack(NeuralNetwork &nn, bool displayScreen)
 {
     vector<int> res;
-    int lastLives = 0;
     float totalReward = .0f;
     int maxSteps = 15000;
 
@@ -128,48 +224,54 @@ vector<int> Player::playDemonAttack(NeuralNetwork &nn, bool displayScreen)
     alei.setBool("display_screen", displayScreen);
     alei.loadROM(Player::DEMONATTACK_ROM);
 
-    lastLives = alei.lives();
-
     int score = 0;
     int step = 0;
     int moveLeft = 0;
     int moveRight = 0;
     int notMoving = 0;
 
+    int lastShoot = alei.getRAM().get(52);
+
     for (step = 0; !alei.game_over() && step < maxSteps; ++step) 
     {   
         float reward = 0;
         
-        Mat inputs(1, 128);
+        Mat inputs(1, 11);
         Mat outputs(1, 3);
 
-        for (size_t i = 0; i < 128; ++i)
+        int currentShoot = lastShoot = alei.getRAM().get(52);
+
+        if (currentShoot != lastShoot || currentShoot != 0)
         {
-            inputs.set(0, i, (double)alei.getRAM().get(i) / 255);                                                            
+            inputs.set(0, 9, 1.0);
+        }
+        else
+        {
+            inputs.set(0, 9, 0.0);
         }
 
-        /*
-        vector<int> inputsIndexes = {5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 25, 26, 28, 29, 30, 31, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 59, 64, 66, 68, 69, 70, 71, 72, 73, 74, 75, 79, 80, 85, 88, 89, 90, 91, 92, 101, 111, 116, 126};
-
-        Mat inputs(1, inputsIndexes.size());
-        Mat outputs(1, 3);
-
-        for (size_t i = 0; i < inputsIndexes.size(); i++)
-        {
-            inputs.set(0, i, alei.getRAM().get(inputsIndexes[i]) / 255.0);
-        }
-        */
-
-
+        inputs.set(0, 0, (double)alei.getRAM().get(13) / 255.0);
+        inputs.set(0, 1, (double)alei.getRAM().get(14) / 255.0);
+        inputs.set(0, 2, (double)alei.getRAM().get(15) / 255.0);
+        inputs.set(0, 3, (double)alei.getRAM().get(16) / 255.0);
+        inputs.set(0, 4, (double)alei.getRAM().get(17) / 255.0);
+        inputs.set(0, 5, (double)alei.getRAM().get(18) / 255.0);
+        inputs.set(0, 6, (double)alei.getRAM().get(19) / 255.0);
+        inputs.set(0, 7, (double)alei.getRAM().get(20) / 255.0);
+        inputs.set(0, 8, (double)alei.getRAM().get(22) / 255.0);
+        //inputs.set(0, 9, (double)alei.getRAM().get(52) / 255.0);
+        inputs.set(0, 10, (double)alei.getRAM().get(72) / 255.0);
 
         outputs = nn.forwardPropagation(inputs);
 
-        int prediction = 2;
+        int prediction = 0;
+        double maxValue = numeric_limits<double>::min();
 
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < outputs.cols(); i++)
         {
-            if (outputs.get(0, i) > outputs.get(0, i + 1))
+            if (outputs.get(0, i) > maxValue)
             {
+                maxValue = outputs.get(0, i);
                 prediction = i;
             }
         }
@@ -189,12 +291,14 @@ vector<int> Player::playDemonAttack(NeuralNetwork &nn, bool displayScreen)
                 reward += alei.act(PLAYER_A_RIGHT); 
                 break;
             default:
-                cout << "debug" << endl;
+                cout << "Demon Attack: unknown action." << endl;
                 break;
         }
 
         reward = (reward + alei.act(PLAYER_A_NOOP));
         totalReward += reward;
+
+        lastShoot = alei.getRAM().get(52);
     }
 
     score = (int)totalReward;
@@ -211,6 +315,88 @@ vector<int> Player::playDemonAttack(NeuralNetwork &nn, bool displayScreen)
 vector<int> Player::playStarGunner(NeuralNetwork &nn, bool displayScreen)
 {
     vector<int> res;
+    float totalReward = .0f;
+    int maxSteps = 15000;
+
+    alei.disableBufferedIO();
+
+    // Init rand seed
+    srand(time(NULL));
+
+    // Create alei object.
+    alei.setInt("random_seed", rand()%1000);
+    alei.setFloat("repeat_action_probability", 0);
+    alei.setBool("sound", false);
+    alei.setBool("display_screen", displayScreen);
+    alei.loadROM(Player::BOXING_ROM);
+
+    int score = 0;
+    int step = 0;
+
+    for (step = 0; !alei.game_over() && step < maxSteps; ++step) 
+    {   
+        float reward = 0;
+        
+        Mat inputs(1, 12);
+        Mat outputs(1, 5);
+
+        inputs.set(0, 0, (double)alei.getRAM().get(14) / 255.0);    // Y coordinate of player
+        inputs.set(0, 1, (double)alei.getRAM().get(21) / 255.0);    // X coordinate of player
+        inputs.set(0, 2, (double)alei.getRAM().get(31) / 255.0);    // X coordinate of enemy
+        inputs.set(0, 3, (double)alei.getRAM().get(32) / 255.0);    // X coordinate offset of enemy
+        inputs.set(0, 4, (double)alei.getRAM().get(33) / 255.0);    // X coordinate of enemy's bullet
+        inputs.set(0, 5, (double)alei.getRAM().get(34) / 255.0);    // Y coordinate of enemy's bullet
+        inputs.set(0, 6, (double)alei.getRAM().get(71) / 255.0);    // Y coordinate of 1st objective
+        inputs.set(0, 7, (double)alei.getRAM().get(72) / 255.0);    // Y coordinate of 2nd objective
+        inputs.set(0, 8, (double)alei.getRAM().get(73) / 255.0);    // Y coordinate of 3rd objective
+        inputs.set(0, 9, (double)alei.getRAM().get(74) / 255.0);    // X coordinate of 1st objective
+        inputs.set(0, 10, (double)alei.getRAM().get(75) / 255.0);   // X coordinate of 2nd objective
+        inputs.set(0, 11, (double)alei.getRAM().get(76) / 255.0);   // X coordinate of 3rd objective
+
+        outputs = nn.forwardPropagation(inputs);
+
+        int prediction = 0;
+        double maxValue = numeric_limits<double>::min();
+
+        for (int i = 0; i < outputs.cols(); i++)
+        {
+            if (outputs.get(0, i) > maxValue)
+            {
+                maxValue = outputs.get(0, i);
+                prediction = i;
+            }
+        }
+        
+        switch (prediction)
+        {
+            case 0:
+                reward += alei.act(PLAYER_A_FIRE);
+                break;
+            case 1:
+                reward += alei.act(PLAYER_A_LEFT);
+                break;
+            case 2:
+                reward += alei.act(PLAYER_A_RIGHT);
+                break;
+            case 3:
+                reward += alei.act(PLAYER_A_UP);
+                break;
+            case 4:
+                reward += alei.act(PLAYER_A_DOWN);
+                break;
+            default:
+                cout << "StarGunner: unknown action." << endl;
+                break;
+        }
+
+        reward = (reward + alei.act(PLAYER_A_NOOP));
+        totalReward += reward;
+    }
+
+    score = (int)totalReward;
+
+    res.push_back(score);
+    res.push_back(step);
 
     return res;
 }
