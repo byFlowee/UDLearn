@@ -118,6 +118,9 @@ void checkKeys()
 
 int currentValueOfRAM = 0;
 int stepsInitialization = 1;
+vector<int> freezePositions;
+vector<int> freezeValues;
+bool checkRAM = false;
 
 void checkAllValuesOfRAM()
 {
@@ -130,7 +133,7 @@ void checkAllValuesOfRAM()
     string next = "";
     int newValue = alei.getRAM().get(currentValueOfRAM);
     int steps = stepsInitialization;
-    int oldValue = alei.getRAM().get(currentValueOfRAM);;
+    int oldValue = alei.getRAM().get(currentValueOfRAM);
     bool skip = false;
     bool changeValue = true;
 
@@ -141,6 +144,15 @@ void checkAllValuesOfRAM()
         if (newValue >= 256)
         {
             newValue = 0;
+        }
+
+        for (size_t i = 0; i < freezePositions.size(); i++)
+        {
+            byte_t *freeze = alei.getRAM().array() + sizeof(byte_t) * freezePositions[i];
+
+            *freeze = freezeValues[i];
+
+            alei.processBackRAM();
         }
 
         cout << endl;
@@ -165,10 +177,10 @@ void checkAllValuesOfRAM()
             changeValue = true;
 
             cout << endl;
-            cout << "Write \"next\", \"exit\", \"reset\", \"skip<NUMBER>\" or \"goto<NUMBER>\" to exit or a number of steps: ";
+            cout << "Write \"next\", \"exit\", \"set<VALUE>\" \"play\", \"reset\", \"freeze<POSITION>\" \"skip<NUMBER>\", \"shoot\" or \"goto<NUMBER>\" or a number of steps: " << endl;
             cin >> next;
 
-            if (next.substr(0, 4) != "next" && next != "exit" && next.substr(0, 4) != "goto" && next != "reset" && next.substr(0, 4) != "skip")
+            if (next != "play" && next.substr(0, 3) != "set" && next.substr(0, 6) != "freeze" && next.substr(0, 4) != "next" && next != "exit" && next.substr(0, 4) != "goto" && next != "shoot" && next != "reset" && next.substr(0, 4) != "skip")
             {
                 steps = atoi(next.c_str());
             }
@@ -190,6 +202,58 @@ void checkAllValuesOfRAM()
                 newValue = oldValue;
                 alei.processBackRAM();
             }
+            else if (next == "shoot")
+            {
+                alei.act(PLAYER_A_FIRE);
+                steps = 1;
+                skip = true;
+            }
+            else if (next.substr(0, 6) == "freeze")
+            {
+                //int freezePosition = atoi(next.substr(6, next.size()).c_str());
+                int freezePosition = next.find("-");
+                int endFreezePosition = 1;
+
+                if (freezePosition != string::npos)
+                {
+                    endFreezePosition =  atoi(next.substr(freezePosition + 1, next.size()).c_str()) - atoi(next.substr(6, freezePosition).c_str()) + 1;
+                    freezePosition = atoi(next.substr(6, freezePosition).c_str());
+                }
+                else
+                {
+                    freezePosition = atoi(next.substr(6, next.size()).c_str());
+                }
+
+                for (int i = 0; i < endFreezePosition; i++)
+                {
+                    if(std::find(freezePositions.begin(), freezePositions.end(), freezePosition + i) == freezePositions.end() && freezePosition + i >= 0 && freezePosition + i <= 255)
+                    {
+                        freezePositions.push_back(freezePosition + i);
+                        freezeValues.push_back(alei.getRAM().get(freezePosition + i));
+
+                        cout << "RAM(" << freezePosition + i << ") is frozen" << endl;
+                    }
+                }
+
+                steps = 1;
+                skip = true;
+            }
+            else if (next.substr(0, 3) == "set")
+            {
+                int valueToSet = atoi(next.substr(3, next.size()).c_str());
+
+                if (valueToSet >= 0 && valueToSet <= 255)
+                {
+                    *byte = (byte_t)valueToSet;
+                    alei.processBackRAM();
+
+                    steps = 1;
+                    changeValue = false;
+                    skip = true;
+
+                    newValue = valueToSet;
+                }
+            }
         }
 
         if (!skip)
@@ -197,7 +261,7 @@ void checkAllValuesOfRAM()
             newValue++;
         }
     }
-    while (next.substr(0, 4) != "next" && next != "exit" && next.substr(0, 4) != "goto");
+    while (next != "play" && next.substr(0, 4) != "next" && next != "exit" && next.substr(0, 4) != "goto");
 
     if (next == "exit")
     {
@@ -206,6 +270,12 @@ void checkAllValuesOfRAM()
     else if (next.substr(0, 4) == "goto")
     {
         currentValueOfRAM = atoi(next.substr(4, next.size()).c_str()) - 1;
+    }
+    else if (next == "play")
+    {
+        checkRAM = false;
+        currentValueOfRAM = 0;
+        stepsInitialization = 1;
     }
 
     *byte = (byte_t)oldValue;
@@ -235,7 +305,23 @@ float manualMode()
         reward += alei.act(PLAYER_A_RIGHT);
     }
 
-    //checkAllValuesOfRAM();
+    if(checkRAM || keystate[SDLK_k])
+    {
+        checkRAM = true;
+        checkAllValuesOfRAM();
+    }
+
+    if (!checkRAM)
+    {
+        for (size_t i = 0; i < freezePositions.size(); i++)
+        {
+            byte_t *freeze = alei.getRAM().array() + sizeof(byte_t) * freezePositions[i];
+
+            *freeze = freezeValues[i];
+
+            alei.processBackRAM();
+        }
+    }
 
     return (reward + alei.act(PLAYER_A_NOOP));
 }
@@ -314,9 +400,9 @@ int main(int argc, char **argv)
     const bool display_media(argc >= 3 ? atoi(argv[2])==1 : false);
     const bool printRam(argc == 4 ? atoi(argv[3])==1 : false);
 
-    DataLoader d("../dattack/demon_attack.csv", topology);
-    d.trainJNet(topology.front(),topology.back(),epochs);
-    cout << "Training completed, starting game..." << endl;
+    //DataLoader d("../dattack/demon_attack.csv", topology);
+    //d.trainJNet(topology.front(),topology.back(),epochs);
+    //cout << "Training completed, starting game..." << endl;
 
     // Init rand seed
     srand(time(NULL));
@@ -350,8 +436,8 @@ int main(int argc, char **argv)
         // **********************************************
 
         // Total reward summation
-        totalReward += NN(d);
-        //totalReward += manualMode();
+        //totalReward += NN(d);
+        totalReward += manualMode();
    }
 
    std::cout << "Steps: " << step << std::endl;

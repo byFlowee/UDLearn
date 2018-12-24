@@ -11,20 +11,20 @@
 10: *
 11: *
 12: *
-13: Al modificar este valor, el enemigo mas lejano al jugador, modifica su coordenada X
+13: Coordenada X del enemigo mas lejano. Cuando se divide en moscas, es la coordenada X de la mosca izquierda
 14: Igual que 13 pero con el enemigo de en medio
 15: Igual que 13 pero con el enemigo mas cercano al jugador
 16: Coordenada X del jugador
-17: Modifica la coordenada X del enemigo mas lejano, pero solo parece moverse medio sprite, concretamente la parte derecha (sera para implementar el movimiento de las moscas?)
+17: Coordenada X del enemigo mas lejano. Cuando se divide en moscas, es la coordenada de la mosca derecha
 18: Igual que 17 pero con el enemigo de en medio
 19: Igual que 17 pero con el enemigo mas cercano al jugador
-20: Coordenada X de las balas del enemigo
+20: Coordenada X de las balas del enemigo. Tambien es la coordenada X de la mosca que se acerca para intentar matarte (se utiliza como una bala)
 21: Parece que cuando tiene cierto valor, el jugador dispara (parece ser el valor 249)
-22: Coordenada x de las balas del jugador
+22: Coordenada X de las balas del jugador
 23: *
 24: Al cambiar el valor, el enemigo mas cercano parece desaparecer en cierto rango de valores y aparece en otro cierto de rango de valores (quiza se utiliza para saber cuando el enemigo ha muerto?)
 25: Al cambiar el valor, la animacion de muerte del jugador se ejecuta. Rompe el juego
-26: *
+26: Si se congela el valor, las balas del enemigo no se mueven, pero no es la coordenada Y. Tiene relacion con las balas, pero no esta muy clara cual, ya que al modificar el valor no se ve cual es el patron, y los valores que toma cuando se esta jugando varian entre 0 y ~10, y hace saltos.
 27: *
 28: Al cambiar el valor, los enemigos desaparecen y la animacion del disparo del jugador parece que "intenta" ejecutarse sin exito. Rompe el juego
 29: Al cambiar el valor, el sprite del enemigo mas cercano se pixela (cuando llega a cierto valor, las moscas aparecen)
@@ -70,7 +70,7 @@
 69: Parece ser un offset en la coordenada Y del enemigo mas lejano. Cuando se reinicia, se coloca a la misma altura que el enemigo mas cercano
 70: Parece ser un offset en la coordenada Y de todos los enemigos. Cuando se llega a cierto valor, el juego se rompe
 71: Parece ser un offset en la coordenada Y del enemigo mas cercano
-72: *
+72: Es la coordenada Y de la mosca que intenta acercarse
 73: *
 74: *
 75: *
@@ -101,7 +101,7 @@
 100: Igual que 98 pero para la siguiente posicion
 101: *
 102: Igual que 100 pero para la siguiente posicion
-203: *
+103: *
 104: Igual que 102 pero para la siguiente posicion (es el numero posicionado mas a la derecha)
 105: *
 106: *
