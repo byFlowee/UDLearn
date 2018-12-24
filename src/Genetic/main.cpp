@@ -2,6 +2,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <fcntl.h>
+#include <limits>
 
 #include "GeneticNN.h"
 #include "DNA.h"
@@ -226,7 +227,7 @@ NeuralNetwork play(const vector<int> &topology, Game game, int maxGenerations, i
     NeuralNetwork nn(topology);
     vector<vector<Mat>> weightsAndBias;
     DNA best;
-    int bestScore = -1;
+    int bestScore = numeric_limits<int>::min();
     double fitnessValue = 0.0;
     bool improvedScore = true;
     bool improvedFitness = true;
@@ -406,7 +407,7 @@ int main (int argc, char **argv)
     //Player::playBreakout(nn864Breakout, true);
 
     vector<int> topologyBreakout = {4, 2};
-    vector<int> topologyBoxing = {2, 5};
+    vector<int> topologyBoxing = {4, 5};
     vector<int> topologyDemonAttack = {11, 3};
     vector<int> topologyStarGunner = {12, 5};
 

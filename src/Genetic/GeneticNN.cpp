@@ -93,7 +93,7 @@ void GeneticNN::fitnessSharing()
     vector<int> sumSameNicheID(scoreDivision * stepsDivision, 0);
     vector<int> allScores;
     vector<int> allSteps;
-    double bestFitness = numeric_limits<double>::min();
+    double bestFitness = numeric_limits<double>::lowest();
 
     cout << endl;
     cout << "   Fitness Sharing" << endl;
@@ -204,7 +204,7 @@ double GeneticNN::getFitnessValue(const vector<int> &currentFitness)
             fitness = currentFitness[0];   // Score
             break;
         case Game::boxing:
-            fitness = currentFitness[0];
+            fitness = currentFitness[0] + (double)currentFitness[2] * ((double)currentFitness[2] / (double)(currentFitness[3] + 1));
             break;
         case Game::demonAttack:
             //fitness = currentFitness[0] * ((currentFitness[2] / 100.0) * (currentFitness[3] / 100.0));
@@ -234,7 +234,7 @@ double GeneticNN::getFitnessValue(const vector<int> &currentFitness)
 
 void GeneticNN::computeFitness()
 {
-    int bestFitness = numeric_limits<double>::min();
+    double bestFitness = numeric_limits<double>::lowest();
 
     for (size_t i = 0; i < this->populationSize; ++i)
     {
@@ -275,7 +275,7 @@ DNA GeneticNN::crossover() const
 
 DNA GeneticNN::getCurrentBestDNA() const
 {
-    double bestFitness = numeric_limits<double>::min();
+    double bestFitness = numeric_limits<double>::lowest();
     int index = 0;
 
     for (size_t i = 0; i < this->fitnessValues.size(); i++)
@@ -292,7 +292,7 @@ DNA GeneticNN::getCurrentBestDNA() const
 
 double GeneticNN::getCurrentBestDNAFitness() const
 {
-    double bestFitness = numeric_limits<double>::min();
+    double bestFitness = numeric_limits<double>::lowest();
     int index = 0;
 
     for (size_t i = 0; i < this->fitnessValues.size(); i++)

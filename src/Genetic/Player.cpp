@@ -84,7 +84,7 @@ vector<int> Player::playBreakout(NeuralNetwork &nn, bool displayScreen)
         outputs = nn.forwardPropagation(inputs);
 
         int prediction = 0;
-        double maxValue = numeric_limits<double>::min();
+        double maxValue = numeric_limits<double>::lowest();
 
         for (int i = 0; i < outputs.cols(); i++)
         {
@@ -126,7 +126,7 @@ vector<int> Player::playBoxing(NeuralNetwork &nn, bool displayScreen)
 {
     vector<int> res;
     float totalReward = .0f;
-    int maxSteps = 3571;
+    int maxSteps = 15000;
 
     alei.disableBufferedIO();
 
@@ -147,21 +147,18 @@ vector<int> Player::playBoxing(NeuralNetwork &nn, bool displayScreen)
     {   
         float reward = 0;
         
-        Mat inputs(1, 2);
+        Mat inputs(1, 4);
         Mat outputs(1, 5);
 
-        //inputs.set(0, 0, (double)alei.getRAM().get(32) / 255.0);    // X coordinate of P1
-        //inputs.set(0, 1, (double)alei.getRAM().get(33) / 255.0);    // X coordinate of P2
-        //inputs.set(0, 2, (double)alei.getRAM().get(34) / 255.0);    // Y coordinate of P1
-        //inputs.set(0, 3, (double)alei.getRAM().get(35) / 255.0);    // Y coordinate of P2
-        inputs.set(0, 0, ((double)alei.getRAM().get(32) - (double)alei.getRAM().get(33)) / 510.0);
-        inputs.set(0, 0, ((double)alei.getRAM().get(34) - (double)alei.getRAM().get(35)) / 510.0);
-
+        inputs.set(0, 0, (double)alei.getRAM().get(32) / 255.0);    // X coordinate of P1
+        inputs.set(0, 1, (double)alei.getRAM().get(33) / 255.0);    // X coordinate of P2
+        inputs.set(0, 2, (double)alei.getRAM().get(34) / 255.0);    // Y coordinate of P1
+        inputs.set(0, 3, (double)alei.getRAM().get(35) / 255.0);    // Y coordinate of P2
 
         outputs = nn.forwardPropagation(inputs);
 
         int prediction = 0;
-        double maxValue = numeric_limits<double>::min();
+        double maxValue = numeric_limits<double>::lowest();
 
         for (int i = 0; i < outputs.cols(); i++)
         {
@@ -202,6 +199,8 @@ vector<int> Player::playBoxing(NeuralNetwork &nn, bool displayScreen)
 
     res.push_back(score);
     res.push_back(step);
+    res.push_back(alei.getRAM().get(18));   // Final score of P1
+    res.push_back(alei.getRAM().get(19));   // Final score of P2
 
     return res;
 }
@@ -265,7 +264,7 @@ vector<int> Player::playDemonAttack(NeuralNetwork &nn, bool displayScreen)
         outputs = nn.forwardPropagation(inputs);
 
         int prediction = 0;
-        double maxValue = numeric_limits<double>::min();
+        double maxValue = numeric_limits<double>::lowest();
 
         for (int i = 0; i < outputs.cols(); i++)
         {
@@ -328,7 +327,7 @@ vector<int> Player::playStarGunner(NeuralNetwork &nn, bool displayScreen)
     alei.setFloat("repeat_action_probability", 0);
     alei.setBool("sound", false);
     alei.setBool("display_screen", displayScreen);
-    alei.loadROM(Player::BOXING_ROM);
+    alei.loadROM(Player::STARGUNNER_ROM);
 
     int score = 0;
     int step = 0;
@@ -356,7 +355,7 @@ vector<int> Player::playStarGunner(NeuralNetwork &nn, bool displayScreen)
         outputs = nn.forwardPropagation(inputs);
 
         int prediction = 0;
-        double maxValue = numeric_limits<double>::min();
+        double maxValue = numeric_limits<double>::lowest();
 
         for (int i = 0; i < outputs.cols(); i++)
         {
