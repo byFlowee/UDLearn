@@ -1,130 +1,195 @@
-0: Contador
+0: * Contador (va desde 0 hasta 255 todo el rato)
 1: Color P1
 2: Color P2
 3: Color cuadrilatero
 4: Color contador y logo ActiVision
-5: *
-6: *
+5: * (parece tener el valor 3 todo el rato)
+6: * (parece tener el valor 14 todo el rato)
 7: Hace algo con los pixeles de las letras (contador P1, 2ª cifra del tiempo y mitad izquierda del logo de ActiVision)
-8: *
+8: * (parece tener el valor 16 todo el rato)
 9: Hace algo con los pixeles de las letras (contador P2, 4ª cifra del tiempo y final del logo de ActiVision)
-10: *
+10: * (parece tener el valor 13 todo el rato)
 11: Parecido a 7
-12: *
+12: * (parece tener el valor 15 todo el rato)
 13: Parecido a 9
-14: *
-15: *
+14: Segun el valor, indica la accion que va a hacer P1 (moverse a la derecha, izquierda, abajo, arriba, abajo izquierda, abajo derecha, arriba izquierda o arriba derecha).
+    Valor 255 -> P1 no se mueve.
+    Valor 127 -> P1 se mueve a la derecha.
+    Valor 191 -> P1 se mueve a la izquierda.
+    Valor 239 -> P1 se mueve arriba.
+    Valor 233 -> P1 se mueve abajo.
+
+15: Igual que 14 pero con P2.
+    Valor 240 -> P2 no se mueve.
+    Valor 48  -> P2 no se mueve. Entra en este estado cuando le da un punch a P1 y se queda constantemente en este estado si no para de darle punchs a P1 (como cuando tiene a P1 contra las cuerdas y no para de darle punchs).
+    Valor 112 -> P2 se mueve a la derecha.
+    Valor 176 -> P2 se mueve a la izquierda.
+    Valor 224 -> P2 se mueve arriba.
+    Valor 208 -> P2 se mueve abajo.
+    Valor 160 -> P2 se mueve arriba a la izquierda.
+    Valor 96  -> P2 se mueve arriba a la derecha.
+    Valor 144 -> P2 se mueve abajo a la izquierda.
+    Valor 80  -> P2 se mueve abajo a la derecha.
+
+    Estos estados que tiene P2 en RAM[15] extra (moverse hacia las esquinas y el estado de punch) no estan en RAM[14], al menos en la version en la que P1 se maneja por un humano.
+
 16: Valor de los minutos del contador
 17: Valor de los segundos del contador
 18: Puntos de P1
 19: Puntos de P2
-20: *
+20: * (contador que va desde 59 a 0 todo el rato)
 21: Sonido que se escucha
-22: *
-23: *
-24: *
-25: *
-26: *
-27: *
-28: Parece hacer que P2 tenga una especie de flickering
-29: *
-30: *
-31: *
-32: Coordenada X de P1
-33: Coordenada X de P2
-34: Coordenada Y de P1
-35: Coordenada Y de P2
-36: *
-37: Parece hacer que P1 tenga una especie de flickering mas notorio que 28
-38: *
-39: Parece hacer que P1 tenga una especia de flickering mas notorio que 37
-40: *
-41: Como 28
-42: *
-43: Como 39 pero con P2
-44: *
-45: *
-46: *
-47: *
-48: *
-49: *
-50: *
-51: *
-52: *
-53: *
-54: *
-55: La animacion de P1 parece intentar dar un punch pero no se ve bien
-56: La animacion de P1 no se ve bien
-57: La animacion de P1 parece intentar dar un punch (mano de abajo) pero no se ve bien
-58: *
-59: *
-60: *
-61: *
-62: *
-63: *
-64: *
-65: *
-66: *
-67: *
-68: *
-69: *
-70: *
-71: *
-72: *
-73: *
-74: *
-75: *
-76: *
-77: *
-78: *
-79: *
-80: *
-81: *
-82: *
-83: *
-84: *
-85: *
-86: *
-87: *
-88: *
-89: *
+22: * (contador que empieza en 0 y va aumentando lentamente)
+23: * (parece estar en 0 todo el rato, pero puede que sea un contador)
+24: Esta variable indica que segun la proximidad de los jugadores, si van a hacer chocar los guantes, cambia el valor. Seguramente sirva para saber que animacion realizar, ya que al chocar los guantes, segun lo cerca que esten P1 y P2, se hace una animacion u otra
+    Valor 72 -> P1 y P2 no van a chocar con los guantes
+    Valor 64 -> Valor de transicion entre 72 y 56. Solo si P1 y P2 se acercan lentamente ya que si se acercan (o alejan) de forma brusca, no se llega a este valor
+    Valor 56 -> P1 y P2 estan cerca y se pueden chocar con los guantes (solo 1 o los 2)
+    Valor 48 -> Igual que con el valor 64, pero para los valores 56 y 40
+    Valor 40 -> P1 y P2 estan tocandose los guantes (solo 1 o los 2)
+    
+25: * (parece estar con el valor 0 todo el rato)
+26: Igual que 24
+27: * (parece estar con el valor 0 todo el rato)
+28: Igual que 24
+29: * (parece estar con el valor 0 todo el rato)
+30: Igual que 24
+31: * (parece estar con el valor 0 todo el rato)
+32: Coordenada X de P1. Va desde 30 hasta 109
+33: Coordenada X de P2. Va desde 30 hasta 109
+34: Coordenada Y de P1. Va desde 3 hasta 87
+35: Coordenada Y de P2. Va desde 3 hasta 87
+36: * (parece tener el valor 0 todo el rato)
+37: * (parece tener el valor 245 todo el rato). Si se cambia el valor, parece hacer que P1 tenga una especie de flickering
+38: * (parece tener el valor 0 todo el rato)
+39: * (parece tener el valor 247 todo el rato). Si se cambia el valor, parece hacer que P1 tenga una especia de flickering mas notorio que 37
+40: * (parece tener el valor 0 todo el rato)
+41: * Como 37
+42: * (parece tener el valor 0 todo el rato)
+43: * (parece tener el valor 246 todo el rato). Si se cambia el valor, parece hacer que P2 tenga una especia de flickering
+44: * (parece tener el valor 0 todo el rato)
+45: * (parece tener el valor 255 todo el rato)
+46: Igual que 24
+47: * (parece tener el valor 0 todo el rato)
+48: * (parece tener el valor 18 todo el rato)
+49: Toma cierto valor cuando P1 pega un punch
+    Valor 0 -> No pega un punch o lo pega pero le da al aire (no le da a P2, ni siquierda choca los guantes)
+    Valor 1 -> Pega un punch a P2 (en los guantes o en la cara)
+    Valor 3 -> Pega un punch a P2 (en los guantes o en la cara)
+
+    Diferencia entre valor 1 y 3: no se observa facilmente. Puede que sea la velocidad con la que se pulsa el espacio
+
+50: * (parece tener el valor 20 todo el rato)
+51: Igual que 49 pero para P2
+52: * (parece tener el valor 0 todo el rato)
+53: Parecido a 51
+54: * (parece tener el valor 0 todo el rato)
+55: Tiene el valor 0, pero cuando P1 recibe un punch (con cualquiera de los guantes), toma los valores 41 (x veces, dependiendo de lo cerca que P1 estaba de P2. Cuando mas cerca, mas 41's hay), 39, 35, 31, 27, 23, 19, 15, 11, 9, 7, 5, 3, 1, 0, 0, 0, ... Ademas, si se choca el guante de arriba, no el de abajo, o le da un punch P1 a P2 con el guante de abajo, tambien hay una secuencia de numeros que sube y luego baja hasta llegar a 0 otra vez.  Seguramente sea para la animacion de retroceso
+56: Tiene el valor 0, pero cuando P1 recibe un punch (con cualquiera de los guantes), toma el valor 8 (6 veces) y vuelve a 0
+57: Igual que 55, pero la ultima parte con el guante de abajo, no el de arriba
+58: * (parece tener el valor 0 todo el rato)
+59: Igual que 55 pero donde se hablaba de P1, ahora es P2 y donde se hablaba de P2, ahora es P1
+60: Igual que 56 pero donde se hablaba de P1, ahora es P2 y donde se hablaba de P2, ahora es P1
+61: Igual que 57 pero donde se hablaba de P1, ahora es P2 y donde se hablaba de P2, ahora es P1
+62: * (parece tener el valor 0 todo el rato)
+63: Coordenada Y del jugador que esta a la izquierda
+64: Coordenada Y del jugador que esta a la derecha
+65: Coordenada Y de P1. A diferencia de 34, si se modifica este valor, no se modifica la posicion de P1
+66: Coordenada Y de P1 (va desde 20 hasta 104). A diferencia de 34, si se modifica este valor, no se modifica la posicion de P1
+67: Coordenada Y de P1 (va desde 37 hasta 121). A diferencia de 34, si se modifica este valor, no se modifica la posicion de P1
+68: Igual que 65
+69: Igual que 65 pero para P2
+70: Igual que 66 pero para P2
+71: Igual que 67 pero para P2
+72: Igual que 68 pero para P2 = Igual que 69
+73: Parece tener el valor 95 todo el rato, pero cuando P2 le da un punch a P1 cambia al valor 111 (6 veces) y vuelve al 95
+74: Igual que 73 pero parece tener el valor 159 y luego el valor 175 (unas cuantas veces, varia). Tambien coge el valor 143 y 127 cuando P1 le da un punch a P2 con el guante de arriba (o cuando le roza pero sin llegar a darle)
+75: Parece tener el valor 191 todo el rato
+    Valor 207 -> Cuando P2 le da un punch a P1, pero tambien aparece esporadicamente en el caso contrario
+    Valor 223 -> Parece ser un valor de transicion entre 191 y 239 cuando el punch se hace rozando la cara del oponente
+    Valor 239 -> Cuando P1 le da un punch a P2
+76: * (parece tener el valor 0 todo el rato)
+77: Igual que 73 pero cambiando los jugadores (cuando se habla de P1, ahora es P2 y viceversa)
+78: Igual que 74 pero cambiando los jugadores
+79: Igual que 75 pero cambiando los jugadores
+80: * (parece tener el valor 0 todo el rato)
+81: Normalmente tiene un valor 0, pero cuando P1 le da un punch a P2 o al reves, dependiendo de la distancia, se hace una cuenta hacia atras que empieza en 14 o 13 y a veces va hacia atras de 1 en 1 o de 2 en 2
+82: Cuando P1 le da un punch a P2, pasa de 0 a 1, y hasta que P2 no le devuelva el punch, no vuelve a pasar a 0
+83: Punch que dependiendo del jugador y del brazo, tiene un valor u otro
+    Valor 0 -> Si P1 le da un punch a P2 con el brazo de arriba. Valor inicial
+    Valor 2 -> Si P1 le da un punch a P2 con el brazo de abajo
+    Valor 4 -> Si P2 le da un punch a P1 con el brazo de arriba
+    Valor 6 -> Si P2 le da un punch a P1 con el brazo de abajo
+
+84: Indica donde estan los jugadores
+    Valor 0 -> P1 esta a la izquierda y P2 a la derecha
+    Valor 1 -> P1 esta a la derecha y P2 a la izquierda
+
+85: * (parece tener el valor 208 todo el rato)
+86: * (parece tener el valor 0 todo el rato)
+87: * (parece tener el valor 43 todo el rato)
+88: Igual que 81
+89: * (parece tener el valor 1 todo el rato)
 90: Reinicia la partida una vez se cambia su valor y parece tener "diferentes modos" ([PATRON] 1: solo P1 tiene contador. 2: El contador de tiempo empieza en 2 minutos. 3: No hace nada). El cambiar este valor parece que rompe el juego
-91: *
-92: *
-93: *
-94: *
-95: *
-96: Parece que es un valor que se suma a la coordenada X de P2 (quiza es para intentar evitar los punchs de P1?). Cuando se varia este valor hay un rango de valores en los que P2 se aleja (casi todo el tiempo) y otro rango en el que se acerca
-97: Como 96
-98: Como 96 pero con la coordenada Y
-99: *
-100: *
-101: *
-102: *
-103: *
-104: *
-105: *
-106: *
-107: *
-108: *
-109: *
-110: *
-111: *
-112: *
-113: *
-114: *
-115: *
-116: *
-117: *
-118: *
-119: *
-120: *
-121: *
-122: *
-123: *
-124: *
-125: *
-126: *
-127: *
+91: Parecido a 81. Empieza en 55 y se hacen saltos hacia atras mas grandes (e.g. 55 -> 53)
+92: Igual que 81
+93: Parecen valores que van aumentando con algun criterio:
+
+    0        1        2        5        10       20       41
+    00000000 00000001 00000010 00000101 00001010 00010100 00101001
+    
+    83       166      76       152      48       96       192
+    01010011 10100110 01001100 10011000 00110000 01100000 11000000
+
+    128      1        3        7
+    10000000 00000001 00000011 00000111
+
+    Criterio: desplazamiento logico de derecha a izquierda (cual es el criterio para agregar un 0 o un 1 por la izquierda?)
+
+    Cuando tiene el valor 0, P2 pega un punch
+
+94: * (mismo patron que 93, pero sin causa aparente)
+95: Parece ser un offset de la coordenada Y de P2. Este offset se utiliza para darle una sensacion de movimiento real a P2, intentando esquivar los golpes de P1. Este offset ya esta sumado directamente en las otras variables
+96: Igual que 95 pero para la coordenada X
+97: Igual que 32. A diferencia de 32, si se modifica este valor, no se modifica la posicion de P1
+98: Igual que 97 pero con la coordenada Y
+99: Indica cuando P1 esta dando un punch
+    Valor 128 -> P1 no esta dando un punch
+    Valor 0   -> P1 esta dando un punch
+
+100: * (parece tener el valor 0 todo el rato)
+101: Igual que 99 pero el offset, al aumentar el valor, es hacia la izquierda en vez de hacia la derecha
+102: * (parece tener el valor 0 todo el rato)
+103: Igual que 96
+104: * (parece tener el valor 0 todo el rato)
+105: Igual que 99
+106: * (parece tener el valor 0 todo el rato)
+107: Indica cuando P1 esta dando un punch con el guante de abajo
+     Valor 254 -> no esta dando un punch con el guante de abajo
+     Valor 0   -> esta dando un punch con el guante de abajo
+
+108: * (parece tener el valor 0 todo el rato)
+109: Igual que 107 pero con el guante de arriba
+110: * (parece tener el valor 0 todo el rato)
+111: Indica cuando P2 esta dando un punch con el guante de arriba
+     Valor 254 -> no esta dando un punch con el guante de arriba
+     Valor 127 -> esta dando un punch con el guante de arriba
+
+112: * (parece tener el valor 0 todo el rato)
+113: Igual que 111 pero con el guante de abajo
+114: * (parece tener el valor 0 todo el rato)
+115: * (parece tener el valor 0 todo el rato)
+116: * (parece tener el valor 0 todo el rato)
+117: * (parece tener el valor 120 todo el rato)
+118: * (parece tener el valor 243 todo el rato)
+119: Parece ir aumentando el valor y, a la vez, ir cambiando segun las acciones que hagan P1 y P2
+120: * (parece tener el valor 86 todo el rato)
+121: * (parece tener el valor 243 todo el rato)
+122: Igual que 119
+123: * (parece tener el valor 120 todo el rato)
+124: * (parece tener el valor 63 todo el rato)
+125: * (parece tener el valor 246 todo el rato)
+126: * (parece tener el valor 238 todo el rato)
+127: * (parece tener el valor 240 todo el rato)
 
 *: Parece no tener ningun resultado al cambiar el valor
