@@ -218,11 +218,11 @@ double GeneticNN::getFitnessValue(const vector<int> &currentFitness)
 
             //fitness = (currentFitness[0] / 10) * (currentFitness[4] / 500) * (min(currentFitness[2], currentFitness[3]) / 100);
 
-            fitness = currentFitness[0];
+            fitness = (currentFitness[0] / 10) * (currentFitness[4] / 500) * (min(currentFitness[2], currentFitness[3]) / 100);;
 
             break;
         case Game::starGunner:
-            fitness = currentFitness[0];
+            fitness = currentFitness[0] / 100;
             break;
         default:
             //cerr << "ERROR: game unknown." << endl;   // Standard error output is redirected to /dev/null

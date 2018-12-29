@@ -397,14 +397,19 @@ int main (int argc, char **argv)
     //UtilG::setRepresentativeVectorOnNeuralNetwork(representation3190DemonAttackMat, nn3190DemonAttack);
     //Player::playDemonAttack(nn3190DemonAttack, true);
 
-    // 864 Breakout
+    // 864 Breakout 15000 steps
     //
-    //vector<double> representation864Breakout = {0.910057, 0.967478, -0.356777, 0.0107037, -0.916711, 0.0107037, -0.9124, 0.95785, 0.696089, 0.941645};
+    //vector<double> representation864Breakout = {0.898375, 0.0884638, -0.0303664, 0.0272908, -0.817301, 0.00620234, -0.0986408, 0.676012, 0.0329225, -0.0406727};
     //Mat representation864BreakoutMat = UtilG::getMatFromVector(representation864Breakout);
     //vector<int> topology864Breakout = {4, 2};
     //NeuralNetwork nn864Breakout(topology864Breakout);
     //UtilG::setRepresentativeVectorOnNeuralNetwork(representation864BreakoutMat, nn864Breakout);
     //Player::playBreakout(nn864Breakout, true);
+
+    // 822 Breakout 7500 steps
+    // 0.259896, -0.698754, -0.589985, -0.500027, -0.404895, 0.565923, -0.353388, 0.462297, 0.111881, -0.179611
+    // 833 breakout 7500 steps
+    // 0.47709, -0.573443, -0.41815, 0.351678, -0.544178, 0.516288, -0.875486, 0.368601, 0.3326, 0.198892
 
     vector<int> topologyBreakout = {4, 2};
     vector<int> topologyBoxing = {4, 5};
@@ -418,7 +423,7 @@ int main (int argc, char **argv)
 
     dup2(devNull, STDERR_FILENO);
 
-    double mutationRate = 0.1;
+    double mutationRate = 0.2;
     size_t elitism = 1;
     size_t weightsFactor = 1;
 

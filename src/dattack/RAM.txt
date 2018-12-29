@@ -1,42 +1,65 @@
-0: Parece activar la animacion para convertir a los enemigos en moscas. Segun el valor, la animacion se aplica al enemigo mas lejano, al de en medio o al mas cercano
+Para las coordenadas X hay que aplicar la formula que obtiene cada nibble por separado y, ademas, invierte el primer nibble
+
+Las coordenadas X de los enemigos van desde:
+  Cuando las 2 moscas estan unidas:
+    Parte izquierda: desde 16 hasta 147
+    Parte derecha: desde 24 hasta 155
+
+  Cuando el enemigo muere, la coordenada X vale 0 y va aumentando hasta alcanzar el valor de donde reaparece
+  Cuando el enemigo muere definitivamente en la ronda actual, la coordenada X se queda congelada con el ultimo valor que tuvo cuando el enemigo estaba vivo
+
+La coordenada X del jugador va desde 21 hasta 138
+
+0: El valor indica la ronda actual que se esta jugando. Se pasa de una ronda a otra cuando se eliminan todos los enemigos en pantalla. Al terminar la ronda, el jugador se le transporta a la posicion del medio de la pantalla (donde se empieza a jugar al principio de la partida). El valor inicial es 0 y va aumentando
 1: Modifica el contador de la puntuacion (valor * 10000)
-2: *
+2: * (parece tener el valor 0 todo el rato)
 3: Modifica el contador de la puntuacion (valor * 100)
-4: *
+4: * (parece tener el valor 0 todo el rato)
 5: Modifica el contador de la puntuacion (valor * 1)
-6: *
-7: *
-8: *
-9: *
-10: *
-11: *
-12: *
+6: * (parece tener el valor 0 todo el rato)
+7: Parece seguir algun patron para el enemigo mas lejano. Cuando el enemigo mas lejano deja de aparecer en la ronda actual, deja de cambiar de valor y se queda en un valor fijo
+8: Igual que 7 pero para el enemigo de en medio
+9: Igual que 7 pero para el enemigo mas cercano
+10: Parece seguir algun patron para el enemigo mas lejano. Cuando el enemigo mas lejano reaparece en la ronda actual, el valor empieza a cambiar, y cuando ya ha reaparecido, se congela
+11: Igual que 10 pero para el enemigo de en medio
+12: Igual que 10 pero para el enemigo mas cercano
 13: Coordenada X del enemigo mas lejano. Cuando se divide en moscas, es la coordenada X de la mosca izquierda
 14: Igual que 13 pero con el enemigo de en medio
 15: Igual que 13 pero con el enemigo mas cercano al jugador
-16: Coordenada X del jugador
+16: Coordenada X del jugador. Va desde 21 hasta 138
 17: Coordenada X del enemigo mas lejano. Cuando se divide en moscas, es la coordenada de la mosca derecha
 18: Igual que 17 pero con el enemigo de en medio
 19: Igual que 17 pero con el enemigo mas cercano al jugador
-20: Coordenada X de las balas del enemigo. Tambien es la coordenada X de la mosca que se acerca para intentar matarte (se utiliza como una bala)
-21: Parece que cuando tiene cierto valor, el jugador dispara (parece ser el valor 249)
-22: Coordenada X de las balas del jugador
-23: *
-24: Al cambiar el valor, el enemigo mas cercano parece desaparecer en cierto rango de valores y aparece en otro cierto de rango de valores (quiza se utiliza para saber cuando el enemigo ha muerto?)
+20: Coordenada X de las balas del enemigo. Tambien es la coordenada X de la mosca que se acerca para intentar matarte (se utiliza como una bala). Va desde 29 hasta 147 (incluso cuando dispara la mosca). El valor es todo el rato el mismo hasta que el enemigo dispara y actualiza la coordenada. Si hay mas de 2 cambios consecutivos en 2 frames significa que no es una bala y que es la mosca que sigue al jugador
+21: Coordenada Y de las balas del jugador. Va desde 3 hasta 159. No necesita hacer la transformacion de coordenada
+22: Coordenada X de las balas del jugador. Va desde 22 hasta 139
+23: Normalmente tiene el valor 255, pero cuando algun enemigo va a reaparecer (ya sea porque se le ha matado o porque se va a cambiar a la siguiente ronda), el valor cambia:
+    0: el enemigo mas lejano va a reaparecer o la mosca que te sigue (la mosca que tiene como coordenada X el disparo del enemigo, pero solo si la mosca ha salido del enemigo mas cercano, no si sale del enemigo de en medio o el mas lejano ¿?¿?¿?)
+    1: el enemigo de en medio va a reaparecer
+    2: el enemigo mas cercano va a reaparecer
+    255: no va a reaparecer ningun enemigo
+
+24: Valor que va disminuyendo cuando se termina una ronda
 25: Al cambiar el valor, la animacion de muerte del jugador se ejecuta. Rompe el juego
 26: Si se congela el valor, las balas del enemigo no se mueven, pero no es la coordenada Y. Tiene relacion con las balas, pero no esta muy clara cual, ya que al modificar el valor no se ve cual es el patron, y los valores que toma cuando se esta jugando varian entre 0 y ~10, y hace saltos.
-27: *
+27: Numero de reapariciones que hay actualmente en la ronda (cuando aparece la mosca que tiene como coordenada X la bala del enemigo no cuenta como reaparicion y cuando se dispara a un enemigo y se divide en 2 moscas tampoco cuenta como reaparicion). En cada nivel parece ir desde 0 hasta 8
 28: Al cambiar el valor, los enemigos desaparecen y la animacion del disparo del jugador parece que "intenta" ejecutarse sin exito. Rompe el juego
-29: Al cambiar el valor, el sprite del enemigo mas cercano se pixela (cuando llega a cierto valor, las moscas aparecen)
+    Valor 1: la bala del jugador no esta en pantalla (no ha disparado o el disparo ha terminado)
+    Valor 65: la bala del jugador esta en pantalla
+
+29: Indica el sprite que se muestra para el enemigo mas lejano. Cuando son las 2 moscas, indica la mosca de la izquierda. Cuando el enemigo muere, toma el valor 3, 3, ..., 2, 2, ..., 1, 1, ..., 0, 0, ... (seran los sprites para la destruccion de los enemigos)
 30: Igual que 29 pero con el enemigo de en medio
 31: Igual que 29 pero con el enemigo mas cercano
-32: Parece activar la animacion para convertir un enemigo en 2 moscas del enemigo mas lejano
-33: Igual que 29
-34: Igual que 30
-35: Igual que 31
-36: Igual que 32
-37: Igual que 32
-38: Parece activar la animacion de las balas cuando estan en la misma coordenada X que el jugador (quiza se utiliza para borrar las balas cuando llegan a la misma coordenada X que el jugador)
+32: * (parece tener el valor 0 todo el rato)
+33: Igual que 29 pero para con la mosca se aplica a la mosca de la derecha
+34: Igual que 30 pero para con la mosca se aplica a la mosca de la derecha
+35: Igual que 31 pero para con la mosca se aplica a la mosca de la derecha
+36: Valor que varia cuando la bala pasa a ser una mosca:
+    Valor 0: bala normal
+    Valor x: x parece indicar el sprite de la mosca en ese momento (si se cambia, el sprite no cambia)
+
+37: Es la animacion de la bala dependiendo de la altura (en 37 es la altura mas baja). Normalmente tiene el valor 0, pero cuando una bala llega a la zona azul (donde desaparece), cambia a otro valor por cada bala (sera el id de la bala?)
+38: Igual que 37 pero con mas altura
 39: Igual que 38 pero con mas altura
 40: Igual que 39 pero con mas altura
 41: Igual que 40 pero con mas altura
@@ -49,82 +72,93 @@
 48: Igual que 47 pero con el enemigo de en medio
 49: Igual que 48 pero con el enemigo mas cercano
 50: Segun el valor el enemigo mas cercano desaparece y, ademas, segun el valor hay un sonido u otro
-51: *
+51: Indica el sprite de la bala CUANDO se transforma en mosca (si se cambia, el sprite cambia). Si no es la mosca, el valor es 0, pero cuando se ha matado a la mosca, se queda congelado el valor anterior hasta que el enemigo dispara
 52: Indica el numero de balas que al enemigo le queda por disparar. Si es distinto de 0, es que esta disparando.
-53: WTF? Entra en una pantalla donde el marcador de puntos cambia a la frase "MAGIC" y el jugador se mueve solo y dispara solo. El jugador juega bastante mal, ya que parece que las balas le atraigan. Una vez se ha cambiado este valor, no se puede volver al juego normal
+53: El valor normalmente es 16, pero cuando se dispara cambia a 18 y vuelve al valor 16. Cuando se cambia el valor: WTF? Entra en una pantalla donde el marcador de puntos cambia a la frase "MAGIC" y el jugador se mueve solo y dispara solo. El jugador juega bastante mal, ya que parece que las balas le atraigan. Una vez se ha cambiado este valor, no se puede volver al juego normal
 54: Activa la animacion para convertir en mosca al jugador mas lejano y las moscas se mueven. Una vez se cambia este valor, las moscas se quedan
+    Valor 0: el enemigo mas lejano no se ha convertido en moscas
+    Valor 216: la mosca de la derecha ha muerto y la de la izquierda esta viva
+    Valor 176 o 184: la mosca de la izquierda ha muerto y la de la derecha esta viva
+    Valor 240 o 248: el enemigo mas lejano se ha convertido en 2 moscas y ambas moscas estan vivas
+    Valor 152: ambas moscas estan muertas y no van a aparecer mas
+
 55: Igual que 54 pero con el enemigo de en medio
 56: Igual que 54 pero con el enemigo mas cercano
-57: *
-58: *
-59: *
+57: Es un contador que mide el tiempo de cuanto esta durando la ronda actual
+58: Normalmente vale 0 pero cuando se pasa a la siguiente ronda pasa al valor 1 y vuelve al valor 0
+59: Igual que 57
 60: Cambia el color del fondo
-61: *
-62: *
-63: *
-64: *
-65: *
-66: *
-67: *
-68: *
+61: * (contador que va desde 0 hasta 255 y se reinicia)
+62: Igual que 0
+63: Normalmente tiene el valor 51, pero si el jugador acierta un disparo a la parte derecha del sprite o a la mosca derecha, el valor pasa a 115 y vuelve a 51
+64: * (parece variar dependiendo del sprite del enemigo mas cercano y cuando se le mata, disminuye hasta 0. Al congelar o al cambiar el valor, nada sucede)
+65: Parece tener el valor 30 todo el rato pero cuando el jugador muere, cambia al valor 29 y vuelve a 30
+66: * (igual que 64)
+67: * (parece tener el valor 30 todo el rato)
+68: * (parece variar dependiendo del sprite del enemigo. Cuando la mosca que tiene como coordenada X la bala del enemigo aparece, parece aumentar hasta mas o menos 100 y volver a descender gradualmente hasta volver a los valores que toma normalmente)
 69: Parece ser un offset en la coordenada Y del enemigo mas lejano. Cuando se reinicia, se coloca a la misma altura que el enemigo mas cercano
 70: Parece ser un offset en la coordenada Y de todos los enemigos. Cuando se llega a cierto valor, el juego se rompe
 71: Parece ser un offset en la coordenada Y del enemigo mas cercano
-72: Es la coordenada Y de la mosca que intenta acercarse
-73: *
-74: *
-75: *
-76: Segun el valor, congela al enemigo mas cercano y cambia de alguna manera algun digito del contador de puntos
+72: Es la coordenada Y de la mosca que intenta acercarse (va desde 0 hasta ~73)
+73: Parece seguir algun patron para el enemigo mas lejano. Cuando se le mata, el valor se congela y si reaparece, empieza a volver a generar el patron
+74: Igual que 73 pero para el enemigo de en medio
+75: Igual que 74 pero para el enemigo mas cercano
+76: Parece tener el valor 255 todo el rato. Segun el valor, congela al enemigo mas cercano y cambia de alguna manera algun digito del contador de puntos
 77: Cambia el color de los enemigos
 78: Cambia el color de los enemigos
-79: *
-80: *
-81: Cambia el color del jugador, el contador de puntos y la barra donde estan situadas las vidas
-82: *
-83: *
+79: Normalmente tiene el valor 255 pero cuando el jugador dispara cambia a los valores 6, 4, 3, 2, 1, 0 y vuelve otra vez a 255
+80: Parece variar conforme se elimina enemigos y segun el tipo de enemigo (ronda 1, ronda 2, etc.) parece tener un mismo valor
+81: Parece tener el valor 255 todo el rato. Cuando se cambia, cambia el color del jugador, el contador de puntos y la barra donde estan situadas las vidas
+82: * (parece tener el valor 44 todo el rato)
+83: * (parece tener el valor 86 todo el rato)
 84: Cambia el color de las vidas
-85: *
-86: *
-87: *
-88: *
-89: *
-90: *
-91: *
-92: *
-93: *
+85: * (parece seguir algun patron)
+86: Varia cada vez que un enemigo reaparece
+87: Igual que 87
+88: Cada vez que un enemigo reaparece, este valor hace como de contador. Cuando reaparece un enemigo empieza en 0 y aumenta hasta ~4 u ~8
+89: Cada vez que un enemigo reaparece, este valor cambiar, pero no se aprecia el patron que se sigue
+90: Igual que 88
+91: Igual que 89
+92: Parece seguir algun patron. Cuando se cambia de ronda, pasa de 0 a otros valores y vuelve a 0 y actua igual que 54
+93: * (parece tener el valor 100 todo el rato)
 94: Pixela una de las posiciones reservadas para el contador de puntos (parece ser el del numero mas a la izquierda)
-95: *
+95: * (parece tener el valor 100 todo el rato)
 96: Igual que 94 pero para la siguiente posicion
-97: *
+97: * (parece tener el valor 100 todo el rato)
 98: Igual que 96 pero para la siguiente posicion
-99: *
+99: Valor del tercer numero del contador de puntos * 10
 100: Igual que 98 pero para la siguiente posicion
-101: *
+101: Valor del segundo numero del contador de puntos * 10
 102: Igual que 100 pero para la siguiente posicion
-103: *
+103: * (parece tener el valor 128 todo el rato)
 104: Igual que 102 pero para la siguiente posicion (es el numero posicionado mas a la derecha)
-105: *
-106: *
-107: *
-108: Parece duplicar la animacion de las balas del enemigo
-109: Al cambiar el valor pasan cosas raras: el marcador empieza a cambiar, el jugador empieza a morir, las vidas parecen variar, etc.
-110: *
-111: *
-112: *
-113: El jugador empieza a moverse y a disparar
+105: * (parece tener el valor 255 todo el rato)
+106: * (parece tener el valor 1 todo el rato)
+107: Indica la bala que se esta disparando:
+     Valor 128: la bala es la bala incial, la que dispara varias balas a la vez
+     Valor 160: parece ser igual que 128
+     Valor 192: la bala es el laser
+     Valor 32: la bala es la mosca
+
+108: Parece tener el valor 4 todo el rato. Al cambiar el valor, parece duplicar la animacion de las balas del enemigo
+109: Parece tener el valor 0 todo el rato. Al cambiar el valor pasan cosas raras: el marcador empieza a cambiar, el jugador empieza a morir, las vidas parecen variar, etc.
+110: * (parece ir aumentando con algun criterio que depende de la ronda (cuando se pasan 2 rondas pasa de 3 a 4 (parece seguir algun patron)))
+111: Sigue algun patron cuando la mosca que tiene como coordenada X la de la bala aparece, ya que este valor empieza a cambiar. Cuando no ha aparecido aun la mosca, el valor es 0. Cuando la mosca ha muerto, el valor se congela al morir la mosca y vuelve a variar cuando aparece
+112: Igual que 0
+113: Parece tener el valor 255 todo el rato. Cuando el valor se cambia, el jugador empieza a moverse y a disparar
 114: Igual que 109
-115: *
+115: * (parece tener el valor 3 todo el rato)
 116: Cambia el sonido y el color de las vidas
-117: *
-118: *
+117: * (parece tener el valor 0 todo el rato)
+118: * (parece tener el valor 0 todo el rato)
 119: Cambia el color de la barra donde estan situadas las vidas
-120: *
-121: *
-122: *
-123: *
-124: *
-125: *
-126: *
-127: *
+120: * (parece tener el valor 0 todo el rato)
+121: * (parece tener el valor 245 todo el rato)
+122: * (parece tener el valor 0 todo el rato)
+123: * (parece tener el valor 0 todo el rato)
+124: Normalmente tiene el valor 36, pero cuando alguna bala del jugador impacta contra algun enemigo cambia a 5 y vuelve a 36
+125: * (parece tener el valor 28 todo el rato)
+126: Normalmente tiene el valor 91, pero cuando alguna bala del jugador impacta contra algun enemigo cambia a 78 unas cuantas veces y vuelve 91. Cuando se cambia de ronda pasa de 78 a 209 (varias veces), luego a 135 (varias veces) y vuelve a 91
+127: * (parece tener el valor 19 todo el rato)
 
 *: Parece no tener ningun resultado al cambiar el valor

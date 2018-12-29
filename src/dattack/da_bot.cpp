@@ -121,6 +121,7 @@ int stepsInitialization = 1;
 vector<int> freezePositions;
 vector<int> freezeValues;
 bool checkRAM = false;
+int positionToDisplay = -1;
 
 void checkAllValuesOfRAM()
 {
@@ -138,6 +139,7 @@ void checkAllValuesOfRAM()
     bool changeValue = true;
 
     stepsInitialization = 1;
+    positionToDisplay = -1;
 
     do
     {
@@ -157,7 +159,7 @@ void checkAllValuesOfRAM()
 
         cout << endl;
         cout << "RAM position = " << currentValueOfRAM << endl;
-        cout << "RAM(" << currentValueOfRAM << ") = " << (int)*byte << endl;
+        cout << "RAM[" << currentValueOfRAM << "] = " << (int)*byte << endl;
 
         if (changeValue)
         {
@@ -167,7 +169,7 @@ void checkAllValuesOfRAM()
         
         alei.act(PLAYER_A_NOOP);
 
-        cout << "New value of RAM(" << currentValueOfRAM << ") = " << (int)alei.getRAM().get(currentValueOfRAM) << endl;
+        cout << "New value of RAM[" << currentValueOfRAM << "] = " << (int)*byte << endl;
 
         --steps;
 
@@ -177,10 +179,10 @@ void checkAllValuesOfRAM()
             changeValue = true;
 
             cout << endl;
-            cout << "Write \"next\", \"exit\", \"set<VALUE>\" \"play\", \"reset\", \"freeze<POSITION>\" \"skip<NUMBER>\", \"shoot\" or \"goto<NUMBER>\" or a number of steps: " << endl;
+            cout << "Write \"next\", \"exit\", \"set<VALUE>\" \"play[POSITION_TO_DISPLAY]\", \"reset\", \"freeze<POSITION>\" \"skip<NUMBER>\", \"shoot\" or \"goto<NUMBER>\" or a number of steps: " << endl;
             cin >> next;
 
-            if (next != "play" && next.substr(0, 3) != "set" && next.substr(0, 6) != "freeze" && next.substr(0, 4) != "next" && next != "exit" && next.substr(0, 4) != "goto" && next != "shoot" && next != "reset" && next.substr(0, 4) != "skip")
+            if (next.substr(0, 4) != "play" && next.substr(0, 3) != "set" && next.substr(0, 6) != "freeze" && next.substr(0, 4) != "next" && next != "exit" && next.substr(0, 4) != "goto" && next != "shoot" && next != "reset" && next.substr(0, 4) != "skip")
             {
                 steps = atoi(next.c_str());
             }
@@ -261,7 +263,7 @@ void checkAllValuesOfRAM()
             newValue++;
         }
     }
-    while (next != "play" && next.substr(0, 4) != "next" && next != "exit" && next.substr(0, 4) != "goto");
+    while (next.substr(0, 4) != "play" && next.substr(0, 4) != "next" && next != "exit" && next.substr(0, 4) != "goto");
 
     if (next == "exit")
     {
@@ -271,11 +273,16 @@ void checkAllValuesOfRAM()
     {
         currentValueOfRAM = atoi(next.substr(4, next.size()).c_str()) - 1;
     }
-    else if (next == "play")
+    else if (next.substr(0, 4) == "play")
     {
         checkRAM = false;
         currentValueOfRAM = 0;
         stepsInitialization = 1;
+
+        if (next.size() > 4)
+        {
+            positionToDisplay = atoi(next.substr(4, next.size()).c_str());
+        }
     }
 
     *byte = (byte_t)oldValue;
@@ -284,6 +291,18 @@ void checkAllValuesOfRAM()
 
     currentValueOfRAM++;
 }
+
+int getChar_X(int char_id)
+{
+    // player position hex nibbles are inverted so we turn it around, same with the first nibble which seems to be desync with the second nibble
+    int const val(alei.getRAM().get(char_id));
+    int const rawFirstNibble((7-((val & 0xF0)>>4)) & 0x0F);
+    int const rawSecondNibble(val & 0x0F);
+    return (rawSecondNibble*16) + rawFirstNibble; 
+}
+
+int min123 = 99999;
+int max123 = -min123;
 
 float manualMode()
 {
@@ -305,8 +324,53 @@ float manualMode()
         reward += alei.act(PLAYER_A_RIGHT);
     }
 
+    if (positionToDisplay != -1 && positionToDisplay >= 0 && positionToDisplay <= 127)
+    {
+        if (positionToDisplay == 72)
+        {
+            int value123 = alei.getRAM().get(positionToDisplay);
+
+            if (value123 > max123)
+            {
+                max123 = value123;
+            }
+            if (value123 < min123)
+            {
+                min123 = value123;
+            }
+
+            cout << "RAM[" << positionToDisplay << "] = " << (int)alei.getRAM().get(positionToDisplay) << endl;
+        }
+        else if (positionToDisplay == 111 || positionToDisplay >= 13 && positionToDisplay <= 20)
+        {
+            int fix = getChar_X(positionToDisplay);
+
+            cout << "FIXED" << endl;
+            cout << "RAM[" << positionToDisplay << "] = " << fix << endl;
+
+            if (fix > max123)
+            {
+                max123 = fix;
+            }
+            if (fix < min123)
+            {
+                min123 = fix;
+            }
+        }
+        else
+        {
+            cout << "RAM[" << positionToDisplay << "] = " << (int)alei.getRAM().get(positionToDisplay) << endl;
+        }
+    }
+
     if(checkRAM || keystate[SDLK_k])
     {
+        cout << "min123 = " << min123 << endl;
+        cout << "max123 = " << max123 << endl;
+
+        min123 = 99999;
+        max123 = -min123;
+
         checkRAM = true;
         checkAllValuesOfRAM();
     }
@@ -410,7 +474,7 @@ int main(int argc, char **argv)
     // Create alei object.
     alei.setInt("random_seed", rand()%1000);
     alei.setFloat("repeat_action_probability", 0);
-    alei.setBool("sound", display_media);
+    alei.setBool("sound", false);
     alei.setBool("display_screen", display_media);
     alei.loadROM(argv[1]);
 

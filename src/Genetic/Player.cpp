@@ -27,7 +27,7 @@ vector<int> Player::playBreakout(NeuralNetwork &nn, bool displayScreen)
     vector<int> res;
     int lastLives = 0;
     float totalReward = .0f;
-    int maxSteps = 15000;
+    int maxSteps = 7500;
 
     alei.disableBufferedIO();
 
