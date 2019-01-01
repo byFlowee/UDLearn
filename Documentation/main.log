@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/Arch Linux) (preloaded format=pdflatex 2018.12.6)  1 JAN 2019 14:20
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/Arch Linux) (preloaded format=pdflatex 2018.12.6)  1 JAN 2019 19:55
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -177,7 +177,62 @@ File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
 \Gin@req@height=\dimen107
 \Gin@req@width=\dimen108
 )
-Package hyperref Info: Option `colorlinks' set `true' on input line 11.
+(/usr/share/texmf-dist/tex/latex/algorithm2e/algorithm2e.sty
+Package: algorithm2e 2017/07/18 v5.2 algorithms environments
+\c@AlgoLine=\count100
+
+(/usr/share/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
+)
+\algocf@hangindent=\skip44
+
+(/usr/share/texmf-dist/tex/latex/ifoddpage/ifoddpage.sty
+Package: ifoddpage 2016/04/23 v1.1 Conditionals for odd/even page detection
+\c@checkoddpage=\count101
+)
+(/usr/share/texmf-dist/tex/latex/tools/xspace.sty
+Package: xspace 2014/10/28 v1.13 Space after command names (DPC,MH)
+)
+(/usr/share/texmf-dist/tex/latex/relsize/relsize.sty
+Package: relsize 2013/03/29 ver 4.1
+)
+\skiptotal=\skip45
+\skiplinenumber=\skip46
+\skiprule=\skip47
+\skiphlne=\skip48
+\skiptext=\skip49
+\skiplength=\skip50
+\algomargin=\skip51
+\skipalgocfslide=\skip52
+\algowidth=\dimen109
+\inoutsize=\dimen110
+\inoutindent=\dimen111
+\interspacetitleruled=\dimen112
+\interspacealgoruled=\dimen113
+\interspacetitleboxruled=\dimen114
+\algocf@ruledwidth=\skip53
+\algocf@inoutbox=\box26
+\algocf@inputbox=\box27
+\AlCapSkip=\skip54
+\AlCapHSkip=\skip55
+\algoskipindent=\skip56
+\algocf@nlbox=\box28
+\algocf@hangingbox=\box29
+\algocf@untilbox=\box30
+\algocf@skipuntil=\skip57
+\algocf@capbox=\box31
+\algocf@lcaptionbox=\skip58
+\algoheightruledefault=\skip59
+\algoheightrule=\skip60
+\algotitleheightruledefault=\skip61
+\algotitleheightrule=\skip62
+\c@algocfline=\count102
+\c@algocfproc=\count103
+\c@algocf=\count104
+\algocf@algoframe=\box32
+\algocf@algobox=\box33
+)
+Package hyperref Info: Option `colorlinks' set `true' on input line 12.
  (./acronyms.tex))
 (./main.aux)
 \openout1 = `main.aux'.
@@ -196,7 +251,7 @@ LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 23.
 LaTeX Font Info:    ... okay on input line 23.
 LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 23.
 LaTeX Font Info:    ... okay on input line 23.
-\AtBeginShipoutBox=\box26
+\AtBeginShipoutBox=\box34
  (/usr/share/texmf-dist/tex/latex/graphics/color.sty
 Package: color 2016/07/10 v1.1e Standard LaTeX Color (DPC)
 
@@ -213,7 +268,7 @@ Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
 (/usr/share/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
 Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
-\c@section@level=\count100
+\c@section@level=\count105
 )
 LaTeX Info: Redefining \ref on input line 23.
 LaTeX Info: Redefining \pageref on input line 23.
@@ -225,16 +280,16 @@ LaTeX Info: Redefining \nameref on input line 23.
 
  (/usr/share/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count101
-\scratchdimen=\dimen109
-\scratchbox=\box27
-\nofMPsegments=\count102
-\nofMParguments=\count103
+\scratchcounter=\count106
+\scratchdimen=\dimen115
+\scratchbox=\box35
+\nofMPsegments=\count107
+\nofMParguments=\count108
 \everyMPshowfont=\toks16
-\MPscratchCnt=\count104
-\MPscratchDim=\dimen110
-\MPnumerator=\count105
-\makeMPintoPDFobject=\count106
+\MPscratchCnt=\count109
+\MPscratchDim=\dimen116
+\MPnumerator=\count110
+\makeMPintoPDFobject=\count111
 \everyMPtoPDFconversion=\toks17
 ) (/usr/share/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
@@ -273,81 +328,93 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (./sections/dat_gen.tex
 Package acronym Info: Label `acro:ale' newly defined as it shall be overridden
 although it is yet undefined on input line 4.
-<Figures/RAMColors.png, id=122, 577.15625pt x 288.07625pt>
+<Figures/RAMColors.png, id=127, 577.15625pt x 288.07625pt>
 File: Figures/RAMColors.png Graphic file (type png)
 <use Figures/RAMColors.png>
 Package pdftex.def Info: Figures/RAMColors.png  used on input line 10.
 (pdftex.def)             Requested size: 360.0pt x 179.69554pt.
  [3 <./Figures/RAMColors.png>]
-<Figures/AnalisisRAM.png, id=132, 1012.78375pt x 590.205pt>
+<Figures/AnalisisRAM.png, id=137, 1012.78375pt x 590.205pt>
 File: Figures/AnalisisRAM.png Graphic file (type png)
 <use Figures/AnalisisRAM.png>
 Package pdftex.def Info: Figures/AnalisisRAM.png  used on input line 23.
 (pdftex.def)             Requested size: 360.0pt x 209.7899pt.
-<Figures/DAttackOpsRequired.png, id=134, 587.19376pt x 44.165pt>
+<Figures/DAttackOpsRequired.png, id=139, 587.19376pt x 44.165pt>
 File: Figures/DAttackOpsRequired.png Graphic file (type png)
 <use Figures/DAttackOpsRequired.png>
 Package pdftex.def Info: Figures/DAttackOpsRequired.png  used on input line 32.
 
 (pdftex.def)             Requested size: 360.0pt x 27.07672pt.
- [4 <./Figures/AnalisisRAM.png> <./Figures/DAttackOpsRequired.png>]
-<Figures/ALEMediaSettings.png, id=145, 640.3925pt x 180.675pt>
+ [4 <./Figures/AnalisisRAM.png> <./Figures/DAttackOpsRequired.png>] [5]
+<Figures/ALEMediaSettings.png, id=154, 640.3925pt x 180.675pt>
 File: Figures/ALEMediaSettings.png Graphic file (type png)
 <use Figures/ALEMediaSettings.png>
-Package pdftex.def Info: Figures/ALEMediaSettings.png  used on input line 60.
+Package pdftex.def Info: Figures/ALEMediaSettings.png  used on input line 70.
 (pdftex.def)             Requested size: 360.0pt x 101.56877pt.
 Package acronym Info: Label `acro:csv' newly defined as it shall be overridden
-although it is yet undefined on input line 65.
-<Figures/ALEromANDmedia.png, id=146, 468.75125pt x 67.25125pt>
+although it is yet undefined on input line 75.
+<Figures/ALEromANDmedia.png, id=155, 468.75125pt x 67.25125pt>
 File: Figures/ALEromANDmedia.png Graphic file (type png)
 <use Figures/ALEromANDmedia.png>
-Package pdftex.def Info: Figures/ALEromANDmedia.png  used on input line 69.
+Package pdftex.def Info: Figures/ALEromANDmedia.png  used on input line 79.
 (pdftex.def)             Requested size: 251.9989pt x 36.154pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[5 <./Figures/ALEMediaSettings.png>]
-<Figures/ALEMainExecLoop.png, id=156, 619.31375pt x 193.72375pt>
+[6 <./Figures/ALEMediaSettings.png>]
+<Figures/ALEMainExecLoop.png, id=166, 619.31375pt x 193.72375pt>
 File: Figures/ALEMainExecLoop.png Graphic file (type png)
 <use Figures/ALEMainExecLoop.png>
-Package pdftex.def Info: Figures/ALEMainExecLoop.png  used on input line 81.
+Package pdftex.def Info: Figures/ALEMainExecLoop.png  used on input line 91.
 (pdftex.def)             Requested size: 360.0pt x 112.61406pt.
- [6 <./Figures/ALEromANDmedia.png> <./Figures/ALEMainExecLoop.png>] [7] [8] [9]
- [10]) (./sections/place.tex [11])
-(./sections/desc.tex
+ [7 <./Figures/ALEromANDmedia.png> <./Figures/ALEMainExecLoop.png>]
+<Figures/aledumpcsv.png, id=177, 288.07625pt x 138.5175pt>
+File: Figures/aledumpcsv.png Graphic file (type png)
+<use Figures/aledumpcsv.png>
+Package pdftex.def Info: Figures/aledumpcsv.png  used on input line 106.
+(pdftex.def)             Requested size: 143.9978pt x 69.24165pt.
+<Figures/breakoutgame.png, id=178, 424.58624pt x 319.1925pt>
+File: Figures/breakoutgame.png Graphic file (type png)
+<use Figures/breakoutgame.png>
+Package pdftex.def Info: Figures/breakoutgame.png  used on input line 118.
+(pdftex.def)             Requested size: 251.9989pt x 189.447pt.
+ [8 <./Figures/aledumpcsv.png> <./Figures/breakoutgame.png>] [9] [10] [11] [12]
+) (./sections/place.tex [13]) (./sections/desc.tex
 Overfull \hbox (1.84865pt too wide) in paragraph at lines 8--8
 []\OT1/cmr/bx/n/12 Descripci^^Son de los conocimien-tos y com-pe-ten-cias adqui
 ri-
  []
 
-[12]) (./sections/concl.tex [13])
+[14]) (./sections/concl.tex [15])
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 41.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 41.
  (./main.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 41.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 41.
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: E3DE02F0FB81D31E36751D4F2D8FC0EE;1743.
+(rerunfilecheck)             Checksum: E41B9DC27E1668C59397C3A100141880;1818.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 41.
  ) 
 Here is how much of TeX's memory you used:
- 5625 strings out of 492639
- 82760 string characters out of 6135497
- 176029 words of memory out of 5000000
- 9415 multiletter control sequences out of 15000+600000
+ 6630 strings out of 492639
+ 98903 string characters out of 6135497
+ 202851 words of memory out of 5000000
+ 10394 multiletter control sequences out of 15000+600000
  9157 words of font info for 32 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 30i,7n,28p,861b,390s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 30i,13n,30p,861b,412s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/
 texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-dist/fon
-ts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public
-/amsfonts/cm/cmr12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cm
-r17.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on main.pdf (13 pages, 273522 bytes).
+ts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/c
+mr12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/
+share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-di
+st/fonts/type1/public/amsfonts/cm/cmti10.pfb>
+Output written on main.pdf (15 pages, 308567 bytes).
 PDF statistics:
- 231 PDF objects out of 1000 (max. 8388607)
- 196 compressed objects within 2 object streams
- 43 named destinations out of 1000 (max. 500000)
- 191 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 263 PDF objects out of 1000 (max. 8388607)
+ 219 compressed objects within 3 object streams
+ 50 named destinations out of 1000 (max. 500000)
+ 209 words of extra memory for PDF output out of 10000 (max. 10000000)
 

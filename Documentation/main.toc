@@ -1,20 +1,21 @@
 \contentsline {section}{\numberline {1}Tecnolog\IeC {\'\i }as implementadas y estado operativo.}{3}{section.1}
 \contentsline {subsection}{\numberline {1.1}An\IeC {\'a}lisis de RAM}{3}{subsection.1.1}
-\contentsline {subsection}{\numberline {1.2}Bots b\IeC {\'a}sicos}{5}{subsection.1.2}
-\contentsline {subsubsection}{\numberline {1.2.1}Plantilla com\IeC {\'u}n}{5}{subsubsection.1.2.1}
-\contentsline {subsubsection}{\numberline {1.2.2}Breakout}{7}{subsubsection.1.2.2}
-\contentsline {subsubsection}{\numberline {1.2.3}Boxing}{8}{subsubsection.1.2.3}
-\contentsline {subsubsection}{\numberline {1.2.4}Demon Attack}{9}{subsubsection.1.2.4}
-\contentsline {subsection}{\numberline {1.3}Redes neuronales}{10}{subsection.1.3}
-\contentsline {section}{\numberline {2}Manual de utilizaci\IeC {\'o}n}{11}{section.2}
-\contentsline {subsection}{\numberline {2.1}Actividad principal de la empresa}{11}{subsection.2.1}
-\contentsline {subsection}{\numberline {2.2}Departamento del estudiante en pr\IeC {\'a}cticas}{11}{subsection.2.2}
-\contentsline {subsection}{\numberline {2.3}Infraestructura del centro, materiales y personal del lugar de trabajo}{11}{subsection.2.3}
-\contentsline {section}{\numberline {3}Experimentos realizados y resultados obtenidos}{12}{section.3}
-\contentsline {subsection}{\numberline {3.1}Objetivos planteados por la empresa al estudiante}{12}{subsection.3.1}
-\contentsline {subsection}{\numberline {3.2}Descripci\IeC {\'o}n de las tareas y trabajos desarrollados}{12}{subsection.3.2}
-\contentsline {subsection}{\numberline {3.3}Descripci\IeC {\'o}n de los conocimientos y competencias adquiridos}{12}{subsection.3.3}
-\contentsline {section}{\numberline {4}Conclusiones}{13}{section.4}
-\contentsline {subsection}{\numberline {4.1}Valoraci\IeC {\'o}n personal de las pr\IeC {\'a}cticas realizadas}{13}{subsection.4.1}
-\contentsline {subsection}{\numberline {4.2}Indicar qu\IeC {\'e} ha echado de menos el alumno en la formaci\IeC {\'o}n recibida en la Universidad que considera le hubiera ayudado}{13}{subsection.4.2}
-\contentsline {subsection}{\numberline {4.3}Posibles sugerencias para mejorar las pr\IeC {\'a}cticas de empresa}{13}{subsection.4.3}
+\contentsline {subsubsection}{\numberline {1.1.1}Modificando ALE}{5}{subsubsection.1.1.1}
+\contentsline {subsection}{\numberline {1.2}Bots b\IeC {\'a}sicos}{6}{subsection.1.2}
+\contentsline {subsubsection}{\numberline {1.2.1}Plantilla com\IeC {\'u}n}{6}{subsubsection.1.2.1}
+\contentsline {subsubsection}{\numberline {1.2.2}Breakout}{8}{subsubsection.1.2.2}
+\contentsline {subsubsection}{\numberline {1.2.3}Boxing}{10}{subsubsection.1.2.3}
+\contentsline {subsubsection}{\numberline {1.2.4}Demon Attack}{10}{subsubsection.1.2.4}
+\contentsline {subsection}{\numberline {1.3}Redes neuronales}{12}{subsection.1.3}
+\contentsline {section}{\numberline {2}Manual de utilizaci\IeC {\'o}n}{13}{section.2}
+\contentsline {subsection}{\numberline {2.1}Actividad principal de la empresa}{13}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Departamento del estudiante en pr\IeC {\'a}cticas}{13}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Infraestructura del centro, materiales y personal del lugar de trabajo}{13}{subsection.2.3}
+\contentsline {section}{\numberline {3}Experimentos realizados y resultados obtenidos}{14}{section.3}
+\contentsline {subsection}{\numberline {3.1}Objetivos planteados por la empresa al estudiante}{14}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Descripci\IeC {\'o}n de las tareas y trabajos desarrollados}{14}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}Descripci\IeC {\'o}n de los conocimientos y competencias adquiridos}{14}{subsection.3.3}
+\contentsline {section}{\numberline {4}Conclusiones}{15}{section.4}
+\contentsline {subsection}{\numberline {4.1}Valoraci\IeC {\'o}n personal de las pr\IeC {\'a}cticas realizadas}{15}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Indicar qu\IeC {\'e} ha echado de menos el alumno en la formaci\IeC {\'o}n recibida en la Universidad que considera le hubiera ayudado}{15}{subsection.4.2}
+\contentsline {subsection}{\numberline {4.3}Posibles sugerencias para mejorar las pr\IeC {\'a}cticas de empresa}{15}{subsection.4.3}
