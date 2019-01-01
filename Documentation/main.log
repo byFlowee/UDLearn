@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/Arch Linux) (preloaded format=pdflatex 2018.12.6)  1 JAN 2019 12:47
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/Arch Linux) (preloaded format=pdflatex 2018.12.6)  1 JAN 2019 14:20
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -262,68 +262,92 @@ LaTeX Font Info:    External font `cmex10' loaded for size
  (./main.toc
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <10.95> on input line 2.
-)
-\tf@toc=\write5
-\openout5 = `main.toc'.
-
 
 [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./sections/dat_gen.tex
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}])
+\tf@toc=\write5
+\openout5 = `main.toc'.
+
+ [2]
+(./sections/dat_gen.tex
 Package acronym Info: Label `acro:ale' newly defined as it shall be overridden
 although it is yet undefined on input line 4.
-<Figures/RAMColors.png, id=98, 577.15625pt x 288.07625pt>
+<Figures/RAMColors.png, id=122, 577.15625pt x 288.07625pt>
 File: Figures/RAMColors.png Graphic file (type png)
 <use Figures/RAMColors.png>
 Package pdftex.def Info: Figures/RAMColors.png  used on input line 10.
 (pdftex.def)             Requested size: 360.0pt x 179.69554pt.
-
-[2 <./Figures/RAMColors.png>]
-<Figures/AnalisisRAM.png, id=108, 1012.78375pt x 590.205pt>
+ [3 <./Figures/RAMColors.png>]
+<Figures/AnalisisRAM.png, id=132, 1012.78375pt x 590.205pt>
 File: Figures/AnalisisRAM.png Graphic file (type png)
 <use Figures/AnalisisRAM.png>
 Package pdftex.def Info: Figures/AnalisisRAM.png  used on input line 23.
 (pdftex.def)             Requested size: 360.0pt x 209.7899pt.
-<Figures/DAttackOpsRequired.png, id=110, 587.19376pt x 44.165pt>
+<Figures/DAttackOpsRequired.png, id=134, 587.19376pt x 44.165pt>
 File: Figures/DAttackOpsRequired.png Graphic file (type png)
 <use Figures/DAttackOpsRequired.png>
 Package pdftex.def Info: Figures/DAttackOpsRequired.png  used on input line 32.
 
 (pdftex.def)             Requested size: 360.0pt x 27.07672pt.
- [3 <./Figures/AnalisisRAM.png> <./Figures/DAttackOpsRequired.png>] [4]) (./sec
-tions/place.tex [5]) (./sections/desc.tex
+ [4 <./Figures/AnalisisRAM.png> <./Figures/DAttackOpsRequired.png>]
+<Figures/ALEMediaSettings.png, id=145, 640.3925pt x 180.675pt>
+File: Figures/ALEMediaSettings.png Graphic file (type png)
+<use Figures/ALEMediaSettings.png>
+Package pdftex.def Info: Figures/ALEMediaSettings.png  used on input line 60.
+(pdftex.def)             Requested size: 360.0pt x 101.56877pt.
+Package acronym Info: Label `acro:csv' newly defined as it shall be overridden
+although it is yet undefined on input line 65.
+<Figures/ALEromANDmedia.png, id=146, 468.75125pt x 67.25125pt>
+File: Figures/ALEromANDmedia.png Graphic file (type png)
+<use Figures/ALEromANDmedia.png>
+Package pdftex.def Info: Figures/ALEromANDmedia.png  used on input line 69.
+(pdftex.def)             Requested size: 251.9989pt x 36.154pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[5 <./Figures/ALEMediaSettings.png>]
+<Figures/ALEMainExecLoop.png, id=156, 619.31375pt x 193.72375pt>
+File: Figures/ALEMainExecLoop.png Graphic file (type png)
+<use Figures/ALEMainExecLoop.png>
+Package pdftex.def Info: Figures/ALEMainExecLoop.png  used on input line 81.
+(pdftex.def)             Requested size: 360.0pt x 112.61406pt.
+ [6 <./Figures/ALEromANDmedia.png> <./Figures/ALEMainExecLoop.png>] [7] [8] [9]
+ [10]) (./sections/place.tex [11])
+(./sections/desc.tex
 Overfull \hbox (1.84865pt too wide) in paragraph at lines 8--8
 []\OT1/cmr/bx/n/12 Descripci^^Son de los conocimien-tos y com-pe-ten-cias adqui
 ri-
  []
 
-[6]) (./sections/concl.tex [7])
+[12]) (./sections/concl.tex [13])
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 41.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 41.
  (./main.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 41.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 41.
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 3609202DB4D52BED069E6F56A1D4580F;1454.
+(rerunfilecheck)             Checksum: E3DE02F0FB81D31E36751D4F2D8FC0EE;1743.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 41.
  ) 
 Here is how much of TeX's memory you used:
- 5577 strings out of 492639
- 81813 string characters out of 6135497
- 175391 words of memory out of 5000000
- 9383 multiletter control sequences out of 15000+600000
+ 5625 strings out of 492639
+ 82760 string characters out of 6135497
+ 176029 words of memory out of 5000000
+ 9415 multiletter control sequences out of 15000+600000
  9157 words of font info for 32 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 30i,7n,28p,588b,359s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 30i,7n,28p,861b,390s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/
 texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-dist/fon
 ts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public
 /amsfonts/cm/cmr12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cm
 r17.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on main.pdf (7 pages, 207343 bytes).
+Output written on main.pdf (13 pages, 273522 bytes).
 PDF statistics:
- 167 PDF objects out of 1000 (max. 8388607)
- 144 compressed objects within 2 object streams
- 29 named destinations out of 1000 (max. 500000)
- 144 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 231 PDF objects out of 1000 (max. 8388607)
+ 196 compressed objects within 2 object streams
+ 43 named destinations out of 1000 (max. 500000)
+ 191 words of extra memory for PDF output out of 10000 (max. 10000000)
 
