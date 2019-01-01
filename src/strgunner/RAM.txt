@@ -12,14 +12,14 @@
 11: *
 12: *
 13: Parece modificar las coordenadas X e Y del objetivo de una manera bastante rara pero que parece tener un patron. No modifica las coordenadas de 1 en 1, sino dando saltos
-14: Coordenada Y del jugador
+14: Coordenada Y del jugador. Va desde 23 hasta 149
 15: Parece modificar el contador de puntos, pero al aumentarlo unas pocas veces, el juego se rompe
 16: *
 17: *
 18: *
 19: Le hace algo raro al sprite del jugador por la parte de arriba
 20: Igual que 19
-21: Coordenada X del jugador
+21: Coordenada X del jugador. Va desde 20 hasta 140
 22: Cambia el color del jugador y de las vidas
 23: Igual que 19 pero con el sprite del objetivo
 24: Igual que 23
@@ -29,17 +29,17 @@
 28: *
 29: Animacion del enemigo
 30: Animacion del enemigo
-31: Coordenada X del enemigo (en alguna otra variable debe de haber un offset)
-32: Offset que se le suma a la coordenada X del enemigo
-33: Coordenada X de la bala del enemigo
-34: Coordenada Y de la bala del enemigo
+31: Coordenada X del enemigo (en alguna otra variable debe de haber un offset). Va desde 21 hasta 147
+32: Offset que se le suma a la coordenada X del enemigo. Va desde 0 hasta 255 (a partir de 128 son valores negativos, por eso llega hasta 255. En verdad va desde 0 hasta x valor (no muy grande) y lo mismo pasa con los valores negativos)
+33: Coordenada X de la bala del enemigo. Va desde ~21 hasta ~141
+34: Coordenada Y de la bala del enemigo. Va desde 16 hasta 148
 35: *
 36: *
 37: *
 38: *
 39: *
-40: Coordenada X de la bala del jugador
-41: Coordenada Y de la bala del jugador
+40: Coordenada X de la bala del jugador. Va desde 0 (valor cuando la bala no esta en pantalla) hasta 148
+41: Coordenada Y de la bala del jugador. Va desde 0 (valor cuando la bala no esta pantalla) hasta 153
 42: Parece hacerle algo al sprite de la barra de abajo. Si la parte de abajo es |     |, coge y hace una division en 2 |  |  | y coge la parte de la izquierda y la parte de la derecha del medio y vuelve a dividir en 4 secciones, y hace como un contador binario con 4 bits, alternando entre color negro para el 0 y color verde para el 1 (?)
 43: Modifica la 1ª linea de pixeles del sprite de las montañas (empezando desde abajo)
 44: Igual que 43 pero con la 2ª linea de pixeles
@@ -69,10 +69,10 @@
 68: Parecido a 50
 69: *
 70: Corresponde a la animacion de cuando el jugador muere y vuelve a reaparecer. Conforme aumenta el valor, se ejecuta un frame de la animacion
-71: Coordenada Y del objetivo
+71: Coordenada Y del objetivo. Va desde 0 (valor cuando el objetivo no esta en pantalla porque ha muerto) hasta 139
 72: Coordenada Y del objetivo 2 (cuando son 2 enemigos). Parece aparecer a los 1100/1400 puntos
 73: Coordenada Y del objetivo 3 (cuando son 3 enemigos). Parece aparecer a los 5900 puntos
-74: Coordenada X del objetivo
+74: Coordenada X del objetivo. Va desde 0 (valor cuando el objetivo no esta en pantalla porque ha muerto) hasta 144
 75: Coordenada X del objetivo 2 (cuando son 2 enemigos). Parece aparecer a los 1100/1400 puntos
 76: Coordenada X del objetivo 3 (cuando son 3 enemigos). Parece aparecer a los 5900 puntos
 77: *

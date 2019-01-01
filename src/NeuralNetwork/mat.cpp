@@ -232,3 +232,24 @@ void Mat::print(string delimiter) const
 		}
 	}
 }
+
+void Mat::print(ofstream &file, string delimiter) const
+{
+	for (int i = 0; i < this->rows(); i++)
+	{
+		for (int j = 0; j < this->cols(); j++)
+		{
+			file << this->mat[i][j];
+
+			if (j + 1 != this->cols())
+			{
+				file << delimiter;
+			}
+		}
+
+		if (i + 1 != this->rows())
+		{
+			file << endl;
+		}
+	}
+}

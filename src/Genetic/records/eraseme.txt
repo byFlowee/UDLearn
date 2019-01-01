@@ -1,0 +1,18 @@
+Configuration
+---------------------------
+Generations: 1
+Population: 1
+Mutation rate: 0.2
+Elitism: 5
+Weights Factor: 2
+Game: BreakoutTopology: 4, 2
+
+Generation 1
+---------------------------
+  Fitness: 2
+  Score: 2
+
+
+Weights and bias
+---------------------------
+0.117961, -1.78573, 1.26469, -1.75268, 1.51788, -1.95687, 0.891326, -0.430996, -0.374488, -1.92097

@@ -13,11 +13,53 @@ enum Game
     starGunner = 4
 };
 
-class GeneticNN {
+struct WeightInitializationRange
+{
+    private:
+        double left;
+        double right;
+
+    public:
+        WeightInitializationRange()
+        {
+            this->left = -1.0;
+            this->right = 1.0;
+        }
+
+        WeightInitializationRange(double left, double right)
+        {
+            if (left <= right)
+            {
+                this->left = left;
+                this->right = right;
+            }
+            else
+            {
+                this->left = -1.0;
+                this->right = 1.0;
+            }
+        }
+
+        double getLeft() const
+        {
+            return this->left;
+        }
+
+        double getRight() const
+        {
+            return this->right;
+        }
+};
+
+class GeneticNN
+{
+    
     private:
         size_t populationSize;
         vector<DNA> population;
         vector<double> fitnessValues;
+        vector<double> initialElitism;
+        vector<WeightInitializationRange> weightsInitializationRange;
         vector<int> topology;
         size_t currentGeneration;
         size_t DNASize;
@@ -31,7 +73,7 @@ class GeneticNN {
         double getFitnessValue(const vector<int>&);
 
     public:
-        GeneticNN(const vector<int> &topology, Game, size_t = 50, size_t = 0, size_t = 1);
+        GeneticNN(const vector<int>&, Game, const vector<double>&, const vector<WeightInitializationRange>&, size_t = 50, size_t = 0, size_t = 1);
         void setMutationRate(double);
         void setCrossoverRate(double);
         void createPopulation();

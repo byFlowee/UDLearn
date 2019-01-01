@@ -17,6 +17,22 @@ class Player
         static int breakoutGetPlayerX();
         static int breakoutGetBallX();
 
+        enum DemonAttackEnemy
+        {
+            LeftFlyFarthest,
+            LeftFlyMiddle,
+            LeftFlyClosest,
+            RightFlyFarthest,
+            RightFlyMiddle,
+            RightFlyClosest
+        };
+
+        static vector<int> enemyBulletCoordinateXHistory;
+        static int enemyBulletCoordinateXHistoryIndex;
+
+        static int demonAttackGetCoordinate(int);
+        static bool demonAttackIsEnemyAlive(DemonAttackEnemy);
+
     public:
         static vector<int> playBreakout(NeuralNetwork&, bool = false);
         static vector<int> playBoxing(NeuralNetwork&, bool = false);

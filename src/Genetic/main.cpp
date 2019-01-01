@@ -219,11 +219,11 @@ void DNACrossoverAndMutation()
     cout << endl;
 }
 
-NeuralNetwork play(const vector<int> &topology, Game game, int maxGenerations, int population, double mutationRate, size_t elitism, size_t weightsFactor, bool fitnessSharing)
+NeuralNetwork play(const vector<int> &topology, Game game, int maxGenerations, int population, double mutationRate, size_t elitism, size_t weightsFactor, bool fitnessSharing, ofstream &bestFitnessAndScoreFileTxt, ofstream &bestFitnessAndScoreFileWeights, const vector<double> &initialElitism, const vector<WeightInitializationRange> &weightsInitialization)
 {
     int score = 0;
     int steps = 0;
-    GeneticNN geneticAlg(topology, game, population, elitism, weightsFactor);
+    GeneticNN geneticAlg(topology, game, initialElitism, weightsInitialization, population, elitism, weightsFactor);
     NeuralNetwork nn(topology);
     vector<vector<Mat>> weightsAndBias;
     DNA best;
@@ -323,6 +323,12 @@ NeuralNetwork play(const vector<int> &topology, Game game, int maxGenerations, i
             cout << "------------------- Score playing = \033[1;31m" << score << "\033[0m" << endl;
         }
 
+        bestFitnessAndScoreFileTxt << "Generation " << (i + 1) << endl;
+        bestFitnessAndScoreFileTxt << "---------------------------" << endl;
+        bestFitnessAndScoreFileTxt << "  Fitness: " << fitnessValue << endl;
+        bestFitnessAndScoreFileTxt << "  Score: " << score << endl;
+        bestFitnessAndScoreFileTxt << endl;
+
         cout << "------------------- Steps playing = " << steps << endl;
         cout << "--------------------------------------------------------------------" << endl;
         cout << "--------------------------------------------------------------------" << endl;
@@ -334,11 +340,13 @@ NeuralNetwork play(const vector<int> &topology, Game game, int maxGenerations, i
             best = currentBest;
         }
 
+        /*
         if (game == Game::breakout && score == 864)
         {
             cout << "MAX SCORE IN BREAKOUT: 864!" << endl;
             break;
         }
+        */
 
         geneticAlg.nextGeneration();
     }
@@ -348,6 +356,11 @@ NeuralNetwork play(const vector<int> &topology, Game game, int maxGenerations, i
     cout << "Weights and Bias flattened of the best DNA found (score = " << bestScore << "): ";
     flattenedWeightsAndBiasBest.print(", ");
     cout << endl << endl;
+
+    bestFitnessAndScoreFileWeights << "Weights and biases" << endl;
+    bestFitnessAndScoreFileWeights << "---------------------------" << endl;
+    flattenedWeightsAndBiasBest.print(bestFitnessAndScoreFileWeights, ", ");
+    bestFitnessAndScoreFileWeights << endl;
 
     UtilG::setRepresentativeVectorOnNeuralNetwork(flattenedWeightsAndBiasBest, nn);
 
@@ -377,9 +390,20 @@ NeuralNetwork play(const vector<int> &topology, Game game, int maxGenerations, i
 
 int main (int argc, char **argv)
 {
-    if (argc != 4 && argc != 5)
+    if (argc != 5)
     {
-        cerr << "ERROR: Usage: ./main <GAME = 1 (breakout), 2 (boxing), 3 (demon attack), 4 (star gunner)> maxGenerations population [mutation]" << endl;
+        cerr << "ERROR: Usage: ./main <GAME = 1 (breakout), 2 (boxing), 3 (demon attack), 4 (star gunner)> maxGenerations population filenameToSaveRecords" << endl;
+
+        return 0;
+    }
+
+    string filenameToSaveRecords(argv[4]);
+    ofstream bestFitnessAndScoreFileTxt(("records/" + filenameToSaveRecords + ".txt").c_str());
+    ofstream bestFitnessAndScoreFileWeights(("records/" + filenameToSaveRecords + ".weights").c_str());
+
+    if (!bestFitnessAndScoreFileTxt.is_open() || !bestFitnessAndScoreFileWeights.is_open())
+    {
+        cerr << "ERROR: couldn't open the file to save the records." << endl;
 
         return 0;
     }
@@ -410,10 +434,26 @@ int main (int argc, char **argv)
     // 0.259896, -0.698754, -0.589985, -0.500027, -0.404895, 0.565923, -0.353388, 0.462297, 0.111881, -0.179611
     // 833 breakout 7500 steps
     // 0.47709, -0.573443, -0.41815, 0.351678, -0.544178, 0.516288, -0.875486, 0.368601, 0.3326, 0.198892
+    // 847 breakout 7500 steps
+    // 0.218786, -0.544416, 0.512017, 0.345849, -0.532631, 0.250457, 0.265523, 0.832519, 0.374702, -0.199293
+    // 860 breakout 7500 steps
+    // -0.0475447, -1.44612, -1.03555, 1.19032,-0.0180972, 1.39592, -1.65275, -0.400388, 0.313902, -0.911924
+    // 0.189794, -0.560286, -0.460457, 0.823264, -0.65252, 0.115743, -0.194485, 0.109773, 0.382016, 0.0633527
+
+    // 1100 Demon Attack
+    // -0.532378, -0.695523, 0.773558, 0.931694, 0.633992, -0.67421, -0.999999, 0.308315, 0.476289, -0.699007, -0.80261, -0.791356
+    // 1720 Demon Attack
+    // -0.635731, -0.0958786, 0.760686, -0.240117, 0.84766, -0.321585, 0.129651, -0.0953672, -0.183696, 0.174786, -0.69686, -0.576403
+    // 1880 Demon Attack
+    // 0.722802, -0.469157, -0.339152, 0.185987, 0.827155, -0.77092, -0.50929, 0.119941, -0.522479, -0.107499, -0.306812,0.4545
+    // 2290 Demon Attack
+    // -0.120691, 0.121277, 0.510898, -0.348682, 0.961141, -0.427117, 0.732803, 0.196828, 0.573274, 0.393096,0.05695, 0.196998
+    // 3505 Demon Attack
+    // 0.676937, -0.59529, -0.387351, -0.044617, 0.176473,0.335892, -0.599553, -0.103169, -0.53585, 0.14999, -0.134388, 0.00355079
 
     vector<int> topologyBreakout = {4, 2};
     vector<int> topologyBoxing = {4, 5};
-    vector<int> topologyDemonAttack = {11, 3};
+    vector<int> topologyDemonAttack = {3, 3};
     vector<int> topologyStarGunner = {12, 5};
 
     // Redirect error output to /dev/null -> all messages in ALE are displayed in the error output.......
@@ -424,30 +464,69 @@ int main (int argc, char **argv)
     dup2(devNull, STDERR_FILENO);
 
     double mutationRate = 0.2;
-    size_t elitism = 1;
-    size_t weightsFactor = 1;
+    size_t elitism = 5;
+    size_t weightsFactor = 2;
+    vector<double> initialElitism;
+    vector<WeightInitializationRange> weightsInitialization;
 
-    if (argc == 5)
-    {
-        mutationRate = atof(argv[4]);
-    }
+    bestFitnessAndScoreFileTxt << "Configuration" << endl;
+    bestFitnessAndScoreFileTxt << "---------------------------" << endl;
+    bestFitnessAndScoreFileTxt << "Generations: " << argv[2] << endl;
+    bestFitnessAndScoreFileTxt << "Population: " << argv[3] << endl;
+    bestFitnessAndScoreFileTxt << "Mutation rate: " << mutationRate << endl;
+    bestFitnessAndScoreFileTxt << "Elitism: " << elitism << endl;
+    bestFitnessAndScoreFileTxt << "Weights Factor: " << weightsFactor << endl;
 
     Game game = (Game)atoi(argv[1]);
 
     switch (game)
     {
         case Game::breakout:
-            //play(topologyBreakout, game, atoi(argv[2]), atoi(argv[3]), mutationRate, elitism, weightsFactor, false);
-            play(topologyBreakout, game, atoi(argv[2]), atoi(argv[3]), mutationRate, 1, 1, false); // Max. score with this configuration in ~5 generations with a population of 200.
+            bestFitnessAndScoreFileTxt << "Game: Breakout" << endl;
+            bestFitnessAndScoreFileTxt << "Topology: ";
+            UtilG::printVector(topologyBreakout, bestFitnessAndScoreFileTxt);
+            bestFitnessAndScoreFileTxt << endl << endl;
+
+            //initialElitism = {0.189794, -0.560286, -0.460457, 0.823264, -0.65252, 0.115743, -0.194485, 0.109773, 0.382016, 0.0633527};
+
+            //weightsInitialization.resize(10);
+
+            //weightsInitialization[0] = WeightInitializationRange(-0.04754, 0.47709);
+            //weightsInitialization[1] = WeightInitializationRange(-1.44612, -0.54442);
+            //weightsInitialization[2] = WeightInitializationRange(-1.03555, 0.51202);
+            //weightsInitialization[3] = WeightInitializationRange(-0.50003, 1.19032);
+            //weightsInitialization[4] = WeightInitializationRange(-0.65252, -0.0181);
+            //weightsInitialization[5] = WeightInitializationRange(0.12, 1.39592);
+            //weightsInitialization[6] = WeightInitializationRange(-1.65275, 0.26552);
+            //weightsInitialization[7] = WeightInitializationRange(-0.40039, 0.83252);
+            //weightsInitialization[8] = WeightInitializationRange(0.11188, 0.38202);
+            //weightsInitialization[9] = WeightInitializationRange(-0.91, 0.19889);
+
+            play(topologyBreakout, game, atoi(argv[2]), atoi(argv[3]), mutationRate, elitism, weightsFactor, false, bestFitnessAndScoreFileTxt, bestFitnessAndScoreFileWeights, initialElitism, weightsInitialization);
             break;
         case Game::boxing:
-            play(topologyBoxing, game, atoi(argv[2]), atoi(argv[3]), mutationRate, elitism, weightsFactor, false);
+            bestFitnessAndScoreFileTxt << "Game: Boxing" << endl;
+            bestFitnessAndScoreFileTxt << "Topology: ";
+            UtilG::printVector(topologyBoxing, bestFitnessAndScoreFileTxt);
+            bestFitnessAndScoreFileTxt << endl << endl;
+
+            play(topologyBoxing, game, atoi(argv[2]), atoi(argv[3]), mutationRate, elitism, weightsFactor, false, bestFitnessAndScoreFileTxt, bestFitnessAndScoreFileWeights, initialElitism, weightsInitialization);
             break;
         case Game::demonAttack:
-            play(topologyDemonAttack, game, atoi(argv[2]), atoi(argv[3]), mutationRate, elitism, weightsFactor, true);
+            bestFitnessAndScoreFileTxt << "Game: Demon Attack" << endl;
+            bestFitnessAndScoreFileTxt << "Topology: ";
+            UtilG::printVector(topologyDemonAttack, bestFitnessAndScoreFileTxt);
+            bestFitnessAndScoreFileTxt << endl << endl;
+
+            play(topologyDemonAttack, game, atoi(argv[2]), atoi(argv[3]), mutationRate, elitism, weightsFactor, false, bestFitnessAndScoreFileTxt, bestFitnessAndScoreFileWeights, initialElitism, weightsInitialization);
             break;
         case Game::starGunner:
-            play(topologyStarGunner, game, atoi(argv[2]), atoi(argv[3]), mutationRate, elitism, weightsFactor, false);
+            bestFitnessAndScoreFileTxt << "Game: StarGunner" << endl;
+            bestFitnessAndScoreFileTxt << "Topology: ";
+            UtilG::printVector(topologyStarGunner, bestFitnessAndScoreFileTxt);
+            bestFitnessAndScoreFileTxt << endl << endl;
+
+            play(topologyStarGunner, game, atoi(argv[2]), atoi(argv[3]), mutationRate, elitism, weightsFactor, false, bestFitnessAndScoreFileTxt, bestFitnessAndScoreFileWeights, initialElitism, weightsInitialization);
             break;
         default:
             error = true;
@@ -460,6 +539,9 @@ int main (int argc, char **argv)
     {
         cerr << "ERROR: unknown game." << endl;
     }
+
+    bestFitnessAndScoreFileTxt.close();
+    bestFitnessAndScoreFileWeights.close();
 
     return 0;
 }

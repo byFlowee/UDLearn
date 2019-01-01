@@ -6,6 +6,7 @@ using namespace std;
 
 #include <vector>
 #include <string>
+#include <fstream>
 
 class Mat
 {
@@ -32,6 +33,7 @@ class Mat
         Mat sub(const Mat &b) const;
         Mat copy() const;
         void print(string = " ") const;
+        void print(ofstream&, string = " ") const;
 
 };
 

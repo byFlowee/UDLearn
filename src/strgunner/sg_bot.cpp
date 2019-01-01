@@ -288,6 +288,8 @@ void checkAllValuesOfRAM()
 }
 
 int counter = 300;
+int min123 = 99999;
+int max123 = -min123;
 
 float manualMode()
 {
@@ -347,11 +349,28 @@ float manualMode()
 
     if (positionToDisplay != -1 && positionToDisplay >= 0 && positionToDisplay <= 127)
     {
+        int value123 = alei.getRAM().get(positionToDisplay);
+
+        if (value123 > max123)
+        {
+            max123 = value123;
+        }
+        if (value123 < min123)
+        {
+            min123 = value123;
+        }
+        
         cout << "RAM[" << positionToDisplay << "] = " << (int)alei.getRAM().get(positionToDisplay) << endl;
     }
 
     if(checkRAM || keystate[SDLK_k])
     {
+        cout << "min123 = " << min123 << endl;
+        cout << "max123 = " << max123 << endl;
+
+        min123 = 99999;
+        max123 = -min123;
+
         checkRAM = true;
         checkAllValuesOfRAM();
     }

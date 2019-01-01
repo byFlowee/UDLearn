@@ -7,7 +7,7 @@
 #include "../NeuralNetwork/neuralNetwork.h"
 #include "Player.h"
 
-GeneticNN::GeneticNN(const vector<int> &topology, Game game, size_t population, size_t bestToAdd, size_t weightsFactor) :
+GeneticNN::GeneticNN(const vector<int> &topology, Game game, const vector<double> &initialElitism, const vector<WeightInitializationRange> &weightsInitializationRange, size_t population, size_t bestToAdd, size_t weightsFactor) :
     population(population),
     fitnessValues(population),
     topology(topology),
@@ -18,11 +18,30 @@ GeneticNN::GeneticNN(const vector<int> &topology, Game game, size_t population, 
 {
     this->currentGeneration = 0;
     this->populationSize = population;
+    this->initialElitism = initialElitism;
+    this->weightsInitializationRange = weightsInitializationRange;
+
+    if (this->weightsFactor <= 0)
+    {
+        this->weightsFactor = 1;
+    }
 
     for (size_t i = 0; i < topology.size() - 1; i++)
     {
         this->DNASize += this->topology[i] * this->topology[i + 1];
         this->DNASize += this->topology[i + 1];
+    }
+
+    if (this->weightsInitializationRange.empty() || this->weightsInitializationRange.size() != this->DNASize)
+    {
+        this->weightsInitializationRange.resize(this->DNASize);
+
+        WeightInitializationRange range(-1.0 * (double)this->weightsFactor, 1.0 * (double)this->weightsFactor);
+
+        for (size_t i = 0; i < this->weightsInitializationRange.size(); i++)
+        {
+            this->weightsInitializationRange[i] = range;
+        }
     }
 }
 
@@ -30,9 +49,33 @@ void GeneticNN::createPopulation()
 {
     this->currentGeneration = 0;
     
-    for (size_t i = 0; i < this->populationSize; i++)
+    if (!this->initialElitism.empty() && this->initialElitism.size() == this->DNASize)
     {
-        this->population[i] = DNA(UtilG::getRandomMatrix(1, this->DNASize, this->weightsFactor));
+        Mat elitismInitialization(1, this->DNASize);
+
+        for (size_t i = 0; i < this->DNASize; i++)
+        {
+            elitismInitialization.set(0, i, this->initialElitism[i]);
+        }
+
+        for (size_t i = 0; i < min(this->bestToAdd, this->populationSize); i++)
+        {
+            this->population[i] = DNA(elitismInitialization);
+        }
+
+        for (size_t i = this->bestToAdd; i < this->populationSize; i++)
+        {
+            //this->population[i] = DNA(UtilG::getRandomMatrix(1, this->DNASize, this->weightsFactor));
+            this->population[i] = DNA(UtilG::getRandomMatrix(1, this->DNASize, this->weightsInitializationRange));
+        }
+    }
+    else
+    {
+        for (size_t i = 0; i < this->populationSize; i++)
+        {
+            //this->population[i] = DNA(UtilG::getRandomMatrix(1, this->DNASize, this->weightsFactor));
+            this->population[i] = DNA(UtilG::getRandomMatrix(1, this->DNASize, this->weightsInitializationRange));
+        }
     }
 }
 
@@ -218,7 +261,35 @@ double GeneticNN::getFitnessValue(const vector<int> &currentFitness)
 
             //fitness = (currentFitness[0] / 10) * (currentFitness[4] / 500) * (min(currentFitness[2], currentFitness[3]) / 100);
 
-            fitness = (currentFitness[0] / 10) * (currentFitness[4] / 500) * (min(currentFitness[2], currentFitness[3]) / 100);;
+            //fitness = (currentFitness[0] / 10) * (currentFitness[4] / 500) * (min(currentFitness[2], currentFitness[3]) / 100);;
+
+            //fitness = (currentFitness[0] / 10) * (currentFitness[0] / 10) * (min(currentFitness[2], currentFitness[3]) / 100);
+
+            /*
+            if (min(currentFitness[2], currentFitness[3]) > 100)
+            {
+                fitness = currentFitness[0];
+            }
+            else
+            {
+                fitness = 0.0;
+            }
+            */
+
+            if (min(currentFitness[2], currentFitness[3]) != 0)
+            {
+                double punch = (double)currentFitness[5] / (double)currentFitness[1];
+                double score = (double)currentFitness[0];
+
+                punch *= punch;
+                score /= 10;
+
+                fitness = score * punch;
+            }
+            else
+            {
+                fitness = 0.0;
+            }
 
             break;
         case Game::starGunner:

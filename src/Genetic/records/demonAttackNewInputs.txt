@@ -1,0 +1,59 @@
+Configuration
+---------------
+Generations: 10
+Population: 100
+Mutation rate: 0.2
+Elitism: 1
+Weights Factor: 1
+Game: Demon Attack
+
+Generation 1
+---------------
+  Fitness: 1813
+  Score: 150
+
+Generation 2
+---------------
+  Fitness: 13275
+  Score: 70
+
+Generation 3
+---------------
+  Fitness: 13275
+  Score: 150
+
+Generation 4
+---------------
+  Fitness: 68450
+  Score: 370
+
+Generation 5
+---------------
+  Fitness: 68450
+  Score: 370
+
+Generation 6
+---------------
+  Fitness: 68450
+  Score: 370
+
+Generation 7
+---------------
+  Fitness: 68450
+  Score: 370
+
+Generation 8
+---------------
+  Fitness: 105300
+  Score: 900
+
+Generation 9
+---------------
+  Fitness: 105300
+  Score: 385
+
+Generation 10
+---------------
+  Fitness: 105300
+  Score: 900
+

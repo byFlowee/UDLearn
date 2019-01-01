@@ -1,0 +1,500 @@
+Generation 1
+---------------
+  Fitness: 274
+  Score: 274
+
+Generation 2
+---------------
+  Fitness: 339
+  Score: 339
+
+Generation 3
+---------------
+  Fitness: 324
+  Score: 324
+
+Generation 4
+---------------
+  Fitness: 701
+  Score: 701
+
+Generation 5
+---------------
+  Fitness: 337
+  Score: 337
+
+Generation 6
+---------------
+  Fitness: 337
+  Score: 337
+
+Generation 7
+---------------
+  Fitness: 337
+  Score: 337
+
+Generation 8
+---------------
+  Fitness: 382.5
+  Score: 765
+
+Generation 9
+---------------
+  Fitness: 765
+  Score: 765
+
+Generation 10
+---------------
+  Fitness: 203
+  Score: 812
+
+Generation 11
+---------------
+  Fitness: 510
+  Score: 510
+
+Generation 12
+---------------
+  Fitness: 341
+  Score: 341
+
+Generation 13
+---------------
+  Fitness: 205
+  Score: 410
+
+Generation 14
+---------------
+  Fitness: 766
+  Score: 766
+
+Generation 15
+---------------
+  Fitness: 305
+  Score: 610
+
+Generation 16
+---------------
+  Fitness: 402.5
+  Score: 805
+
+Generation 17
+---------------
+  Fitness: 204
+  Score: 612
+
+Generation 18
+---------------
+  Fitness: 306
+  Score: 612
+
+Generation 19
+---------------
+  Fitness: 306
+  Score: 612
+
+Generation 20
+---------------
+  Fitness: 268.333
+  Score: 805
+
+Generation 21
+---------------
+  Fitness: 204
+  Score: 612
+
+Generation 22
+---------------
+  Fitness: 163
+  Score: 326
+
+Generation 23
+---------------
+  Fitness: 198
+  Score: 198
+
+Generation 24
+---------------
+  Fitness: 346
+  Score: 346
+
+Generation 25
+---------------
+  Fitness: 370
+  Score: 370
+
+Generation 26
+---------------
+  Fitness: 364.5
+  Score: 729
+
+Generation 27
+---------------
+  Fitness: 402
+  Score: 402
+
+Generation 28
+---------------
+  Fitness: 449
+  Score: 449
+
+Generation 29
+---------------
+  Fitness: 299
+  Score: 299
+
+Generation 30
+---------------
+  Fitness: 744
+  Score: 744
+
+Generation 31
+---------------
+  Fitness: 299
+  Score: 299
+
+Generation 32
+---------------
+  Fitness: 372
+  Score: 744
+
+Generation 33
+---------------
+  Fitness: 299
+  Score: 299
+
+Generation 34
+---------------
+  Fitness: 424
+  Score: 424
+
+Generation 35
+---------------
+  Fitness: 658
+  Score: 658
+
+Generation 36
+---------------
+  Fitness: 119
+  Score: 357
+
+Generation 37
+---------------
+  Fitness: 95.3333
+  Score: 572
+
+Generation 38
+---------------
+  Fitness: 411
+  Score: 822
+
+Generation 39
+---------------
+  Fitness: 822
+  Score: 822
+
+Generation 40
+---------------
+  Fitness: 281
+  Score: 281
+
+Generation 41
+---------------
+  Fitness: 296.5
+  Score: 593
+
+Generation 42
+---------------
+  Fitness: 205.5
+  Score: 822
+
+Generation 43
+---------------
+  Fitness: 274
+  Score: 822
+
+Generation 44
+---------------
+  Fitness: 276
+  Score: 552
+
+Generation 45
+---------------
+  Fitness: 184.5
+  Score: 738
+
+Generation 46
+---------------
+  Fitness: 443
+  Score: 443
+
+Generation 47
+---------------
+  Fitness: 350
+  Score: 350
+
+Generation 48
+---------------
+  Fitness: 254.5
+  Score: 509
+
+Generation 49
+---------------
+  Fitness: 442
+  Score: 442
+
+Generation 50
+---------------
+  Fitness: 702
+  Score: 702
+
+Generation 51
+---------------
+  Fitness: 351
+  Score: 702
+
+Generation 52
+---------------
+  Fitness: 425
+  Score: 425
+
+Generation 53
+---------------
+  Fitness: 367
+  Score: 367
+
+Generation 54
+---------------
+  Fitness: 539
+  Score: 539
+
+Generation 55
+---------------
+  Fitness: 351
+  Score: 351
+
+Generation 56
+---------------
+  Fitness: 217.5
+  Score: 435
+
+Generation 57
+---------------
+  Fitness: 802
+  Score: 802
+
+Generation 58
+---------------
+  Fitness: 401
+  Score: 802
+
+Generation 59
+---------------
+  Fitness: 401
+  Score: 802
+
+Generation 60
+---------------
+  Fitness: 606
+  Score: 606
+
+Generation 61
+---------------
+  Fitness: 401
+  Score: 802
+
+Generation 62
+---------------
+  Fitness: 401
+  Score: 802
+
+Generation 63
+---------------
+  Fitness: 160.4
+  Score: 802
+
+Generation 64
+---------------
+  Fitness: 267.333
+  Score: 802
+
+Generation 65
+---------------
+  Fitness: 267.333
+  Score: 802
+
+Generation 66
+---------------
+  Fitness: 401
+  Score: 802
+
+Generation 67
+---------------
+  Fitness: 271.333
+  Score: 814
+
+Generation 68
+---------------
+  Fitness: 319
+  Score: 319
+
+Generation 69
+---------------
+  Fitness: 250
+  Score: 250
+
+Generation 70
+---------------
+  Fitness: 346
+  Score: 346
+
+Generation 71
+---------------
+  Fitness: 213.333
+  Score: 640
+
+Generation 72
+---------------
+  Fitness: 298
+  Score: 298
+
+Generation 73
+---------------
+  Fitness: 414.5
+  Score: 829
+
+Generation 74
+---------------
+  Fitness: 501
+  Score: 501
+
+Generation 75
+---------------
+  Fitness: 276.333
+  Score: 829
+
+Generation 76
+---------------
+  Fitness: 304
+  Score: 304
+
+Generation 77
+---------------
+  Fitness: 397.5
+  Score: 795
+
+Generation 78
+---------------
+  Fitness: 508
+  Score: 508
+
+Generation 79
+---------------
+  Fitness: 358.5
+  Score: 717
+
+Generation 80
+---------------
+  Fitness: 218
+  Score: 436
+
+Generation 81
+---------------
+  Fitness: 273
+  Score: 273
+
+Generation 82
+---------------
+  Fitness: 273
+  Score: 273
+
+Generation 83
+---------------
+  Fitness: 392
+  Score: 784
+
+Generation 84
+---------------
+  Fitness: 320
+  Score: 320
+
+Generation 85
+---------------
+  Fitness: 237.667
+  Score: 713
+
+Generation 86
+---------------
+  Fitness: 246.667
+  Score: 740
+
+Generation 87
+---------------
+  Fitness: 447
+  Score: 447
+
+Generation 88
+---------------
+  Fitness: 294
+  Score: 294
+
+Generation 89
+---------------
+  Fitness: 552
+  Score: 552
+
+Generation 90
+---------------
+  Fitness: 184
+  Score: 552
+
+Generation 91
+---------------
+  Fitness: 349
+  Score: 349
+
+Generation 92
+---------------
+  Fitness: 349
+  Score: 349
+
+Generation 93
+---------------
+  Fitness: 755
+  Score: 755
+
+Generation 94
+---------------
+  Fitness: 488
+  Score: 488
+
+Generation 95
+---------------
+  Fitness: 377.5
+  Score: 755
+
+Generation 96
+---------------
+  Fitness: 260
+  Score: 520
+
+Generation 97
+---------------
+  Fitness: 377.5
+  Score: 755
+
+Generation 98
+---------------
+  Fitness: 291
+  Score: 291
+
+Generation 99
+---------------
+  Fitness: 206
+  Score: 206
+
+Generation 100
+---------------
+  Fitness: 430
+  Score: 860
+

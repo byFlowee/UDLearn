@@ -1,0 +1,9 @@
+Configuration
+---------------------------
+Generations: 30
+Population: 10000
+Mutation rate: 0.2
+Elitism: 5
+Weights Factor: 1
+Game: Breakout
+

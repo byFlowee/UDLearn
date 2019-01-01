@@ -2,6 +2,8 @@
 #include <limits>
 
 #include "Player.h"
+#include "UtilG.h"
+
 #include "ale_interface.hpp"
 #include "SDL.h"
 
@@ -9,6 +11,9 @@ const string Player::BREAKOUT_ROM = "../breakout/breakout.bin";
 const string Player::BOXING_ROM = "../boxing/boxing.bin";
 const string Player::DEMONATTACK_ROM = "../dattack/demon_attack.bin";
 const string Player::STARGUNNER_ROM = "../strgunner/star_gunner.bin";
+
+vector<int> Player::enemyBulletCoordinateXHistory;
+int Player::enemyBulletCoordinateXHistoryIndex = 0;
 
 ALEInterface alei;
 
@@ -205,6 +210,52 @@ vector<int> Player::playBoxing(NeuralNetwork &nn, bool displayScreen)
     return res;
 }
 
+int Player::demonAttackGetCoordinate(int position)
+{
+    int const val(alei.getRAM().get(position));
+    int const rawFirstNibble((7 - ((val & 0xF0) >> 4)) & 0x0F);
+    int const rawSecondNibble(val & 0x0F);
+
+    return (rawSecondNibble * 16) + rawFirstNibble;
+}
+
+bool Player::demonAttackIsEnemyAlive(Player::DemonAttackEnemy enemy)
+{
+    int sprite = 255;
+
+    switch (enemy)
+    {
+        case Player::LeftFlyFarthest:
+            sprite = alei.getRAM().get(29);
+            break;
+        case Player::LeftFlyMiddle:
+            sprite = alei.getRAM().get(30);
+            break;
+        case Player::LeftFlyClosest:
+            sprite = alei.getRAM().get(31);
+            break;
+        case Player::RightFlyFarthest:
+            sprite = alei.getRAM().get(33);
+            break;
+        case Player::RightFlyMiddle:
+            sprite = alei.getRAM().get(34);
+            break;
+        case Player::RightFlyClosest:
+            sprite = alei.getRAM().get(35);
+            break;
+        default:
+            cout << "ERROR: unknown Demon Attack enemy." << endl;
+            return false;
+    }
+
+    if (sprite <= 3)
+    {
+        return false;
+    }
+
+    return true;
+}
+
 vector<int> Player::playDemonAttack(NeuralNetwork &nn, bool displayScreen)
 {
     vector<int> res;
@@ -227,39 +278,317 @@ vector<int> Player::playDemonAttack(NeuralNetwork &nn, bool displayScreen)
     int step = 0;
     int moveLeft = 0;
     int moveRight = 0;
-    int notMoving = 0;
-
-    int lastShoot = alei.getRAM().get(52);
+    int shooting = 0;
+    int playerTargetingEnemy = 0;
 
     for (step = 0; !alei.game_over() && step < maxSteps; ++step) 
-    {   
+    {
         float reward = 0;
         
-        Mat inputs(1, 11);
+        Mat inputs(1, 3);
         Mat outputs(1, 3);
 
-        int currentShoot = lastShoot = alei.getRAM().get(52);
+        double leftFlyFarthestEnemyCoordinateX = (double)Player::demonAttackGetCoordinate(13) / 255.0;
+        double leftFlyMiddleEnemyCoordinateX = (double)Player::demonAttackGetCoordinate(14) / 255.0;
+        double leftFlyClosestEnemyCoordinateX = (double)Player::demonAttackGetCoordinate(15) / 255.0;
 
-        if (currentShoot != lastShoot || currentShoot != 0)
+        double playerCoordinateX = (double)Player::demonAttackGetCoordinate(16) / 255.0;
+
+        double rightFlyFarthestEnemyCoordinateX = (double)Player::demonAttackGetCoordinate(17) / 255.0;
+        double rightFlyMiddleEnemyCoordinateX = (double)Player::demonAttackGetCoordinate(18) / 255.0;
+        double rightFlyClosestEnemyCoordinateX = (double)Player::demonAttackGetCoordinate(19) / 255.0;
+
+        double enemyBulletCoordinateX = (double)Player::demonAttackGetCoordinate(20) / 255.0;
+
+        double currentObjectiveCoordinateX = 0.0;
+
+        if (Player::demonAttackIsEnemyAlive(Player::LeftFlyClosest) && 
+            Player::demonAttackIsEnemyAlive(Player::RightFlyClosest))
         {
-            inputs.set(0, 9, 1.0);
+            int distanceBetweenFlies = Player::demonAttackGetCoordinate(19) - Player::demonAttackGetCoordinate(15);
+
+            if (distanceBetweenFlies == 8 || distanceBetweenFlies == 9)
+            {
+                // There are no flies or they are very close, so there is no problem in focus them like they were just 1 enemy
+
+                currentObjectiveCoordinateX = (leftFlyClosestEnemyCoordinateX + rightFlyClosestEnemyCoordinateX) / 2.0;
+            }
+        }
+        else if (Player::demonAttackIsEnemyAlive(Player::LeftFlyMiddle) && 
+                 Player::demonAttackIsEnemyAlive(Player::RightFlyMiddle))
+        {
+            int distanceBetweenFlies = Player::demonAttackGetCoordinate(18) - Player::demonAttackGetCoordinate(14);
+
+            if (distanceBetweenFlies == 8 || distanceBetweenFlies == 9)
+            {
+                // There are no flies or they are very close, so there is no problem in focus them like they were just 1 enemy
+
+                currentObjectiveCoordinateX = (leftFlyMiddleEnemyCoordinateX + rightFlyMiddleEnemyCoordinateX) / 2.0;
+            }
+        }
+        else if (Player::demonAttackIsEnemyAlive(Player::LeftFlyFarthest) && 
+                 Player::demonAttackIsEnemyAlive(Player::RightFlyFarthest))
+        {
+            int distanceBetweenFlies = Player::demonAttackGetCoordinate(17) - Player::demonAttackGetCoordinate(13);
+
+            if (distanceBetweenFlies == 8 || distanceBetweenFlies == 9)
+            {
+                // There are no flies or they are very close, so there is no problem in focus them like they were just 1 enemy
+
+                currentObjectiveCoordinateX = (leftFlyFarthestEnemyCoordinateX + rightFlyFarthestEnemyCoordinateX) / 2.0;
+            }
+        }
+        else if (Player::demonAttackIsEnemyAlive(Player::LeftFlyClosest))
+        {
+            currentObjectiveCoordinateX = leftFlyClosestEnemyCoordinateX;
+        }
+        else if (Player::demonAttackIsEnemyAlive(Player::RightFlyClosest))
+        {
+            currentObjectiveCoordinateX = rightFlyClosestEnemyCoordinateX;
+        }
+        else if (Player::demonAttackIsEnemyAlive(Player::LeftFlyMiddle))
+        {
+            currentObjectiveCoordinateX = leftFlyMiddleEnemyCoordinateX;
+        }
+        else if (Player::demonAttackIsEnemyAlive(Player::RightFlyMiddle))
+        {
+            currentObjectiveCoordinateX = rightFlyMiddleEnemyCoordinateX;
+        }
+        else if (Player::demonAttackIsEnemyAlive(Player::LeftFlyFarthest))
+        {
+            currentObjectiveCoordinateX = leftFlyFarthestEnemyCoordinateX;
+        }
+        else if (Player::demonAttackIsEnemyAlive(Player::RightFlyFarthest))
+        {
+            currentObjectiveCoordinateX = rightFlyFarthestEnemyCoordinateX;
+        }
+
+        /*
+        double closestObjective = numeric_limits<double>::max();
+
+        if (Player::demonAttackIsEnemyAlive(Player::LeftFlyClosest) || 
+            Player::demonAttackIsEnemyAlive(Player::RightFlyClosest))
+        {
+            if (Player::demonAttackIsEnemyAlive(Player::LeftFlyClosest) && 
+                Player::demonAttackIsEnemyAlive(Player::RightFlyClosest))
+            {
+                int distanceBetweenFlies = Player::demonAttackGetCoordinate(19) - Player::demonAttackGetCoordinate(15);
+
+                if (distanceBetweenFlies == 8 || distanceBetweenFlies == 9)
+                {
+                    // There are no flies or they are very close, so there is no problem in focus them like they were just 1 enemy
+
+                    //closestObjective = min(closestObjective, abs(playerCoordinateX - (leftFlyClosestEnemyCoordinateX + rightFlyClosestEnemyCoordinateX) / 2.0));
+                    if (abs(playerCoordinateX - (leftFlyClosestEnemyCoordinateX + rightFlyClosestEnemyCoordinateX) / 2.0) < closestObjective)
+                    {
+                        closestObjective = abs(playerCoordinateX - (leftFlyClosestEnemyCoordinateX + rightFlyClosestEnemyCoordinateX) / 2.0);
+                        currentObjectiveCoordinateX = (leftFlyClosestEnemyCoordinateX + rightFlyClosestEnemyCoordinateX) / 2.0;
+                    }
+                }
+                else
+                {
+                    //closestObjective = min(closestObjective, abs(playerCoordinateX - leftFlyClosestEnemyCoordinateX));
+                    if (abs(playerCoordinateX - leftFlyClosestEnemyCoordinateX) < closestObjective)
+                    {
+                        closestObjective = abs(playerCoordinateX - leftFlyClosestEnemyCoordinateX);
+                        currentObjectiveCoordinateX = leftFlyClosestEnemyCoordinateX;
+                    }
+                    //closestObjective = min(closestObjective, abs(playerCoordinateX - rightFlyClosestEnemyCoordinateX));
+                    if (abs(playerCoordinateX - rightFlyClosestEnemyCoordinateX) < closestObjective)
+                    {
+                        closestObjective = abs(playerCoordinateX - rightFlyClosestEnemyCoordinateX);
+                        currentObjectiveCoordinateX = rightFlyClosestEnemyCoordinateX;
+                    }
+                }
+            }
+            else if (Player::demonAttackIsEnemyAlive(Player::LeftFlyClosest))
+            {
+                //closestObjective = min(closestObjective, abs(playerCoordinateX - leftFlyClosestEnemyCoordinateX));
+                if (abs(playerCoordinateX - leftFlyClosestEnemyCoordinateX) < closestObjective)
+                {
+                    closestObjective = abs(playerCoordinateX - leftFlyClosestEnemyCoordinateX);
+                    currentObjectiveCoordinateX = leftFlyClosestEnemyCoordinateX;
+                }
+            }
+            else if (Player::demonAttackIsEnemyAlive(Player::RightFlyClosest))
+            {
+                //closestObjective = min(closestObjective, abs(playerCoordinateX - rightFlyClosestEnemyCoordinateX));
+                if (abs(playerCoordinateX - rightFlyClosestEnemyCoordinateX) < closestObjective)
+                {
+                    closestObjective = abs(playerCoordinateX - rightFlyClosestEnemyCoordinateX);
+                    currentObjectiveCoordinateX = rightFlyClosestEnemyCoordinateX;
+                }
+            }
+        }
+        if (Player::demonAttackIsEnemyAlive(Player::LeftFlyMiddle) || 
+            Player::demonAttackIsEnemyAlive(Player::RightFlyMiddle))
+        {
+            if (Player::demonAttackIsEnemyAlive(Player::LeftFlyMiddle) && 
+                Player::demonAttackIsEnemyAlive(Player::RightFlyMiddle))
+            {
+                int distanceBetweenFlies = Player::demonAttackGetCoordinate(18) - Player::demonAttackGetCoordinate(14);
+
+                if (distanceBetweenFlies == 8 || distanceBetweenFlies == 9)
+                {
+                    // There are no flies or they are very close, so there is no problem in focus them like they were just 1 enemy
+
+                    //closestObjective = min(closestObjective, abs(playerCoordinateX - (leftFlyMiddleEnemyCoordinateX + rightFlyMiddleEnemyCoordinateX) / 2.0));
+                    if (abs(playerCoordinateX - (leftFlyMiddleEnemyCoordinateX + rightFlyMiddleEnemyCoordinateX) / 2.0) < closestObjective)
+                    {
+                        closestObjective = abs(playerCoordinateX - (leftFlyMiddleEnemyCoordinateX + rightFlyMiddleEnemyCoordinateX) / 2.0);
+                        currentObjectiveCoordinateX = (leftFlyMiddleEnemyCoordinateX + rightFlyMiddleEnemyCoordinateX) / 2.0;
+                    }
+                }
+                else
+                {
+                    //closestObjective = min(closestObjective, abs(playerCoordinateX - leftFlyMiddleEnemyCoordinateX));
+                    if (abs(playerCoordinateX - leftFlyMiddleEnemyCoordinateX) < closestObjective)
+                    {
+                        closestObjective = abs(playerCoordinateX - leftFlyMiddleEnemyCoordinateX);
+                        currentObjectiveCoordinateX = leftFlyMiddleEnemyCoordinateX;
+                    }
+                    //closestObjective = min(closestObjective, abs(playerCoordinateX - rightFlyMiddleEnemyCoordinateX));
+                    if (abs(playerCoordinateX - rightFlyMiddleEnemyCoordinateX) < closestObjective)
+                    {
+                        closestObjective = abs(playerCoordinateX - rightFlyMiddleEnemyCoordinateX);
+                        currentObjectiveCoordinateX = rightFlyMiddleEnemyCoordinateX;
+                    }
+                }
+            }
+            else if (Player::demonAttackIsEnemyAlive(Player::LeftFlyMiddle))
+            {
+                //closestObjective = min(closestObjective, abs(playerCoordinateX - leftFlyMiddleEnemyCoordinateX));
+                if (abs(playerCoordinateX - leftFlyMiddleEnemyCoordinateX) < closestObjective)
+                {
+                    closestObjective = abs(playerCoordinateX - leftFlyMiddleEnemyCoordinateX);
+                    currentObjectiveCoordinateX = leftFlyMiddleEnemyCoordinateX;
+                }
+            }
+            else if (Player::demonAttackIsEnemyAlive(Player::RightFlyMiddle))
+            {
+                //closestObjective = min(closestObjective, abs(playerCoordinateX - rightFlyMiddleEnemyCoordinateX));
+                if (abs(playerCoordinateX - rightFlyMiddleEnemyCoordinateX) < closestObjective)
+                {
+                    closestObjective = abs(playerCoordinateX - rightFlyMiddleEnemyCoordinateX);
+                    currentObjectiveCoordinateX = rightFlyMiddleEnemyCoordinateX;
+                }
+            }
+        }
+        if (Player::demonAttackIsEnemyAlive(Player::LeftFlyFarthest) || 
+            Player::demonAttackIsEnemyAlive(Player::RightFlyFarthest))
+        {
+            if (Player::demonAttackIsEnemyAlive(Player::LeftFlyFarthest) && 
+                Player::demonAttackIsEnemyAlive(Player::RightFlyFarthest))
+            {
+                int distanceBetweenFlies = Player::demonAttackGetCoordinate(17) - Player::demonAttackGetCoordinate(13);
+
+                if (distanceBetweenFlies == 8 || distanceBetweenFlies == 9)
+                {
+                    // There are no flies or they are very close, so there is no problem in focus them like they were just 1 enemy
+
+                    //closestObjective = min(closestObjective, abs(playerCoordinateX - (leftFlyFarthestEnemyCoordinateX + rightFlyFarthestEnemyCoordinateX) / 2.0));
+                    if (abs(playerCoordinateX - (leftFlyFarthestEnemyCoordinateX + rightFlyFarthestEnemyCoordinateX) / 2.0) < closestObjective)
+                    {
+                        closestObjective = abs(playerCoordinateX - (leftFlyFarthestEnemyCoordinateX + rightFlyFarthestEnemyCoordinateX) / 2.0);
+                        currentObjectiveCoordinateX = (leftFlyFarthestEnemyCoordinateX + rightFlyFarthestEnemyCoordinateX) / 2.0;
+                    }
+                }
+                else
+                {
+                    //closestObjective = min(closestObjective, abs(playerCoordinateX - leftFlyFarthestEnemyCoordinateX));
+                    if (abs(playerCoordinateX - leftFlyFarthestEnemyCoordinateX) < closestObjective)
+                    {
+                        closestObjective = abs(playerCoordinateX - leftFlyFarthestEnemyCoordinateX);
+                        currentObjectiveCoordinateX = leftFlyFarthestEnemyCoordinateX;
+                    }
+                    //closestObjective = min(closestObjective, abs(playerCoordinateX - rightFlyFarthestEnemyCoordinateX));
+                    if (abs(playerCoordinateX - rightFlyFarthestEnemyCoordinateX) < closestObjective)
+                    {
+                        closestObjective = abs(playerCoordinateX - rightFlyFarthestEnemyCoordinateX);
+                        currentObjectiveCoordinateX = rightFlyFarthestEnemyCoordinateX;
+                    }
+                }
+            }
+            else if (Player::demonAttackIsEnemyAlive(Player::LeftFlyFarthest))
+            {
+                //closestObjective = min(closestObjective, abs(playerCoordinateX - leftFlyFarthestEnemyCoordinateX));
+                if (abs(playerCoordinateX - leftFlyFarthestEnemyCoordinateX) < closestObjective)
+                {
+                    closestObjective = abs(playerCoordinateX - leftFlyFarthestEnemyCoordinateX);
+                    currentObjectiveCoordinateX = leftFlyFarthestEnemyCoordinateX;
+                }
+            }
+            else if (Player::demonAttackIsEnemyAlive(Player::RightFlyFarthest))
+            {
+                //closestObjective = min(closestObjective, abs(playerCoordinateX - rightFlyFarthestEnemyCoordinateX));
+                if (abs(playerCoordinateX - rightFlyFarthestEnemyCoordinateX) < closestObjective)
+                {
+                    closestObjective = abs(playerCoordinateX - rightFlyFarthestEnemyCoordinateX);
+                    currentObjectiveCoordinateX = rightFlyFarthestEnemyCoordinateX;
+                }
+            }
+        }
+
+        if (UtilG::compareDouble(closestObjective, numeric_limits<double>::max()))
+        {
+            closestObjective = 0.0;
+        }
+
+        //currentObjectiveCoordinateX = closestObjective;
+        */
+
+        if (Player::enemyBulletCoordinateXHistory.size() < 3)
+        {
+            Player::enemyBulletCoordinateXHistory.push_back(Player::demonAttackGetCoordinate(20));
+            Player::enemyBulletCoordinateXHistoryIndex = (Player::enemyBulletCoordinateXHistoryIndex + 1) % 3;
         }
         else
         {
-            inputs.set(0, 9, 0.0);
+            Player::enemyBulletCoordinateXHistory[Player::enemyBulletCoordinateXHistoryIndex] = Player::demonAttackGetCoordinate(20);
+            Player::enemyBulletCoordinateXHistoryIndex = (Player::enemyBulletCoordinateXHistoryIndex + 1) % 3;
         }
 
-        inputs.set(0, 0, (double)alei.getRAM().get(13) / 255.0);
-        inputs.set(0, 1, (double)alei.getRAM().get(14) / 255.0);
-        inputs.set(0, 2, (double)alei.getRAM().get(15) / 255.0);
-        inputs.set(0, 3, (double)alei.getRAM().get(16) / 255.0);
-        inputs.set(0, 4, (double)alei.getRAM().get(17) / 255.0);
-        inputs.set(0, 5, (double)alei.getRAM().get(18) / 255.0);
-        inputs.set(0, 6, (double)alei.getRAM().get(19) / 255.0);
-        inputs.set(0, 7, (double)alei.getRAM().get(20) / 255.0);
-        inputs.set(0, 8, (double)alei.getRAM().get(22) / 255.0);
-        //inputs.set(0, 9, (double)alei.getRAM().get(52) / 255.0);
-        inputs.set(0, 10, (double)alei.getRAM().get(72) / 255.0);
+        if (Player::enemyBulletCoordinateXHistory[0] != Player::enemyBulletCoordinateXHistory[1] && 
+            Player::enemyBulletCoordinateXHistory[0] != Player::enemyBulletCoordinateXHistory[2] && 
+            Player::enemyBulletCoordinateXHistory[1] != Player::enemyBulletCoordinateXHistory[2]
+            )
+        {
+            // The fly that is a bullet is alive
+
+            currentObjectiveCoordinateX = enemyBulletCoordinateX;
+
+            enemyBulletCoordinateX = 0.0;
+        }
+        else if (!Player::demonAttackIsEnemyAlive(Player::LeftFlyClosest) && !Player::demonAttackIsEnemyAlive(Player::RightFlyClosest))
+        {
+            // The only enemy that shoots is dead
+
+            enemyBulletCoordinateX = 0.0;
+        }
+
+        if (currentObjectiveCoordinateX > 1.0 || currentObjectiveCoordinateX < -1.0 ||
+            playerCoordinateX > 1.0 || playerCoordinateX < -1.0 ||
+            enemyBulletCoordinateX > 1.0 || enemyBulletCoordinateX < -1.0)
+        {
+            cout << "ERROR: some variable is not in the expected range!" << endl;
+            cout << "currentObjectiveCoordinateX = " << currentObjectiveCoordinateX << endl;
+            cout << "playerCoordinateX = " << playerCoordinateX << endl;
+            cout << "enemyBulletCoordinateX = " << enemyBulletCoordinateX << endl;
+        }
+
+        int distanceFactor = 8;
+
+        if (!UtilG::compareDouble(0.0, currentObjectiveCoordinateX) && 
+            abs(currentObjectiveCoordinateX * 255.0 - playerCoordinateX * 255.0) < distanceFactor)
+        {
+            playerTargetingEnemy++;
+        }
+
+        //cout << "currentObjectiveCoordinateX = " << currentObjectiveCoordinateX * 255.0 << endl;
+
+        inputs.set(0, 0, currentObjectiveCoordinateX);
+        inputs.set(0, 1, playerCoordinateX);
+        inputs.set(0, 2, enemyBulletCoordinateX);
 
         outputs = nn.forwardPropagation(inputs);
 
@@ -278,7 +607,7 @@ vector<int> Player::playDemonAttack(NeuralNetwork &nn, bool displayScreen)
         switch (prediction)
         {
             case 0:
-                notMoving++;
+                shooting++;
                 reward += alei.act(PLAYER_A_FIRE);
                 break;
             case 1:
@@ -297,7 +626,11 @@ vector<int> Player::playDemonAttack(NeuralNetwork &nn, bool displayScreen)
         reward = (reward + alei.act(PLAYER_A_NOOP));
         totalReward += reward;
 
-        lastShoot = alei.getRAM().get(52);
+        // Early stopping
+        if (step > maxSteps / 2 && (shooting == 0 || min(moveLeft, moveRight) == 0))
+        {
+            break;
+        }
     }
 
     score = (int)totalReward;
@@ -306,7 +639,8 @@ vector<int> Player::playDemonAttack(NeuralNetwork &nn, bool displayScreen)
     res.push_back(step);
     res.push_back(moveLeft);
     res.push_back(moveRight);
-    res.push_back(notMoving);
+    res.push_back(shooting);
+    res.push_back(playerTargetingEnemy);
 
     return res;
 }

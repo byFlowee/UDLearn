@@ -1,0 +1,99 @@
+Configuration
+---------------------------
+Generations: 30
+Population: 10000
+Mutation rate: 0.2
+Elitism: 5
+Weights Factor: 2
+Game: Breakout
+
+Generation 1
+---------------------------
+  Fitness: 814
+  Score: 814
+
+Generation 2
+---------------------------
+  Fitness: 814
+  Score: 814
+
+Generation 3
+---------------------------
+  Fitness: 814
+  Score: 814
+
+Generation 4
+---------------------------
+  Fitness: 856
+  Score: 856
+
+Generation 5
+---------------------------
+  Fitness: 856
+  Score: 856
+
+Generation 6
+---------------------------
+  Fitness: 856
+  Score: 856
+
+Generation 7
+---------------------------
+  Fitness: 856
+  Score: 856
+
+Generation 8
+---------------------------
+  Fitness: 856
+  Score: 856
+
+Generation 9
+---------------------------
+  Fitness: 856
+  Score: 856
+
+Generation 10
+---------------------------
+  Fitness: 856
+  Score: 856
+
+Generation 11
+---------------------------
+  Fitness: 856
+  Score: 856
+
+Generation 12
+---------------------------
+  Fitness: 856
+  Score: 856
+
+Generation 13
+---------------------------
+  Fitness: 856
+  Score: 856
+
+Generation 14
+---------------------------
+  Fitness: 856
+  Score: 856
+
+Generation 15
+---------------------------
+  Fitness: 856
+  Score: 856
+
+Generation 16
+---------------------------
+  Fitness: 856
+  Score: 856
+
+Generation 17
+---------------------------
+  Fitness: 856
+  Score: 856
+
+Generation 18
+---------------------------
+  Fitness: 856
+  Score: 856
+

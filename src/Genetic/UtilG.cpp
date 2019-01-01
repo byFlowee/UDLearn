@@ -5,15 +5,47 @@
 
 Mat UtilG::getRandomMatrix(size_t rows, size_t cols, size_t factor)
 {   
-    Mat a(rows, cols);
+    Mat res(rows, cols);
 
-    for (size_t r = 0; r < rows; ++r) {
-        for (size_t c = 0; c < cols; ++c) {
-            a.set(r, c, UtilG::getRandomDouble(-1.0 * (double)factor, 1.0 * (double)factor));
-        }    
+    for (size_t row = 0; row < rows; row++)
+    {
+        for (size_t col = 0; col < cols; col++)
+        {
+            res.set(row, col, UtilG::getRandomDouble(-1.0 * (double)factor, 1.0 * (double)factor));
+        }
     }
 
-    return a;
+    return res;
+}
+
+Mat UtilG::getRandomMatrix(size_t rows, size_t cols, const vector<WeightInitializationRange> &initializationWeights)
+{
+    Mat res(rows, cols);
+
+    if (rows * cols == initializationWeights.size())
+    {
+        size_t index = 0;
+
+        for (size_t row = 0; row < rows; row++)
+        {
+            for (size_t col = 0; col < cols; col++)
+            {
+                res.set(row, col, UtilG::getRandomDouble(initializationWeights[index].getLeft(), initializationWeights[index].getRight()));
+                index++;
+            }
+        }
+    }
+    else
+    {
+        res = UtilG::getRandomMatrix(rows, cols);
+    }
+
+    return res;
+}
+
+double UtilG::getRandomDouble(double min, double max)
+{
+    return min + ((double)rand() / RAND_MAX) * (max - min);
 }
 
 Mat UtilG::flattenMatices(const vector<Mat>& v)
@@ -200,4 +232,17 @@ bool UtilG::compareDouble(const Mat &m1, const Mat &m2)
     }
 
     return true;
+}
+
+void UtilG::printVector(const vector<int> &v, ofstream &out, string delimiter)
+{
+    for (size_t i = 0; i < v.size(); i++)
+    {
+        out << v[i];
+
+        if (i + 1 != v.size())
+        {
+            out << delimiter;
+        }
+    }
 }
