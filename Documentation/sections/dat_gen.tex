@@ -1,11 +1,22 @@
-\section{Datos Generales}
-\subsection{Datos del estudiante}
+\section{Tecnologías implementadas y estado operativo.}
+\subsection{Análisis de RAM}
+
+Uno de los puntos más importantes a la hora de implementar un bot con IA para un juego de Atari, es entender cómo está hecho. Utilizaremos el entorno \ac{ale} para extraer características de los juegos, el cual cuenta con una API que nos permite extraer información de los mismos. Para ello, se ha desarrollado un lector de RAM que nos ayuda a visualizar los 128 bytes de memoria de la Atari mientras se ejecuta un juego.
+
+Además, dicho lector implementa colores, lo cual permite que se puedan distinguir las posiciones de RAM que cambian de las que no en un step (paso de ejecución) determinado.
+
+%TODO  imagen de la ram con los colores que hablo
+
+Una de las características de este lector es que acompaña la ejecución con un volcado de analytics para ver las posiciones de RAM que más han cambiado en una ejecución concreta.
+
+%TODO  imagen del txt de los analytics
+
+Para extraer los datos mas interesantes de un juego en concreto, simplemente hay que observar las posiciones de RAM mas alteradas según nuestro analytics. Una vez hecho esto, se pondrá el juego en cámara lenta gracias a una feature del entorno \ac{ale}, lo cual nos permitirá ver con qué sentido cambian estos valores. Como punto a destacar, no todos los valores que cambian mucho serán relevantes a la hora de sacar datos importantes del juego (un contador podría no ser relevante para un caso específico).
+
+\subsection{Bots básicos}
 
 
-\subsection{Datos de la empresa}
-
-
-\subsection{Datos de la práctica realizada}
+\subsection{Patinete xD}
 
 
 \newpage
