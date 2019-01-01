@@ -135,19 +135,19 @@ el pseudocódigo de la IA del Breakout.
 	ballX := getBallX()\;
 	
 	\If{$BallX\_LastTick < ballX$}{
-		$ballX += ((rand() \% 2) + 2);$
+		ballX $+= ((rand() \% 2) + 2);$
 	}
 	\If{$BallX\_LastTick > ballX$}{
-		$ballX -= ((rand() \% 2) + 2);$
+		ballX $-= ((rand() \% 2) + 2);$
 	}
 
 	ballX\_LastTick := getBallX()\;
 	
 	\eIf{$ballX < playerX + wide$}{
-		$reward += act(LEFT);$
+		reward $+= act(LEFT);$
 	}{
 		\If{$(ballX > playerX + wide) \&\& (playerX + wide < 188)$}{
-			$reward += act(RIGHT);$
+			reward $+= act(RIGHT);$
 		}
 	}
 	\caption{Breakout agent}
@@ -164,8 +164,49 @@ En la cuerta parte aplicaremos el input en funcion a la posicion del jugador res
 
 \subsubsection{Boxing}
 \label{subsec:botsbasicos:boxing}
-Boxing es un juego en el cual controlamos a un boxeador y tenemos que asestar mas golpes que el rival para ganar la ronda.
+Boxing es un juego en el cual controlamos a un boxeador y tenemos que asestar mas golpes que el rival para ganar la ronda. En este juego tuvimos los mismos problemas que con el Breakout, por lo que decidimos implementar otro bot, el cual jugaba mejor que nosotros, lo que se resumia en todo ventajas.
 
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\textwidth]{Figures/boxing}
+	\caption{Juego Boxing.}
+	\label{fig:boxing}
+\end{figure}
+
+En este agente hemos tomado una estrategia agresiva, si el rival lanza un puñetazo, lo intentaremos bloquear con nuestros propios puños poniendo a nuestro boxeador exactamente en la misma posición "Y" que el boxeador contrario (una de las features de Boxing es que la colisión de los puños bloquea los golpes). Además, nuestro boxeador nunca se moverá hacia la izquierda, solo se mueve hacia la derecha en posición de ataque intentando posicionarse en la "Y" del rival, como hemos comentado antes. A su vez, basandonos en ciertas tolerancias, se atacará siempre que sea posible. Esta estrategia agresiva funciona una gran mayoria de las veces, además para evitar el determinismo se ha implementado una pequeña aleatoriedad cada vez que recogemos las posiciones del jugador 1 y del jugador 2 de RAM, como bien se puede ver en el ejemplo de la figura \ref{fig:boxingAleatoriedad}.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\textwidth]{Figures/boxingAleatoriedad}
+	\caption{Uso de \textbf{rand()} para evitar el determinismo.}
+	\label{fig:boxingAleatoriedad}
+\end{figure}
+
+A continuación se muestra en el algoritmo \ref{alg:boxingimpl}, la IA implementada. Un detalle a comentar antes de entrar a analizar el algoritmo es que \textbf{player\_pos} es un tipo de dato struct.
+
+%\vspace{2mm}
+\begin{algorithm}[H]
+	player\_pos p1(getP1\_X(), getP1\_Y())\;
+	player\_pos p2(getP2\_X(), getP2\_Y())\;
+	absp1p2X := abs(p1.x - p2.x)\;
+	absp1p2Y := abs(p1.y - p2.y)\;
+	
+	\eIf{$absp1p2Y > 3$ \&\& $absp1p2Y < 20$}{
+		reward $+= act(FIRE);$
+	}{
+		\eIf{$absp1p2X > 25$ \&\& $absp1p2X < 40$}{
+			reward $+= act(RIGHT);$
+		}{
+			reward += $(p1.y > p2.y)$ ? act(UP) : act(DOWN)\;
+		}
+	}
+	\caption{Boxing agent}
+	\label{alg:boxingimpl}
+\end{algorithm}
+
+En la primera parte de recogida de datos, encapsulamos en un struct la posicion del jugador uno y la del jugador dos extrayéndolos de RAM, como ya hemos comentado anteriormente, estas posiciones implementan una aleatoriedad mínima para evitar ejecuciones deterministas. Además, en la misma sección, calcularemos la distancia entre ambos jugadores en "X" y en "Y", representadas en \textbf{absp1p2X} y \textbf{absp1p2Y} respectivamente, para luego utilizarlas mas adelante.
+
+Una vez tenemos todos los datos procesados, observaremos si nos encontramos en un rango de tolerancia "Y" válido para atacar, si lo estamos, atacaremos (como punto a destacar, este rango es bastante amplio para enfatizar esta estrategia ofensiva). Si no podemos atacar, nos moveremos hacia la derecha  con ciertas tolerancias, o nos situamos en la "Y" del enemigo.
 
 
 \subsubsection{Demon Attack}
