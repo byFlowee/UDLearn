@@ -14,9 +14,70 @@ using namespace std;
 
 int main (int argc, char **argv)
 {
-    if (argc != 5)
+    if (argc == 2)
     {
-        cerr << "ERROR: Usage: ./main <GAME = 1 (breakout), 2 (boxing), 3 (demon attack), 4 (star gunner)> maxGenerations population filenameToSaveRecords" << endl;
+        Game game = (Game)atoi(argv[1]);
+
+        if (game == Game::breakout)
+        {
+            vector<double> weightsAndBiases = {-0.0475447, -1.44612, -1.03555, 1.19032, -0.0180972, 1.39592, -1.65275, -0.400388, 0.313902, -0.911924};
+            Mat weightsAndBiasesMat = UtilG::getMatFromVector(weightsAndBiases);
+            vector<int> topology = {4, 2};
+            NeuralNetwork nn(topology);
+            UtilG::setRepresentativeVectorOnNeuralNetwork(weightsAndBiasesMat, nn);
+            vector<int> values = Player::playBreakout(nn, true);
+
+            cout << "Score: " << values[0] << endl;
+            cout << "Steps: " << values[1] << endl;
+        }
+        else if (game == Game::boxing)
+        {
+            vector<double> weightsAndBiases = {1.96404, 0.923049, -1.94959, -1.85318, -1.93903, -0.351867, -0.879035, 1.23024, -1.39414, 0.542365, 0.210698, 0.973758, 0.744987, 1.6582, 0.496407, 1.06052, 0.64918, 0.776502, -1.87647, 1.89592, 0.895407, -0.768735, 1.38018, 0.247501, -0.850997};
+            Mat weightsAndBiasesMat = UtilG::getMatFromVector(weightsAndBiases);
+            vector<int> topology = {4, 5};
+            NeuralNetwork nn(topology);
+            UtilG::setRepresentativeVectorOnNeuralNetwork(weightsAndBiasesMat, nn);
+            vector<int> values = Player::playBoxing(nn, true);
+
+            cout << "Score: " << values[0] << endl;
+            cout << "Steps: " << values[1] << endl;
+        }
+        else if (game == Game::demonAttack)
+        {
+            vector<double> weightsAndBiases = {-0.787538, -0.949064, 0.310924, -1.32299, 0.71908, -0.0709453, 1.49602, -0.094367, 0.500397, 0.404399, -0.263846, -0.431822};
+            Mat weightsAndBiasesMat = UtilG::getMatFromVector(weightsAndBiases);
+            vector<int> topology = {3, 3};
+            NeuralNetwork nn(topology);
+            UtilG::setRepresentativeVectorOnNeuralNetwork(weightsAndBiasesMat, nn);
+            vector<int> values = Player::playDemonAttack(nn, true);
+
+            cout << "Score: " << values[0] << endl;
+            cout << "Steps: " << values[1] << endl;
+        }
+        else if (game == Game::starGunner)
+        {
+            vector<double> weightsAndBiases = {0.171788, 0.954718, 0.434003, -0.57256, -0.806731, -0.435586, -0.0937895, 0.310619, -0.308204, -0.517226, -0.104929, -0.893615, -0.49165, -0.170597, -0.138965, 0.0929738, -1.02856, 0.633477, -1.24683, 0.756926, 0.57379, 0.981531, -0.586579, 0.191376, 0.652615, 0.0737398, 0.0531118, 0.774934, 0.277529, -1.083, -0.438313, -0.539808, 0.045639, -0.110905, 0.160107, 0.532854, -0.144477, -0.390065, 0.625603, -0.0595559, -0.444677, -0.655645, -0.0493453, 0.590344, 0.639938, -0.658841, 0.356061, -0.475919, 0.0739151, 0.755685, -0.537857, -0.483144, 0.0420367, 0.519662, 0.38397, -0.284232, -0.902964, 0.36212, 0.024936, -1.01229, 1.26559, -0.695163, 0.4479, -0.61269, 0.574092};
+            Mat weightsAndBiasesMat = UtilG::getMatFromVector(weightsAndBiases);
+            vector<int> topology = {12, 5};
+            NeuralNetwork nn(topology);
+            UtilG::setRepresentativeVectorOnNeuralNetwork(weightsAndBiasesMat, nn);
+            vector<int> values = Player::playStarGunner(nn, true);
+
+            cout << "Score: " << values[0] << endl;
+            cout << "Steps: " << values[1] << endl;
+        }
+        else
+        {
+            cerr << "ERROR: unknown game." << endl;
+        }
+
+        return 0;
+    }
+    else if (argc != 5)
+    {
+        cerr << "ERROR:" << endl;
+        cerr << "  Usage_1 (train): ./main <GAME = 1 (breakout), 2 (boxing), 3 (demon attack), 4 (star gunner)> maxGenerations population filenameToSaveRecords" << endl;
+        cerr << "  Usage_2 (play):  ./main <GAME = 1 (breakout), 2 (boxing), 3 (demon attack), 4 (star gunner)>" << endl;
 
         return 0;
     }

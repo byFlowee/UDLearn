@@ -1,8 +1,8 @@
 COMPILER := g++
-OPTIONS := -Wall
+OPTIONS  := -Wall
 TARGET   := main
-OBJ 	 := GANN.o GANNWrapper.o DNA.o UtilG.o mat.o neuralNetwork.o Player.o main.o
-OBJCPP 	 := GANN.cpp GANNWrapper.cpp DNA.cpp UtilG.cpp ../NeuralNetwork/mat.cpp ../NeuralNetwork/neuralNetwork.cpp Player.cpp main.cpp
+OBJ 	 := main.o GANN.o GANNWrapper.o DNA.o UtilG.o mat.o neuralNetwork.o Player.o
+OBJCPP 	 := main.cpp GANN.cpp GANNWrapper.cpp DNA.cpp UtilG.cpp ../NeuralNetwork/mat.cpp ../NeuralNetwork/neuralNetwork.cpp Player.cpp
 
 
 
@@ -11,9 +11,9 @@ USE_SDL := 1
 # This will likely need to be changed to suit your installation.
 ALE := ../../../ALE
 
-FLAGS := -I$(ALE)/src -I$(ALE)/src/controllers -I$(ALE)/src/os_dependent -I$(ALE)/src/environment -I$(ALE)/src/external -L$(ALE)
-CXX := $(COMPILER)
-FILE := $(TARGET)
+FLAGS   := -I$(ALE)/src -I$(ALE)/src/controllers -I$(ALE)/src/os_dependent -I$(ALE)/src/environment -I$(ALE)/src/external -L$(ALE)
+CXX     := $(COMPILER)
+FILE    := $(TARGET)
 NETWORK := ../NeuralNetwork/mat.cpp ../NeuralNetwork/neuralNetwork.cpp
 LDFLAGS := -lale -lz
 
@@ -34,7 +34,6 @@ endif
 
 
 main: $(OBJ)
-	#$(CXX) $(DEFINES) $(FLAGS) $(LDFLAGS) $(OBJ) -o $(TARGET)
 	$(CXX) $(DEFINES) $(FLAGS) $(OBJCPP) $(LDFLAGS) -o $(TARGET)
 
 main.o: main.cpp
