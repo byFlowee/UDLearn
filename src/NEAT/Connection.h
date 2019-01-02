@@ -3,25 +3,25 @@
 
 class Connection {
 	private:
-		unsigned inputNode;
-		unsigned outputNode;
+		unsigned inputNeuron;
+		unsigned outputNeuron;
 		double weight;
 		bool expressed;
-		bool recurrent;
 		unsigned innovation;
 		unsigned static nextInnovation;
 
 	public:
-		Connection(unsigned, unsigned, double, bool, bool, unsigned);
-		unsigned getInputId() { return this->inputNode; }
-		unsigned getOutputId() { return this->outputNode; }
+		Connection();
+		Connection(unsigned input, unsigned output, double weight, bool expressed, unsigned innovation);
+		unsigned getInputId() { return this->inputNeuron; }
+		unsigned getOutputId() { return this->outputNeuron; }
 		unsigned getInnovation() { return this->innovation; }
 		unsigned static getNextInnovation() { return nextInnovation++; }
 		double getWeight() { return this->weight; }
 		void setWeight(double weight) { this->weight = weight; }
-		void disableConnection() { this->expressed = false;};
-		
+		bool isEnabled() { return this->expressed; }
+		void disableConnection() { this->expressed = false; };
+
 };
 
 #endif _CONNECTION_
-

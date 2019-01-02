@@ -14,10 +14,12 @@ class NeuralNetwork
 
     private:
         vector<int> size;
+        vector<double> dropout;
         vector<Mat> weights;
         vector<Mat> bias;
         vector<Mat> a;
         vector<Mat> da;
+        vector<Mat> dropoutMats;
         double learningRate;
 
         double sigmoid(double d) const;
@@ -26,7 +28,7 @@ class NeuralNetwork
         double activationFunctionPrime(double d) const;
 
     public:
-        NeuralNetwork(const vector<int> &size);
+        NeuralNetwork(const vector<int> &size, const vector<double> &dropout);
         void initialize();
         void setLearningRate(double learningRate);
         Mat forwardPropagation(const Mat &initial);
@@ -38,6 +40,7 @@ class NeuralNetwork
         void setWeights(const vector<Mat>&);
         void setBias(const vector<Mat>&);
         vector<int> getTopology() const;
+        void updateDropoutMats();
 
 };
 

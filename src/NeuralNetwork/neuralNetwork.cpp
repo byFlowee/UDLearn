@@ -4,12 +4,17 @@
 
 #include "neuralNetwork.h"
 
-NeuralNetwork::NeuralNetwork(const vector<int> &size)
+NeuralNetwork::NeuralNetwork(const vector<int> &size, const vector<double> &dropout)
 {
-    this->size = size;
-    this->learningRate = 0.1;
-    
-    this->initialize();
+    if (dropout.size() == size.size()) {
+        this->dropout = dropout;
+        this->size = size;
+        this->learningRate = 0.1;
+
+        this->initialize();
+    } else {
+        cout << "Error: dropout must have the same topology as size, couldn't build NeuralNetwork";
+    }
 }
 
 void NeuralNetwork::initialize()
@@ -23,7 +28,7 @@ void NeuralNetwork::initialize()
 
         this->weights.push_back(matWeights);
         this->bias.push_back(matBias);
-        
+
         // Random values initialization.
         for (int row = 0; row < this->weights[i].rows(); row++)
         {
@@ -64,6 +69,21 @@ double NeuralNetwork::activationFunctionPrime(double d) const
     return this->sigmoidPrime(d);
 }
 
+void NeuralNetwork::updateDropoutMats() {
+    this->dropoutMats.clear();
+    for (size_t l = 0; l < this->size.size(); ++l) {
+        Mat dropout(1, this->size[l], 1);
+        if (this->dropout[l] > 0.0) {
+            for (size_t n = 0; n < this->size[l]; ++n) {
+                double randomDist = ((double)rand() / (double)RAND_MAX);
+                dropout.set(0, n, (randomDist < this->dropout[l]) ? 0 : 1);
+            }
+        }
+
+        this->dropoutMats.push_back(dropout);
+    }
+}
+
 Mat NeuralNetwork::forwardPropagation(const Mat &initial)
 {
     Mat res(1, this->size[this->size.size() - 1]);
@@ -74,23 +94,31 @@ Mat NeuralNetwork::forwardPropagation(const Mat &initial)
 
     this->a.push_back(initial.copy());
     this->da.push_back(initial.copy());
-    
+
     for (size_t i = 0; i < this->size.size() - 1; i++)
     {
         outputs = outputs.mult(this->weights[i]);
-        
+
         this->a.push_back(outputs.copy());
-        
+
         for (int j = 0; j < outputs.size(); j++)
         {
             outputs.set(0, j, this->activationFunction(outputs.get(0, j) + this->bias[i].get(0, j)));
         }
-        
+
         this->da.push_back(outputs.copy());
+
+        //--DROPOUT
+        if (this->dropout[i] > 0.0) {
+            this->a.back().mult(this->dropoutMats[i]);
+            this->da.back().mult(this->dropoutMats[i]);
+            outputs.mult(this->dropoutMats[i]);
+        }
+        //--DROPOUT
     }
-    
+
     res = outputs;
-    
+
     return res;
 }
 
@@ -99,18 +127,18 @@ void NeuralNetwork::backPropagation(const Mat &inputs, const Mat &expectedOutput
     Mat outputs = this->forwardPropagation(inputs);
     Mat error = expectedOutputs.sub(outputs);
     Mat derror = expectedOutputs.sub(outputs);
-    
+
     for (int i = 0; i < error.size(); i++)
     {
         error.set(0, i, error.get(0, i) * error.get(0, i));
     }
-    
+
     error.scalar(0.5);
     derror.scalar(-1.0);
-    
+
     //ArrayList<Mat> delta = new ArrayList<>();
     vector<Mat> delta;
-    
+
     for (size_t i = 1; i < this->size.size(); i++)	// delta0 is not useful.
     {
         Mat currentDelta(1, this->size[i]);
@@ -122,7 +150,7 @@ void NeuralNetwork::backPropagation(const Mat &inputs, const Mat &expectedOutput
     for (int i = 0; i < delta[delta.size() - 1].size(); i++)
     {
         double value = this->activationFunctionPrime(outputs.get(0, i)) * derror.get(0, i);
-        
+
         delta[delta.size() - 1].set(0, i, value);
     }
 
@@ -134,24 +162,28 @@ void NeuralNetwork::backPropagation(const Mat &inputs, const Mat &expectedOutput
         {
             //Double value = this.da.get(i + 1).get(0, j);
             double value = this->da[i + 1].get(0, j);
-            
+
             for (int k = 0; k < delta[i + 1].size(); k++)
             {
                 //value *= this.weights.get(i + 1).get(j, k) * delta.get(i + 1).get(0, k);
                 value *= this->weights[i + 1].get(j, k) * delta[i + 1].get(0, k);
             }
-            
+
             //delta.get(i).set(0, j, value);
             delta[i].set(0, j, value);
         }
+
+        //--DROPOUT
+        delta[i].mult(this->dropoutMats[i]);
+        //--DROPOUT
     }
-    
+
     // Weights update.
     for (size_t i = 0; i < this->weights.size(); i++)
     {
         // Layer i.
         Mat &weight = this->weights[i];
-        
+
         for (int row = 0; row < this->weights[i].rows(); row++)
         {
             for (int col = 0; col < this->weights[i].cols(); col++)
@@ -161,13 +193,13 @@ void NeuralNetwork::backPropagation(const Mat &inputs, const Mat &expectedOutput
             }
         }
     }
-    
+
     // Bias update.
     for (size_t i = 0; i < this->weights.size(); i++)
     {
         // Layer i.
         Mat &bias = this->bias[i];
-        
+
         for (int row = 0; row < this->bias[i].rows(); row++)
         {
             //bias.set(0, row, bias.get(0, row) - this.learningRate * delta.get(i).get(0, row));
@@ -182,9 +214,11 @@ void NeuralNetwork::train(const vector<Mat> &inputs, const vector<Mat> &expected
     {
         return;
     }
-    
+
     for (int i = 0; i < iterations; i++)
     {
+        //Para cada iteración cambiamos las neuronas marcadas como inactivas
+        this->updateDropoutMats();
         for (size_t j = 0; j < inputs.size(); j++)
         {
             this->backPropagation(inputs[j], expectedOutputs[j]);
@@ -196,7 +230,7 @@ string NeuralNetwork::description() const
 {
     string res = "";
     int max = 0;
-    
+
     for (size_t i = 0; i < this->size.size(); i++)
     {
         if (this->size[i] > max)
@@ -204,7 +238,7 @@ string NeuralNetwork::description() const
             max = this->size[i];
         }
     }
-    
+
     for (int i = 0; i < max; i++)
     {
         for (size_t j = 0; j < this->size.size(); j++)
@@ -218,10 +252,10 @@ string NeuralNetwork::description() const
                 res += "  ";
             }
         }
-        
+
         res += "\n";
     }
-    
+
     return res;
 }
 
