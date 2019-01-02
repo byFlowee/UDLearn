@@ -4,6 +4,15 @@
 
 #include "neuralNetwork.h"
 
+NeuralNetwork::NeuralNetwork(const vector<int> &size)
+{
+    this->dropout = vector<double>(size.size(), 0.0);
+    this->size = size;
+    this->learningRate = 0.1;
+
+    this->initialize();
+}
+
 NeuralNetwork::NeuralNetwork(const vector<int> &size, const vector<double> &dropout)
 {
     if (dropout.size() == size.size()) {

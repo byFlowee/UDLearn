@@ -28,6 +28,7 @@ class NeuralNetwork
         double activationFunctionPrime(double d) const;
 
     public:
+        NeuralNetwork(const vector<int> &size);
         NeuralNetwork(const vector<int> &size, const vector<double> &dropout);
         void initialize();
         void setLearningRate(double learningRate);
