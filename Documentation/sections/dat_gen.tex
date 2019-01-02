@@ -25,7 +25,7 @@ Una vez hecho esto se puede desglosar la RAM de manera bastante precisa, sacando
 	\label{fig:AnalisisRAM}
 \end{figure}
 
-Como se puede observar en la figura \ref{fig:AnalisisRAM}, para obtener la información correcta no solo basta con extraer las posiciones relevantes, en algunos casos será necesario procesar esta información. Por ejemplo, en Demon Attack, las coordenadas X de las entidades aparecen obfuscadas de la siguiente manera:
+Como se puede observar en la figura \ref{fig:AnalisisRAM}, para obtener la información correcta no solo basta con extraer las posiciones relevantes, en algunos casos será necesario procesar esta información. Por ejemplo, en Demon Attack, las coordenadas X de las entidades aparecen ofuscadas de la siguiente manera:
 
 \begin{figure}[h]
 	\centering
@@ -34,7 +34,7 @@ Como se puede observar en la figura \ref{fig:AnalisisRAM}, para obtener la infor
 	\label{fig:DAttackOpsRequired}
 \end{figure}
 
-Como podemos ver en la figura \ref{fig:DAttackOpsRequired}, los nibbles de las coordenadas están invertidos, además, el primer nibble requiere una operacion extra, una resta (7 - valor del nibble). 
+Como podemos ver en la figura \ref{fig:DAttackOpsRequired}, los nibbles de las coordenadas están invertidos, además, el primer nibble requiere una operación extra, una resta (7 - valor del nibble). 
 
 Una vez tenemos la información recogida y procesada, la podremos utilizar para crear una IA capaz de jugar al juego en concreto. Además de eso, el entorno \ac{ale} cuenta con diversas funcionalidades que nos permiten recoger la información en pantalla en el caso que fuese necesario. 
 
@@ -53,11 +53,11 @@ Quisque condimentum nunc id nisi sollicitudin elementum et at diam. Etiam facili
 \label{subsec:botsbasicos}
 Se han desarrollado bots semi-deterministas empleando técnicas básicas de inteligencia artificial para poder extraer datos de gameplay. Los primeros volcados de datos se hicieron con operarios humanos jugando a los juegos, pero al ver que nuestras scores eran mas bien bajas, se optó por implementar IA básica para cada uno de los juegos. 
 
-Estas implementaciones básicas mejoraron mucho las scores obtenidas, por lo que los datos extraidos de los bots eran mas afines a obtener mayores puntuaciones que los nuestros.
+Estas implementaciones básicas mejoraron mucho las scores obtenidas, por lo que los datos extraídos de los bots eran mas afines a obtener mayores puntuaciones que los nuestros.
 
 Además, sobre esta IA básica, se pueden hacer iteraciones de mejora, teniendo en cuenta más datos o mas información en pantalla, como se ha comentado anteriormente en la subsección \ref{subsec:ramanalisi}.
 
-Este scripting básico ayudará mas adelante a la implementación utilizando machine learning, ya que los datos extraidos y procesados para la implementación básica serán utilizados por el algoritmo de machine learning.
+Este scripting básico ayudará mas adelante a la implementación utilizando machine learning, ya que los datos extraídos y procesados para la implementación básica serán utilizados por el algoritmo de machine learning.
 
 A continuación, describiremos cada uno de los bots básicos y su funcionamiento al igual que algunos detalles de implementación.
 
@@ -72,7 +72,7 @@ Todos los bots comparten una serie de utils que analizaremos a continuación.
 	\label{fig:ALEMediaSettings}
 \end{figure}
 
-argv 1 es la rom que utilizará nuestro ejecutable, argv 2 se corresponde con el contenido multimedia (video y audio), argv 3 escribirá la RAM en consola y argv 4 exportará los datos de gameplay a un archivo \ac{csv} si así se requiere. Se han parametrizado estas opciones porque las ejecuciones son mucho mas lentas conforme mas información requiramos, esto se nota sobre todo a la hora de desactivar el contenido multimedia.
+argv 1 es la ROM que utilizará nuestro ejecutable, argv 2 se corresponde con el contenido multimedia (video y audio), argv 3 escribirá la RAM en consola y argv 4 exportará los datos de gameplay a un archivo \ac{csv} si así se requiere. Se han parametrizado estas opciones porque las ejecuciones son mucho mas lentas conforme mas información requiramos, esto se nota sobre todo a la hora de desactivar el contenido multimedia.
 
 \begin{figure}[h]
 	\centering
@@ -93,7 +93,7 @@ Otra de las partes comunes a todos los bots es el bucle principal de ejecución 
 	\label{fig:ALEMainExecLoop}
 \end{figure}
 
-En este bucle observamos nuestra opción \textbf{printRam} que llama al método encargado de imprimir la RAM, el cual convierte a hexadecimal cada uno de los valores de RAM obtenidos mediante el método \textbf{getRAM().get(i)} del entorno \ac{ale}, además hace un seguimiento de los valores de ram del step anterior para comprobar si dichos valores han cambiado como hemos visto anteriormente en la figura \ref{fig:RAM_Colors}.
+En este bucle observamos nuestra opción \textbf{printRam} que llama al método encargado de imprimir la RAM, el cual convierte a hexadecimal cada uno de los valores de RAM obtenidos mediante el método \textbf{getRAM().get(i)} del entorno \ac{ale}, además hace un seguimiento de los valores de RAM del step anterior para comprobar si dichos valores han cambiado como hemos visto anteriormente en la figura \ref{fig:RAM_Colors}.
 
 Otra opción que encontramos en el bucle principal de ejecución es \textbf{display\_media}, pero en este caso es usado para llamar al método \textbf{checkKeys()}, esto se hace porque no tiene sentido trackear el input si no existe contenido de video. Este método de input es propio, ya que el método de input de ALE "pausa" el agente, lo cual no nos interesa para extraer datos. \textbf{checkKeys()} simplemente activa o desactiva el modo manual propio con la tecla "E", reflejado en la variable \textbf{manualInput}.
 
@@ -111,7 +111,7 @@ Otra de las partes comunes a todos los agentes es la parte de volcado de datos, 
 
 \subsubsection{Breakout}
 \label{subsec:botsbasicos:breakout}
-El Breakout es el juego mas simple de todos los que analizaremos en esta parte de la sección, pues el número de inputs que tiene es mas bien pequeño. En el Breakout contamos con un total de 5 vidas para pasarnos los 2 niveles de los que dispone. El Breakout fue el primer juego en el que vimos la necesidad de automatizar al jugador, ya que la velocidad de la pelota va incrementando en funcion a los ladrillos restantes que quedan, lo cual provocaba que perdiesemos siempre en este punto.
+El Breakout es el juego mas simple de todos los que analizaremos en esta parte de la sección, pues el número de inputs que tiene es mas bien pequeño. En el Breakout contamos con un total de 5 vidas para pasarnos los 2 niveles de los que dispone. El Breakout fue el primer juego en el que vimos la necesidad de automatizar al jugador, ya que la velocidad de la pelota va incrementando en función a los ladrillos restantes que quedan, lo cual provocaba que perdiésemos siempre en este punto.
 
 \begin{figure}[h]
 	\centering
@@ -120,7 +120,7 @@ El Breakout es el juego mas simple de todos los que analizaremos en esta parte d
 	\label{fig:breakoutgame}
 \end{figure}
 
-Simplemente proporcionando la posición X de la pelota y de la pala al bot naive y moviendo la pala hacia la pelota, el agente ya jugaba bastante bien. Una mejora que se hizo al algoritmo es hacer un control del tamaño de la pala, al igual que en vez de tener en cuenta solo la posicion actual de la pelota, añadir a los datos la posición anterior. Con todas estas mejoras la puntuación se maximizó hasta el punto en el cual el agente fue capaz de pasarse el juego completo. A continuacion se muestra en el algoritmo \ref{alg:breakoutimpl}
+Simplemente proporcionando la posición X de la pelota y de la pala al bot y moviendo la pala hacia la pelota, el agente ya jugaba bastante bien. Una mejora que se hizo al algoritmo es hacer un control del tamaño de la pala, al igual que en vez de tener en cuenta solo la posición actual de la pelota, añadir a los datos la posición anterior. Con todas estas mejoras la puntuación se maximizó hasta el punto en el cual el agente fue capaz de pasarse el juego completo. A continuación se muestra en el algoritmo \ref{alg:breakoutimpl}
 el pseudocódigo de la IA del Breakout.
 
 \vspace{4mm}
@@ -158,13 +158,13 @@ Si analizamos el pseudocódigo anterior, podemos ver cuatro partes. En la primer
 
 En la segunda parte recogemos los datos principales, en este caso \textbf{wide}, que corresponde al ancho de la pala, además de \textbf{playerX} y \textbf{ballX}. 
 
-La tercera parte calcula la dirección de la bola, esto se saca comprobando la posicion anterior de la bola con la actual en el eje X, una vez sabemos la direccion aplicamos una suma con un poco de aleatoriedad (para evitar ejecuciones deterministas) en la dirección recogida. Una vez hecho eso nos guardamos la posicion de la pelota para la siguiente iteración.
+La tercera parte calcula la dirección de la bola, esto se saca comprobando la posición anterior de la bola con la actual en el eje X, una vez sabemos la dirección aplicamos una suma con un poco de aleatoriedad (para evitar ejecuciones deterministas) en la dirección recogida. Una vez hecho eso nos guardamos la posición de la pelota para la siguiente iteración.
 
-En la cuerta parte aplicaremos el input en funcion a la posicion del jugador respecto a la pelota, teniendo en cuenta el ancho de la pala recogido anteriormente.
+En la cuarta parte aplicaremos el input en función a la posición del jugador respecto a la pelota, teniendo en cuenta el ancho de la pala recogido anteriormente.
 
 \subsubsection{Boxing}
 \label{subsec:botsbasicos:boxing}
-Boxing es un juego en el cual controlamos a un boxeador y tenemos que asestar mas golpes que el rival para ganar la ronda. En este juego tuvimos los mismos problemas que con el Breakout, por lo que decidimos implementar otro bot, el cual jugaba mejor que nosotros, lo que se resumia en todo ventajas.
+Boxing es un juego en el cual controlamos a un boxeador y tenemos que asestar mas golpes que el rival para ganar la ronda. En este juego tuvimos los mismos problemas que con el Breakout, por lo que decidimos implementar otro bot, el cual jugaba mejor que nosotros, lo que se resumía en todo ventajas.
 
 \begin{figure}[h]
 	\centering
@@ -173,7 +173,7 @@ Boxing es un juego en el cual controlamos a un boxeador y tenemos que asestar ma
 	\label{fig:boxing}
 \end{figure}
 
-En este agente hemos tomado una estrategia agresiva, si el rival lanza un puñetazo, lo intentaremos bloquear con nuestros propios puños poniendo a nuestro boxeador exactamente en la misma posición "Y" que el boxeador contrario (una de las features de Boxing es que la colisión de los puños bloquea los golpes). Además, nuestro boxeador nunca se moverá hacia la izquierda, solo se mueve hacia la derecha en posición de ataque intentando posicionarse en la "Y" del rival, como hemos comentado antes. A su vez, basandonos en ciertas tolerancias, se atacará siempre que sea posible. Esta estrategia agresiva funciona una gran mayoria de las veces, además para evitar el determinismo se ha implementado una pequeña aleatoriedad cada vez que recogemos las posiciones del jugador 1 y del jugador 2 de RAM, como bien se puede ver en el ejemplo de la figura \ref{fig:boxingAleatoriedad}.
+En este agente hemos tomado una estrategia agresiva, si el rival lanza un puñetazo, lo intentaremos bloquear con nuestros propios puños poniendo a nuestro boxeador exactamente en la misma posición "Y" que el boxeador contrario (una de las features de Boxing es que la colisión de los puños bloquea los golpes). Además, nuestro boxeador nunca se moverá hacia la izquierda, solo se mueve hacia la derecha en posición de ataque intentando posicionarse en la "Y" del rival, como hemos comentado antes. A su vez, basándonos en ciertas tolerancias, se atacará siempre que sea posible. Esta estrategia agresiva funciona una gran mayoría de las veces, además para evitar el determinismo se ha implementado una pequeña aleatoriedad cada vez que recogemos las posiciones del jugador 1 y del jugador 2 de RAM, como bien se puede ver en el ejemplo de la figura \ref{fig:boxingAleatoriedad}.
 
 \begin{figure}[h]
 	\centering
@@ -204,21 +204,170 @@ A continuación se muestra en el algoritmo \ref{alg:boxingimpl}, la IA implement
 	\label{alg:boxingimpl}
 \end{algorithm}
 
-En la primera parte de recogida de datos, encapsulamos en un struct la posicion del jugador uno y la del jugador dos extrayéndolos de RAM, como ya hemos comentado anteriormente, estas posiciones implementan una aleatoriedad mínima para evitar ejecuciones deterministas. Además, en la misma sección, calcularemos la distancia entre ambos jugadores en "X" y en "Y", representadas en \textbf{absp1p2X} y \textbf{absp1p2Y} respectivamente, para luego utilizarlas mas adelante.
+En la primera parte de recogida de datos, encapsulamos en un struct la posición del jugador uno y la del jugador dos, extrayéndolos de RAM. Como ya hemos comentado anteriormente, estas posiciones implementan una aleatoriedad mínima para evitar ejecuciones deterministas. Además, en la misma sección, calcularemos la distancia entre ambos jugadores en "X" y en "Y", representadas en \textbf{absp1p2X} y \textbf{absp1p2Y} respectivamente, para luego utilizarlas mas adelante.
 
 Una vez tenemos todos los datos procesados, observaremos si nos encontramos en un rango de tolerancia "Y" válido para atacar, si lo estamos, atacaremos (como punto a destacar, este rango es bastante amplio para enfatizar esta estrategia ofensiva). Si no podemos atacar, nos moveremos hacia la derecha  con ciertas tolerancias, o nos situamos en la "Y" del enemigo.
 
 
 \subsubsection{Demon Attack}
 \label{subsec:botsbasicos:da}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur diam quam, placerat sit amet ornare ut, dignissim non orci. Suspendisse et pellentesque sem, id facilisis magna. Morbi consequat blandit ipsum, sed accumsan ex vehicula quis. Maecenas interdum malesuada neque, non laoreet magna dignissim a. Vivamus rhoncus enim eget neque pretium, condimentum hendrerit leo venenatis. Vestibulum elementum semper sem a ultricies. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nullam pulvinar pellentesque quam viverra consectetur. Donec sit amet enim eu ante porttitor commodo elementum eget orci. Duis lobortis mattis nibh, sodales feugiat sapien efficitur sed. Duis ultrices turpis eu nisl maximus, id luctus justo elementum. Curabitur porttitor nec nibh at ullamcorper.
+El Demon Attack es un juego en el cual controlamos a una nave con un patrón de movimiento similar al Space Invaders. Tendremos que disparar a las naves rivales para pasar de fase además de evitar todo contacto enemigo. El jugador cuenta con una serie de vidas para pasarse los niveles, si estas vidas se acaban el juego termina. De nuevo, vimos la necesidad de crear un bot debido a las bajas puntuaciones obtenidas.
 
-Aliquam egestas elit vitae faucibus tincidunt. Donec dolor nulla, congue quis lobortis quis, euismod at elit. Phasellus viverra auctor augue nec luctus. Aenean elementum facilisis sapien, a imperdiet lacus maximus varius. Mauris in maximus urna. Mauris quis varius mi, id commodo nibh. Vivamus et quam ultrices, sollicitudin justo a, egestas mauris.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.9\textwidth]{Figures/demonAttackOne}
+	\caption{Juego Demon Attack.}
+	\label{fig:demonattackone}
+\end{figure}
 
-Aenean ut egestas ipsum. Praesent placerat ex sit amet mauris eleifend auctor sit amet tincidunt nibh. Fusce in varius justo, eget euismod tortor. Pellentesque sagittis bibendum mi, vel mollis dolor congue a. Nulla vitae pharetra ex, quis commodo justo. Cras a volutpat nisi, vitae lobortis sem. Aenean ullamcorper, erat eget vehicula tempor, magna nunc rhoncus turpis, ac commodo dolor risus id sem. Morbi efficitur vel felis at finibus. Nullam tristique erat id est ornare, sed finibus libero bibendum. Cras at tellus ligula. Ut eget pretium ante, condimentum tristique nisi.
+El Demon Attack es, sin duda, uno de los juegos mas complejos con los que hemos tenido que lidiar, debido a la cantidad de entidades en pantalla, desde disparos hasta múltiples enemigos. La estrategia de IA seguida en el Demon Attack es compleja debido al factor de la gran cantidad de entidades, pues no solo leemos valores en RAM, sino que aprovechamos la característica de \ac{ale} que nos permite leer los píxeles de la pantalla.
 
-Quisque condimentum nunc id nisi sollicitudin elementum et at diam. Etiam facilisis cursus urna, mollis euismod magna efficitur at. Praesent ullamcorper varius accumsan. Sed quis est id orci sollicitudin sollicitudin. Donec consectetur, ante quis eleifend ultrices, risus turpis efficitur justo, eget fermentum ipsum nisi ac ipsum. Integer accumsan facilisis viverra. Aliquam id nisl faucibus, pharetra dui vel, venenatis elit. Morbi auctor, magna ac pellentesque fringilla, urna ex aliquam velit, ut lacinia enim diam nec augue. Nulla posuere auctor imperdiet. Praesent cursus cursus erat, ac varius odio vulputate in. Morbi ultricies consequat ex, eu convallis purus pretium non. Duis tincidunt nibh eget fermentum auctor.
+Al analizar la RAM, observamos que habían demasiadas características a tener en cuenta, a pesar de tener un análisis detallado de la misma. Hay posiciones de RAM que representan varias cosas en diferentes situaciones, un ejemplo es el valor representado por \textit{RAM[20]}: 
 
+\newpage
+\textit{"20: Coordenada "X" de las balas del enemigo. También es la coordenada "X" de la mosca que se acerca para intentar matar al jugador 1 (se utiliza como una bala). Va desde 29 hasta 147 (incluso cuando dispara la mosca). El valor es todo el rato el mismo hasta que el enemigo dispara y actualiza la coordenada. Si hay mas de 2 cambios consecutivos en 2 frames significa que no es una bala y que es la mosca que sigue al jugador"}.
+
+Es por ello por lo que se dedujo que para implementar un bot básico (sin machine learning), era más fácil hacer un análisis de lo que estuviera pasando en la pantalla en un instante determinado, sin dejar de lado la RAM. Para esto, se diseñó un método de visión en el cual la nave es capaz de ver y filtrar enemigos en un área de visión y actuar concorde la situación dependiendo de unas reglas determinadas. En la figura \ref{fig:demonAttackVision} se puede observar el área de visión de la nave.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1\textwidth]{Figures/demonAttackVision}
+	\caption{Vision de la nave.}
+	\label{fig:demonAttackVision}
+\end{figure}
+
+La visión de la nave se divide principalmente en 3 partes. En la figura vemos una línea roja representada con el número 1, esta línea roja representa la visión de la nave en función a la anchura de la misma. El número 2 es un area parametrizable que permite ampliar esta visión de forma simétrica por los dos lados de la nave. Tanto el rectángulo rojo como el azul se extienden por casi toda la "Y" de la pantalla y lo único que filtran son los disparos enemigos, como los disparos enemigos tienen el mismo color es muy simple filtrarlos. Por lo tanto 1 y 2 se encargan de detectar disparos enemigos, una vez detectados se actuará en consecuencia.
+
+El número 3 es un área reducida dentro del área completa que se encarga de detectar todas las posibles amenazas, no solo disparos, que estén cerca de la nave. Es decir, el objetivo de la visión es la detección de entidades peligrosas en un área de riesgo para posteriormente evitarlas.
+
+El seguimiento de enemigos para atacarles y matarlos corre a cargo de la RAM, aunque no es del todo exacto debido al problema comentado anteriormente de posiciones de RAM no especificas a una única funcionalidad.
+
+Para analizar la parte práctica de éste algoritmo es necesario separarlo en distintas partes, detección, esquiva y seguimiento.
+
+La parte de detección funciona recogiendo la pantalla entera en grayscale, esto lo hacemos gracias a una funcionalidad de \ac{ale}, una vez tenemos la pantalla guardada, podemos ver cual es el valor de cada píxel. Gracias a esto, podemos determinar el color de los disparos y de las naves enemigas, los que guardaremos en las siguientes variables para después su posterior filtrado:
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1\textwidth]{Figures/demonAttackStaticOne}
+	\caption{Constantes fijas relativas a la visión de la nave.}
+	\label{fig:demonAttackStaticOne}
+\end{figure}
+
+En la figura \ref{fig:demonAttackStaticOne} podemos observar diversas constantes, entre ellas el color de las balas del jugador 1, \textbf{P1\_BULLETS\_COLOR}, el color de la nave del jugador 1, \textbf{P1\_SHIP\_COLOR} y el color de las balas enemigas, \textbf{EN\_BULLETS\_COLOR}. Gracias a estar en grayscale, con tener un solo valor es suficiente. Además podemos observar otras constantes como \textbf{LINE\_WIDTH}, que representa el ancho en píxeles de la resolución de la Atari, \textbf{SHIP\_WIDTH}, el ancho en píxeles de la nave y \textbf{LEFT / RIGHT\_THRESOLD}, que es la coordenada "X" mínima y máxima en la que se puede mover la nave aliada.
+
+\newpage
+Además de estas constantes, Demon Attack cuenta con cuatro constantes adicionales que nos permiten parametrizar algunas características de nuestro algoritmo, como se puede ver en la figura \ref{fig:demonAttackChangableOne} .
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\textwidth]{Figures/demonAttackChangableOne}
+	\caption{Constantes modificables (no runtime).}
+	\label{fig:demonAttackChangableOne}
+\end{figure}
+
+La primera variable de la figura representa el área extra de visión 2 definida en la imagen \ref{fig:demonAttackVision}, la segunda variable define en que línea empieza el área de visión 3. Las dos variables restantes es aleatoriedad opcional a la hora de recoger las posiciones, como se ha hecho antes en el \textit{Boxing}. En este caso, debido a la gran cantidad de entidades en pantalla se ha optado por deshabilitar la aleatoriedad y hacer las batallas mas deterministas.
+
+Otro dato a remarcar antes de empezar con el algoritmo es el Enum utilizado para las colisiones:
+
+\vspace{4mm}
+\begin{algorithm}[H]
+	enum BlockingHit \{
+		$EMoveRight,$
+		$EMoveLeft,$
+		$ENotBlocking$
+	\};
+	\caption{Enum empleado para las colisiones.}
+	\label{alg:enumcoli}
+\end{algorithm}
+
+\vspace{4mm}
+Para entender el enum del algoritmo \ref{alg:enumcoli} tenemos primero que comprender las respuestas que puede dar una colisión y como se operan. 
+
+\begin{itemize}
+	\item \textbf{EMoveRight}: La amenaza se ha detectado en la parte izquierda de nuestra área de visión, para contrarrestarla nos moveremos a la derecha si podemos.
+	\item \textbf{EMoveLeft}: La amenaza se ha detectado en la parte derecha de nuestra área de visión, para contrarrestarla nos moveremos a la izquierda si podemos.
+	\item \textbf{ENotBlocking}: No se ha detectado amenaza ninguna.
+\end{itemize}
+
+\newpage
+Una vez que ya sabemos qué indicadores utilizaremos para las colisiones, podemos proceder a despiezar el algoritmo.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1\textwidth]{Figures/demonattackp1algo}
+	\caption{Primera parte del algoritmo de IA para el Demon Attack.}
+	\label{fig:demonattackp1algo}
+\end{figure}
+
+En esta primera parte recogemos los píxeles de la pantalla con la funcionalidad de \ac{ale} \textbf{getScreenGrayscale}, para luego emplearlos dentro del bucle en la funcion \textbf{isBlockingHit(int)}, que analizaremos mas adelante. Este bucle se encarga de recorrer 125 filas de la pantalla. En función a la respuesta de \textbf{isBlockingHit(int)}, marcará una variable a true, la cual representa que ha habido una colisión, además dentro de este struct \textbf{DirtyState}, disponemos de otra variable de tipo EBlockingHit para marcar también la dirección contraria a la colisión dada por isBlockingHit. Se ha decidido este thresold ya que el resto de líneas de pantalla contienen información no relevante para el problema.
+
+Para resumir esta parte del código, marcamos el estado a Dirty y recogemos la dirección conveniente, siempre que isBlockingHit haya detectado una colisión. Hasta que no salimos del estado Dirty, no podremos recoger nuevas direcciones, pero de ello se encargará otra parte del código. Es decir, teóricamente se ha implementado una mini máquina de estados finita (FSM), ya que la nave posee dos estados principales (dirty y no dirty) y la forma de transicionar entre ellos es mediante el código de colisiones.
+
+\newpage
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1\textwidth]{Figures/daisblocking}
+	\caption{Función isBlockingHit.}
+	\label{fig:daisblocking}
+\end{figure}
+
+La función isBlockingHit tiene que ser capaz de recorrer el array obtenido por \textbf{getScreenGrayscale} de manera eficiente. Para ello lo primero que hace es resolver la posición del array que ocupa el primer píxel de la línea a analizar, esto es fácil, pues simplemente multiplicando el ancho de la línea con el número de línea ya tenemos este número (asumiendo que las líneas empiezan en 0).
+
+La siguiente tarea es resolucionar el thresold, el cual consiste en el área que ocupa la nave, en este caso 7, mas el thresold determinado, que en nuestro caso corresponde al número de pixeles extras que tendremos en cuenta en cada lado, por ejemplo, si el thresold es 2, el área total será 7+2+2 = 11.
+
+La iteración que haremos en el bucle irá desde 0 hasta el área total que ocupa la visión de la nave, esto es, como ya hemos dicho anteriormente, el área de la nave mas el thresold. Esto hace que solo iteremos los píxeles necesarios para nuestra situación.
+
+La primera línea que encontramos en el bucle puede parecer confusa, pero tiene su explicación:
+
+\vspace{2mm}
+\begin{algorithm}[H]
+    const int impact\_pixel\_val(grayscale[FILTER\_LINE + (getP1\_X(true)-VISION\_THRESOLD) + i]);
+	\caption{Calculo del valor del pixel en un punto determinado de nuestra area de visión.}
+	\label{alg:weirdlineda}
+\end{algorithm}
+\vspace{2mm}
+
+Necesitamos el valor del píxel en un punto determinado de nuestra área de visión. Para ello, necesitamos pedirle al array grayscale esta información, pero antes necesitamos calcular qué posición del array es la correcta. Al haber pre-calculado la posición del array del primer píxel de la línea lo tenemos mucho mas fácil, pues tenemos por donde empezar. A ese número le tenemos que sumar la posición del jugador uno, representado en \textbf{getP1\_X(true)}, al cual le pasamos el parámetro true para que nos devuelva la posición en píxeles, la cual es más precisa para este problema. Una vez tenemos la posición del jugador solo nos queda sumarle i para abordar todo el área de visión. Pero como bien podemos observar en el algoritmo \ref{alg:weirdlineda}, estamos restando a la posición del jugador el \textbf{VISION\_THRESOLD}, esto se hace porque sino estaríamos solo teniendo en cuenta el área extra por la derecha, ya que la colisión estaría desplazada a la izquierda como muestra la figura 	\ref{fig:colisioncalculadaerroneamenteda}, por ello es necesario restar \textbf{VISION\_THRESOLD}.,
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.3\textwidth]{Figures/colisioncalculadaerroneamenteda}
+	\caption{Area de sin restar VISION\_THRESOLD al jugador.}
+	\label{fig:colisioncalculadaerroneamenteda}
+\end{figure}
+
+Una vez hemos resolucionado el valor del pixel, podemos hacer el filtrado del mismo, el cual se realizará en el cuerpo del bucle.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1\textwidth]{Figures/cuerpobucleisblockingda}
+	\caption{Resolución de la colisión}
+	\label{fig:cuerpobucleisblockingda}
+\end{figure}
+
+Como bien observamos en la figura 	\ref{fig:cuerpobucleisblockingda}, haremos una primera distinción para las moscas y enemigos mas cercanos a nuestra segunda área de visión seguido de la visión normal. Priorizamos el segundo área de visión porque está mas cerca del jugador, lo cual se traduce en más peligro a perder una vida. En el primer if, miramos si nos encontramos en el área de riesgo y filtramos por color principalmente si lo que hay en ese píxel es un enemigo. Si es así, es que ha habido una colisión. Si la i en la cual nos encontramos es menor (o está a la izquierda) de la mitad del área de visión, nos moveremos a la derecha (camino más corto para evitar la colisión). Haremos lo mismo para el otro ladro. El segundo if es exactamente lo mismo solo que nos centramos únicamente en las balas enemigas.
+
+Finalmente, si no se ha encontrado colisión ninguna, como hemos visto en la figura \ref{fig:daisblocking}, devolveremos \textit{ENotBlocking}.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.79\textwidth]{Figures/damovement}
+	\caption{Aplicando movimiento a la nave}
+	\label{fig:damovement}
+\end{figure}
+
+La parte que extiende a la figura \ref{fig:demonattackp1algo}, es la figura \ref{fig:damovement}. En ésta figura podemos observar la parte del algoritmo que finalmente aplica movimiento a la nave. En este punto ya hemos solucionado la colisión y solo nos queda movernos en la dirección conveniente.
+
+Esta parte del código se divide en dos dependiendo respectivamente si hemos encontrado una colisión o no. En la primera parte ya tenemos en el \textbf{DirtyState} apuntado la dirección en la cual movernos, sin embargo si nos encontramos en los bordes de la pantalla, no nos podremos mover la la dirección del borde, es por esto por lo que cambiamos de dirección cuando llegamos a un borde. Si no estamos en ningún borde, simplemente aplicamos la dirección anotada por \textbf{ds.Direction}.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.79\textwidth]{Figures/structdirtystateda}
+	\caption{Struct Dirty State}
+	\label{fig:structdirtystateda}
+\end{figure}
+
+En la segunda parte, podemos considerar que el jugador uno está a salvo de posibles ataques enemigos, esto viene determinado, como ya hemos comentado anteriormente, por el resultado de isBlockingHit. Por lo tanto, lo que haremos en este modo es disparar siempre que podamos a la vez que intentar traquear a los enemigos en RAM para dispararles dentro de su colisión. \textbf{EnemeyHandler} se encargará de devolvernos el enemigo mas relevante en un instante determinado (usualmente el mas cercano al jugador). Esta función no funciona el 100\% de los casos, ya que como hemos comentado anteriormente, la RAM no es específica a casos concretos sino que va cambiando, por lo tanto habrá, veces que el jugador 1 se quede disparando a la nada porque no tiene nada que trackear. Esto se resuelve parcialmente gracias a la aleatoriedad y al movimiento de las entidades enemigas, que acabaremos matando si se acercan a nuestro laser. La solución completa y real sería llevar un seguimiento mas espécifico de todas las unidades en RAM, lo cual puede llevarnos a implementar demasiados casos específicos para un escenario mas simple de solucionar mediante un algoritmo genérico (mediante una buena función de fitness) o un neuroevolutivo en su defecto.
 
 
 %----------------------------------------------------------------------------------------------%
