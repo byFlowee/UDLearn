@@ -83,7 +83,7 @@ void NeuralNetwork::updateDropoutMats() {
     for (size_t l = 0; l < this->size.size(); ++l) {
         Mat dropout(1, this->size[l], 1);
         if (this->dropout[l] > 0.0) {
-            for (size_t n = 0; n < this->size[l]; ++n) {
+            for (int n = 0; n < this->size[l]; ++n) {
                 double randomDist = ((double)rand() / (double)RAND_MAX);
                 dropout.set(0, n, (randomDist < this->dropout[l]) ? 0 : 1);
             }
