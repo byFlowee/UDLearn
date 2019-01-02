@@ -13,14 +13,10 @@ void ANDFunction(bool showResults)
     cout << "AND function" << endl;
     cout << "------------" << endl;
 
-    vector<int> nodes;
-    
-    nodes.push_back(2);
-    nodes.push_back(10);
-    nodes.push_back(1);
-    
-    NeuralNetwork nn(nodes);
-    
+    vector<int> nodes = {2, 10, 1};
+    vector<double> dropout = {0.0, 0.2, 0.0};
+
+    NeuralNetwork nn(nodes, dropout);
     nn.setLearningRate(0.1);
 
     Mat inputs1(1, 2);
@@ -31,19 +27,19 @@ void ANDFunction(bool showResults)
     Mat expectedOutputs2(1, 1);
     vector<Mat> inputs;
     vector<Mat> expectedOutputs;
-    
+
     /*
         * And function:
-        * 
+        *
         * Inputs: 0, 0
         * Expected output: 0
-        * 
+        *
         * Inputs: 0, 1
         * Expected output: 1
-        * 
+        *
         * Inputs: 1, 0
         * Expected output: 1
-        * 
+        *
         * Inputs: 1, 1
         * Expected output: 1
         */
@@ -58,7 +54,7 @@ void ANDFunction(bool showResults)
     inputs4.set(0, 1, 1.0);
     expectedOutputs1.set(0, 0, 0.0);
     expectedOutputs2.set(0, 0, 1.0);
-    
+
     inputs.push_back(inputs1);
     inputs.push_back(inputs2);
     inputs.push_back(inputs3);
@@ -69,12 +65,12 @@ void ANDFunction(bool showResults)
     expectedOutputs.push_back(expectedOutputs2);
 
     nn.train(inputs, expectedOutputs, 10000);
-    
+
     Mat res1 = nn.forwardPropagation(inputs1);
     Mat res2 = nn.forwardPropagation(inputs2);
     Mat res3 = nn.forwardPropagation(inputs3);
     Mat res4 = nn.forwardPropagation(inputs4);
-    
+
     if (showResults)
     {
         res1.print();
@@ -102,14 +98,10 @@ void XORFunction(bool showResults)
     cout << "XOR function" << endl;
     cout << "------------" << endl;
 
-    vector<int> nodes;
-    
-    nodes.push_back(2);
-    nodes.push_back(10);
-    nodes.push_back(1);
-    
-    NeuralNetwork nn(nodes);
-    
+    vector<int> nodes = {2, 10, 1};
+    vector<double> dropout = {0.0, 0.2, 0.0};
+
+    NeuralNetwork nn(nodes, dropout);
     nn.setLearningRate(0.1);
 
     Mat inputs1(1, 2);
@@ -120,19 +112,19 @@ void XORFunction(bool showResults)
     Mat expectedOutputs2(1, 1);
     vector<Mat> inputs;
     vector<Mat> expectedOutputs;
-    
+
     /*
         * Xor function:
-        * 
+        *
         * Inputs: 0, 0
         * Expected output: 0
-        * 
+        *
         * Inputs: 0, 1
         * Expected output: 1
-        * 
+        *
         * Inputs: 1, 0
         * Expected output: 1
-        * 
+        *
         * Inputs: 1, 1
         * Expected output: 0
         */
@@ -147,7 +139,7 @@ void XORFunction(bool showResults)
     inputs4.set(0, 1, 1.0);
     expectedOutputs1.set(0, 0, 0.0);
     expectedOutputs2.set(0, 0, 1.0);
-    
+
     inputs.push_back(inputs1);
     inputs.push_back(inputs2);
     inputs.push_back(inputs3);
@@ -156,14 +148,14 @@ void XORFunction(bool showResults)
     expectedOutputs.push_back(expectedOutputs2);
     expectedOutputs.push_back(expectedOutputs2);
     expectedOutputs.push_back(expectedOutputs1);
-    
+
     nn.train(inputs, expectedOutputs, 100000);
-    
+
     Mat res1 = nn.forwardPropagation(inputs1);
     Mat res2 = nn.forwardPropagation(inputs2);
     Mat res3 = nn.forwardPropagation(inputs3);
     Mat res4 = nn.forwardPropagation(inputs4);
-    
+
     if (showResults)
     {
         res1.print();
@@ -226,14 +218,10 @@ int main(int argc, char **argv)
 
     cout << endl;
 
-    vector<int> nodes;
-    
-    nodes.push_back(2);
-    nodes.push_back(10);
-    nodes.push_back(1);
-    
-    NeuralNetwork nn(nodes);
-    
+    vector<int> nodes = {2, 10, 1};
+    vector<double> dropout = {0.0, 0.2, 0.0};
+
+    NeuralNetwork nn(nodes, dropout);
     nn.setLearningRate(0.1);
 
     vector<Mat> inputs;

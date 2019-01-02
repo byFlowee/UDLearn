@@ -1,92 +1,134 @@
-#include "Genome.h"
+#include <algorithm>
 
-Genome::Genome() {
-}
+#include "Genome.h"
+#include "Innovation.h"
 
 void Genome::newWeightMutation() {
 
-	map<unsigned, Connection>::iterator it;
-	for (it = connections.begin(); it != connections.end(); it++) {
-		if ( ((double)rand() / RAND_MAX) < mutationRate ) {
-			it->second.setWeight(it->second.getWeight() *((double)rand() / RAND_MAX)*3.0 - 1.5);
-		}
-		else {
-			it->second.setWeight( ((double)rand() / RAND_MAX)*3.0 - 1.5);
-		}
-	}
 }
 
 //add connection mutation, a single new connection gene with a random weight is added connecting
-//two previously unconnected nodes
+//two previously unconnected neurons
 void Genome::newConnectionMutation() {
-	Node n1 = nodes[getRandomNodeIndex()];
-	Node n2 = nodes[getRandomNodeIndex()];
+	if ( ((double) rand() / RAND_MAX) > this->mutationRate ) {
+		unsigned n2 = -1;
+		unsigned n1 = -1;
+		for (int i = 0; i < newLinkTries; ++i) {
+			unsigned n2 = neurons[getRandomNeuronIndex()].getId();
+			unsigned n1 = neurons[getRandomNeuronIndex()].getId();
 
-	for (size_t i = 0; i < connections.size(); ++i) {
-		if ( ( connections[i].getInputId() == n1.getId() && connections[i].getOutputId() == n2.getId() ) 
-			|| (connections[i].getInputId() == n2.getId() && connections[i].getOutputId() == n1.getId()) ) {
+			if (n1 == n2 || checkDuplicate(n1, n2))
+				n1 = n2 = -1;
+			else
+				break;
+		}
+
+		//no valid pair of neurons found to make a connection
+		if (n1 == -1 || n2 == -1)
 			return;
+
+		//check if this innovation already exists
+		unsigned innovationId = inn->getInnovation(n1, n2, InnovationType::connection);
+
+		if (innovationId == -1) {
+			inn->newInnovation(n1, n2, InnovationType::connection, Layer::None);
+			Connection c(n1, n2, getRandomWeight(), true, inn->getNextInnovationId());
+			connections.push_back(c);
+		} else {
+			Connection c(n1, n2, getRandomWeight(), true, innovationId);
+			connections.push_back(c);
 		}
 	}
-
-	bool swap = false;
-	if (n1.getLayer() > n2.getLayer()) {
-		swap = true;
-	}
-
-	Connection n((swap ? n2.getId() : n1.getId()), (swap ? n1.getId() : n2.getId()), getRandomNodeIndex(), true, false, 0);
-	connections.insert({n.getInnovation(), n});
 }
 
-void Genome::newNodeMutation() {
-	Connection c = connections[getRandomNodeIndex()];
+void Genome::newNeuronMutation() {
+	if ( ((double) rand() / RAND_MAX) > this->mutationRate ) {
+		unsigned threshold = this->nInputs + this->nOutputs + 10;
+		unsigned randomConnection = -1;
 
-	Node input = nodes[c.getInputId()];
-	Node output = nodes[c.getOutputId()];
+		//size threshold to prevent chain effect on mutations
+		if (connections.size() < threshold) {
+			for (size_t i = 0; i < newNeuronTries; ++i) {
+				randomConnection = rand() % connections.size() - (int)sqrt((double)connections.size());	//this will get older links on the genome
+				int from = connections[randomConnection].getInputId;
 
-	c.disableConnection();
+				if (connections[randomConnection].isEnabled() && neurons[this->getNeuronById(from)].getLayer() != Bias) {
+					break;
+				}
+			}
+		} else {
+			bool found = false;
+			while(!found){
+				randomConnection = rand() % connections.size();
+				unsigned from = connections[randomConnection].getInputId();
 
-	Node n(Layer(Hidden), nodes.size());
-	Connection in(input.getId(), n.getId(), 1.0, true, false, 0);
-	Connection out(n.getId(), output.getId(), c.getWeight(), true, false, 0);
-
-	nodes.insert({n.getId(), n});
-	connections.insert({in.getInnovation(), in});
-	connections.insert({out.getInnovation(), out});
-}
-
-Genome Genome::crossover(Genome p1, Genome p2) {
-	Genome child;
-
-	//Copying all the nodes of parent 1 to the child
-	for (size_t i = 0; i < p1.nodes.size(); ++i) {
-		child.nodes.insert({p1.nodes[i].getId(), p1.nodes[i]});
-	}
-	
-	//for every connection on the parent 1 genome
-	map<unsigned, Connection>::iterator it;
-	for (it = p1.connections.begin(); it != p1.connections.end(); it++) {
-		map<unsigned, Connection>::iterator it2;
-		it2 = p2.connections.find(it->first);
-		
-		if (it2 != p2.connections.end()) {	//match
-			Connection c(rand() % 2 ? it->second : it2->second);
-			child.connections.insert({c.getInnovation(), c});
+				if (connections[randomConnection].isEnabled() && neurons[this->getNeuronById(from)].getLayer() != Bias) {
+					found = true;
+				}
+			}
 		}
-		else { //disjoint or excess
- 			Connection c(it->second);
-			child.connections.insert({c.getInnovation(), c});
+
+		//at this point we have a valid connection to insert the neuron into
+		connections[randomConnection].disableConnection();
+		double previousWeight = connections[randomConnection].getWeight();
+		unsigned from = connections[randomConnection].getInputId;
+		unsigned to = connections[randomConnection].getOutputId;
+
+		unsigned innovationId = inn->getInnovation(from, to, InnovationType::neuron);
+
+		if (innovationId != -1) {
+			unsigned neuronId = inn->getNeuronID(innovationId);
+			if (neuronExists(neuronId)) {
+				innovationId = -1;			// new innovation is needed so id is reset to -1
+			}
+		}
+
+		if (innovationId == -1) {
+			unsigned newNeuron = inn->newInnovation(from, to, InnovationType::neuron, Layer::Hidden);
+			neurons.push_back(Neuron(Layer::Hidden, newNeuron));
+
+			unsigned connId = inn->getNextInnovationId();
+			inn->newInnovation(from, newNeuron, InnovationType::connection, Layer::None);
+			connections.push_back(Connection(from, newNeuron, 1.0, true, connId));
+
+			connId = inn->getNextInnovationId();
+			inn->newInnovation(newNeuron, to, InnovationType::connection, Layer::None);
+			connections.push_back(Connection(newNeuron, to, previousWeight, true, connId));
+		} else {
+			//innovation already created
+			unsigned newNeuron = inn->getNeuronID(innovationId);
+
+			unsigned connId1 = inn->getInnovation(from, newNeuron, InnovationType::connection);
+			unsigned connId2 = inn->getInnovation(newNeuron, to, InnovationType::connection);
+
+			connections.push_back(Connection(from, newNeuron, 1.0, true, connId1));
+			connections.push_back(Connection(newNeuron, to, previousWeight, true, connId2));
+
+			neurons.push_back(Neuron(Layer::Hidden, newNeuron));
 		}
 	}
-	
-	return child;
 }
 
-int Genome::getRandomNodeIndex() {
-	return (rand() % nodes.size());
+bool Genome::neuronExists(unsigned ID) {
+	for (int n=0; n < neurons.size(); ++n)
+		if (ID == neurons[n].getId())
+			return true;
+
+	return false;
+}
+
+bool Genome::checkDuplicate(unsigned in, unsigned out) {
+	for (int c = 0; c < connections.size(); ++c)
+		if ((connections[c].getInputId() == in) && (connections[c].getOutputId() == out))
+			return true;
+
+	return false;
+}
+
+int Genome::getRandomNeuronIndex() {
+	return (rand() % neurons.size());
 }
 
 double Genome::getRandomWeight() {
 	return (((double)rand() / RAND_MAX ) * 2) - 1;
 }
-
