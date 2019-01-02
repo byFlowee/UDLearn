@@ -281,7 +281,7 @@ Otro dato a remarcar antes de empezar con el algoritmo es el Enum utilizado para
 \end{algorithm}
 
 \vspace{4mm}
-Para entender el enum del algoritmo \ref{alg:enumcoli} tenemos primero que comprender las respuestas que puede dar una colisión y como se operan. 
+Para entender el Enum del algoritmo \ref{alg:enumcoli} tenemos primero que comprender las respuestas que puede dar una colisión y como se operan. 
 
 \begin{itemize}
 	\item \textbf{EMoveRight}: La amenaza se ha detectado en la parte izquierda de nuestra área de visión, para contrarrestarla nos moveremos a la derecha si podemos.
@@ -299,7 +299,7 @@ Una vez que ya sabemos qué indicadores utilizaremos para las colisiones, podemo
 	\label{fig:demonattackp1algo}
 \end{figure}
 
-En esta primera parte recogemos los píxeles de la pantalla con la funcionalidad de \ac{ale} \textbf{getScreenGrayscale}, para luego emplearlos dentro del bucle en la funcion \textbf{isBlockingHit(int)}, que analizaremos mas adelante. Este bucle se encarga de recorrer 125 filas de la pantalla. En función a la respuesta de \textbf{isBlockingHit(int)}, marcará una variable a true, la cual representa que ha habido una colisión, además dentro de este struct \textbf{DirtyState}, disponemos de otra variable de tipo EBlockingHit para marcar también la dirección contraria a la colisión dada por isBlockingHit. Se ha decidido este thresold ya que el resto de líneas de pantalla contienen información no relevante para el problema.
+En esta primera parte recogemos los píxeles de la pantalla con la funcionalidad de \ac{ale} \textbf{getScreenGrayscale}, para luego emplearlos dentro del bucle en la función \textbf{isBlockingHit(int)}, que analizaremos mas adelante. Este bucle se encarga de recorrer 125 filas de la pantalla. En función a la respuesta de \textbf{isBlockingHit(int)}, marcará una variable a true, la cual representa que ha habido una colisión, además dentro de este struct \textbf{DirtyState}, disponemos de otra variable de tipo EBlockingHit para marcar también la dirección contraria a la colisión dada por isBlockingHit. Se ha decidido este thresold ya que el resto de líneas de pantalla contienen información no relevante para el problema.
 
 Para resumir esta parte del código, marcamos el estado a Dirty y recogemos la dirección conveniente, siempre que isBlockingHit haya detectado una colisión. Hasta que no salimos del estado Dirty, no podremos recoger nuevas direcciones, pero de ello se encargará otra parte del código. Es decir, teóricamente se ha implementado una mini máquina de estados finita (FSM), ya que la nave posee dos estados principales (dirty y no dirty) y la forma de transicionar entre ellos es mediante el código de colisiones.
 
@@ -313,7 +313,7 @@ Para resumir esta parte del código, marcamos el estado a Dirty y recogemos la d
 
 La función isBlockingHit tiene que ser capaz de recorrer el array obtenido por \textbf{getScreenGrayscale} de manera eficiente. Para ello lo primero que hace es resolver la posición del array que ocupa el primer píxel de la línea a analizar, esto es fácil, pues simplemente multiplicando el ancho de la línea con el número de línea ya tenemos este número (asumiendo que las líneas empiezan en 0).
 
-La siguiente tarea es resolucionar el thresold, el cual consiste en el área que ocupa la nave, en este caso 7, mas el thresold determinado, que en nuestro caso corresponde al número de pixeles extras que tendremos en cuenta en cada lado, por ejemplo, si el thresold es 2, el área total será 7+2+2 = 11.
+La siguiente tarea es resolucionar el thresold, el cual consiste en el área que ocupa la nave, en este caso 7, mas el thresold determinado, que en nuestro caso corresponde al número de píxeles extras que tendremos en cuenta en cada lado, por ejemplo, si el thresold es 2, el área total será 7+2+2 = 11.
 
 La iteración que haremos en el bucle irá desde 0 hasta el área total que ocupa la visión de la nave, esto es, como ya hemos dicho anteriormente, el área de la nave mas el thresold. Esto hace que solo iteremos los píxeles necesarios para nuestra situación.
 
@@ -322,7 +322,7 @@ La primera línea que encontramos en el bucle puede parecer confusa, pero tiene 
 \vspace{2mm}
 \begin{algorithm}[H]
     const int impact\_pixel\_val(grayscale[FILTER\_LINE + (getP1\_X(true)-VISION\_THRESOLD) + i]);
-	\caption{Calculo del valor del pixel en un punto determinado de nuestra area de visión.}
+	\caption{Calculo del valor del píxel en un punto determinado de nuestra area de visión.}
 	\label{alg:weirdlineda}
 \end{algorithm}
 \vspace{2mm}
@@ -336,7 +336,7 @@ Necesitamos el valor del píxel en un punto determinado de nuestra área de visi
 	\label{fig:colisioncalculadaerroneamenteda}
 \end{figure}
 
-Una vez hemos resolucionado el valor del pixel, podemos hacer el filtrado del mismo, el cual se realizará en el cuerpo del bucle.
+Una vez hemos resolucionado el valor del píxel, podemos hacer el filtrado del mismo, el cual se realizará en el cuerpo del bucle.
 
 \begin{figure}[h]
 	\centering
@@ -367,7 +367,7 @@ Esta parte del código se divide en dos dependiendo respectivamente si hemos enc
 	\label{fig:structdirtystateda}
 \end{figure}
 
-En la segunda parte, podemos considerar que el jugador uno está a salvo de posibles ataques enemigos, esto viene determinado, como ya hemos comentado anteriormente, por el resultado de isBlockingHit. Por lo tanto, lo que haremos en este modo es disparar siempre que podamos a la vez que intentar traquear a los enemigos en RAM para dispararles dentro de su colisión. \textbf{EnemeyHandler} se encargará de devolvernos el enemigo mas relevante en un instante determinado (usualmente el mas cercano al jugador). Esta función no funciona el 100\% de los casos, ya que como hemos comentado anteriormente, la RAM no es específica a casos concretos sino que va cambiando, por lo tanto habrá, veces que el jugador 1 se quede disparando a la nada porque no tiene nada que trackear. Esto se resuelve parcialmente gracias a la aleatoriedad y al movimiento de las entidades enemigas, que acabaremos matando si se acercan a nuestro laser. La solución completa y real sería llevar un seguimiento mas espécifico de todas las unidades en RAM, lo cual puede llevarnos a implementar demasiados casos específicos para un escenario mas simple de solucionar mediante un algoritmo genérico (mediante una buena función de fitness) o un neuroevolutivo en su defecto.
+En la segunda parte, podemos considerar que el jugador uno está a salvo de posibles ataques enemigos, esto viene determinado, como ya hemos comentado anteriormente, por el resultado de isBlockingHit. Por lo tanto, lo que haremos en este modo es disparar siempre que podamos a la vez que intentar traquear a los enemigos en RAM para dispararles dentro de su colisión. \textbf{EnemeyHandler} se encargará de devolvernos el enemigo mas relevante en un instante determinado (usualmente el mas cercano al jugador). Esta función no funciona el 100\% de los casos, ya que como hemos comentado anteriormente, la RAM no es específica a casos concretos sino que va cambiando, por lo tanto habrá, veces que el jugador 1 se quede disparando a la nada porque no tiene nada que trackear. Esto se resuelve parcialmente gracias a la aleatoriedad y al movimiento de las entidades enemigas, que acabaremos matando si se acercan a nuestro láser. La solución completa y real sería llevar un seguimiento mas especifico de todas las unidades en RAM, lo cual puede llevarnos a implementar demasiados casos específicos para un escenario mas simple de solucionar mediante un algoritmo genérico (mediante una buena función de fitness) o un neuroevolutivo en su defecto.
 
 
 %----------------------------------------------------------------------------------------------%
