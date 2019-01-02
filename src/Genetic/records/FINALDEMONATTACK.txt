@@ -1,0 +1,110 @@
+Configuration
+---------------------------
+Generations: 20
+Population: 1000
+Mutation rate: 0.200000
+Elitism: 5
+Weights Factor: 2
+Game: Demon Attack
+Topology: 3, 3
+
+Generation 1
+---------------------------
+  Fitness: 1.82601
+  Score: 0
+
+Generation 2
+---------------------------
+  Fitness: 3.27975
+  Score: 150
+
+Generation 3
+---------------------------
+  Fitness: 3.66432
+  Score: 960
+
+Generation 4
+---------------------------
+  Fitness: 3.66432
+  Score: 960
+
+Generation 5
+---------------------------
+  Fitness: 9.18921
+  Score: 760
+
+Generation 6
+---------------------------
+  Fitness: 9.18921
+  Score: 760
+
+Generation 7
+---------------------------
+  Fitness: 9.18921
+  Score: 220
+
+Generation 8
+---------------------------
+  Fitness: 9.18921
+  Score: 760
+
+Generation 9
+---------------------------
+  Fitness: 12.0263
+  Score: 880
+
+Generation 10
+---------------------------
+  Fitness: 14.9637
+  Score: 2000
+
+Generation 11
+---------------------------
+  Fitness: 14.9637
+  Score: 2000
+
+Generation 12
+---------------------------
+  Fitness: 21.0798
+  Score: 480
+
+Generation 13
+---------------------------
+  Fitness: 21.0798
+  Score: 480
+
+Generation 14
+---------------------------
+  Fitness: 21.0798
+  Score: 480
+
+Generation 15
+---------------------------
+  Fitness: 21.0798
+  Score: 480
+
+Generation 16
+---------------------------
+  Fitness: 19.8483
+  Score: 1520
+
+Generation 17
+---------------------------
+  Fitness: 19.8483
+  Score: 1520
+
+Generation 18
+---------------------------
+  Fitness: 27.1421
+  Score: 370
+
+Generation 19
+---------------------------
+  Fitness: 27.1421
+  Score: 370
+
+Generation 20
+---------------------------
+  Fitness: 27.1421
+  Score: 370
+

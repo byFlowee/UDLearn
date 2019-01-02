@@ -1,60 +1,60 @@
 Configuration
 ---------------------------
 Generations: 10
-Population: 10
+Population: 50
 Mutation rate: 0.200000
-Elitism: 5
-Weights Factor: 2
+Elitism: 1
+Weights Factor: 1
 Game: Breakout
 Topology: 4, 2
 
 Generation 1
 ---------------------------
-  Fitness: 1
-  Score: 3
+  Fitness: 286
+  Score: 286
 
 Generation 2
 ---------------------------
-  Fitness: 2
-  Score: 2
+  Fitness: 286
+  Score: 286
 
 Generation 3
 ---------------------------
-  Fitness: 1.5
-  Score: 3
+  Fitness: 385
+  Score: 385
 
 Generation 4
 ---------------------------
-  Fitness: 0.3
-  Score: 3
+  Fitness: 406
+  Score: 406
 
 Generation 5
 ---------------------------
-  Fitness: 0.3
-  Score: 3
+  Fitness: 428
+  Score: 428
 
 Generation 6
 ---------------------------
-  Fitness: 0.3
-  Score: 3
+  Fitness: 428
+  Score: 428
 
 Generation 7
 ---------------------------
-  Fitness: 0.3
-  Score: 3
+  Fitness: 485
+  Score: 485
 
 Generation 8
 ---------------------------
-  Fitness: 0.3
-  Score: 3
+  Fitness: 485
+  Score: 485
 
 Generation 9
 ---------------------------
-  Fitness: 0.3
-  Score: 3
+  Fitness: 485
+  Score: 485
 
 Generation 10
 ---------------------------
-  Fitness: 0.3
-  Score: 3
+  Fitness: 485
+  Score: 485
 

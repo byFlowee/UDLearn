@@ -1,0 +1,15 @@
+Configuration
+---------------------------
+Generations: 1
+Population: 1
+Mutation rate: 0.200000
+Elitism: 1
+Weights Factor: 1
+Game: Breakout
+Topology: 4, 2
+
+Generation 1
+---------------------------
+  Fitness: 860
+  Score: 860
+

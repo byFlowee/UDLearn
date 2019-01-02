@@ -576,7 +576,7 @@ vector<int> Player::playDemonAttack(NeuralNetwork &nn, bool displayScreen)
             cout << "enemyBulletCoordinateX = " << enemyBulletCoordinateX << endl;
         }
 
-        int distanceFactor = 8;
+        int distanceFactor = 10;
 
         if (!UtilG::compareDouble(0.0, currentObjectiveCoordinateX) && 
             abs(currentObjectiveCoordinateX * 255.0 - playerCoordinateX * 255.0) < distanceFactor)

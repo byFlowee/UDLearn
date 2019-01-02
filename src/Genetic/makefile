@@ -1,8 +1,8 @@
 COMPILER := g++
 OPTIONS := -Wall
 TARGET   := main
-OBJ 	 := GeneticNN.o DNA.o UtilG.o mat.o neuralNetwork.o Player.o main.o
-OBJCPP 	 := GeneticNN.cpp DNA.cpp UtilG.cpp ../DataLoader/DataLoader.cpp ../JNet/JNet.cpp ../JNet/Perceptron.cpp ../NeuralNetwork/mat.cpp ../NeuralNetwork/neuralNetwork.cpp Player.cpp main.cpp
+OBJ 	 := GANN.o GANNWrapper.o DNA.o UtilG.o mat.o neuralNetwork.o Player.o main.o
+OBJCPP 	 := GANN.cpp GANNWrapper.cpp DNA.cpp UtilG.cpp ../NeuralNetwork/mat.cpp ../NeuralNetwork/neuralNetwork.cpp Player.cpp main.cpp
 
 
 
@@ -14,7 +14,7 @@ ALE := ../../../ALE
 FLAGS := -I$(ALE)/src -I$(ALE)/src/controllers -I$(ALE)/src/os_dependent -I$(ALE)/src/environment -I$(ALE)/src/external -L$(ALE)
 CXX := $(COMPILER)
 FILE := $(TARGET)
-NETWORK := ../NeuralNetwork/mat.cpp ../NeuralNetwork/neuralNetwork.cpp ../JNet/JNet.cpp ../JNet/Perceptron.cpp
+NETWORK := ../NeuralNetwork/mat.cpp ../NeuralNetwork/neuralNetwork.cpp
 LDFLAGS := -lale -lz
 
 UNAME_S := $(shell uname -s)
@@ -52,8 +52,11 @@ UtilG.o: UtilG.h UtilG.cpp ../NeuralNetwork/mat.h ../NeuralNetwork/neuralNetwork
 DNA.o: DNA.h DNA.cpp UtilG.h
 	$(COMPILER) $(OPTIONS) -c DNA.cpp
 
-GeneticNN.o: GeneticNN.h GeneticNN.cpp DNA.h UtilG.h ../NeuralNetwork/neuralNetwork.h Player.h
-	$(COMPILER) $(OPTIONS) -c GeneticNN.cpp
+GANN.o: GANN.h GANN.cpp DNA.h UtilG.h ../NeuralNetwork/neuralNetwork.h Player.h
+	$(COMPILER) $(OPTIONS) -c GANN.cpp
+
+GANNWrapper.o: GANNWrapper.h GANNWrapper.cpp GANN.h ../NeuralNetwork/neuralNetwork.h
+	$(COMPILER) $(OPTIONS) -c GANNWrapper.cpp
 
 Player.o: Player.h Player.cpp
 	$(CXX) $(DEFINES) $(FLAGS) $(NETWORK) $(LDFLAGS) -c Player.cpp

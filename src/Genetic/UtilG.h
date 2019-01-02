@@ -7,7 +7,7 @@
 
 #include "../NeuralNetwork/mat.h"
 #include "../NeuralNetwork/neuralNetwork.h"
-#include "GeneticNN.h"
+#include "GANN.h"
 
 class UtilG {
     public:
