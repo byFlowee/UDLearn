@@ -224,6 +224,10 @@ void NeuralNetwork::train(const vector<Mat> &inputs, const vector<Mat> &expected
             this->backPropagation(inputs[j], expectedOutputs[j]);
         }
     }
+
+    //Una vez hemos entrenado quitamos el dropout para que las predicciones utilicen todas las neuronas
+    for (size_t i = 0; i < dropout.size(); ++i)
+        dropout[i] = 0.0;
 }
 
 string NeuralNetwork::description() const

@@ -41,6 +41,7 @@ class NeuralNetwork
         void setBias(const vector<Mat>&);
         vector<int> getTopology() const;
         void updateDropoutMats();
+        void setDropout(vector<double> &dropout) { this->dropout = dropout; }
 
 };
 
