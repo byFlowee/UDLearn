@@ -4,399 +4,85 @@
 #include <fcntl.h>
 #include <limits>
 
-#include "GeneticNN.h"
-#include "DNA.h"
 #include "UtilG.h"
 #include "../NeuralNetwork/neuralNetwork.h"
-#include "../DataLoader/DataLoader.h"
 #include "Player.h"
+
+#include "GANNWrapper.h"
 
 using namespace std;
 
-void flattenMatrix()
-{
-    vector<Mat> a;
-
-    for (int i = 0; i < 10; i++)
-    {
-        Mat m(i + 2, i + 1, i);
-
-        m.set(0, 0, 99.0);
-        m.set(i, 0, 22.0);
-        m.print();
-        cout << endl;
-
-        a.push_back(m);
-    }
-
-    cout << endl;
-
-    Mat flattened = UtilG::flattenMatices(a);
-
-    cout << "Flattened matrix:" << endl;
-    flattened.print();
-    cout << endl;
-}
-
-void flattenManuallyNNWeightsAndBias()
-{
-    vector<int> topology = {2, 3, 4};
-
-    NeuralNetwork nn(topology);
-
-    vector<Mat> nnWeights = nn.getWeights();
-    vector<Mat> nnBias = nn.getBias();
-
-    cout << endl;
-    cout << "Weights:" << endl << "-----------------------------" << endl;
-
-    for (size_t i = 0; i < nnWeights.size(); i++)
-    {
-        nnWeights[i].print();
-        cout << endl << "-----------------------------" << endl;
-    }
-
-    cout << endl;
-    cout << "Bias:" << endl << "-----------------------------" << endl;
-
-    for (size_t i = 0; i < nnBias.size(); i++)
-    {
-        nnBias[i].print();
-        cout << endl << "-----------------------------" << endl;
-    }
-
-    Mat flattenedWeights = UtilG::flattenMatices(nnWeights);
-    Mat flattenedBias = UtilG::flattenMatices(nnBias);
-
-    cout << endl;
-    cout << "Flattened weights: " << endl;
-    flattenedWeights.print();
-
-    cout << endl << endl;
-    cout << "Flattened bias: " << endl;
-    flattenedBias.print();
-
-    Mat unionWeightsBias = UtilG::unionOfFlattenedMatrices(flattenedWeights, flattenedBias);
-
-    cout << endl << endl;
-    cout << "Union between flattened weights and flattened bias: " << endl;
-    unionWeightsBias.print();
-
-    vector<vector<Mat>> unflattenedWeightsAndBias = UtilG::unflattenMatrices(topology, unionWeightsBias);
-
-    cout << endl << endl;
-    cout << "Weights after unflatten:" << endl << "-----------------------------" << endl;
-
-    for (size_t i = 0; i < unflattenedWeightsAndBias[0].size(); i++)
-    {
-        unflattenedWeightsAndBias[0][i].print();
-        cout << endl << "-----------------------------" << endl;
-    }
-
-    cout << endl;
-    cout << "Bias after unflatten:" << endl << "-----------------------------" << endl;
-
-    for (size_t i = 0; i < unflattenedWeightsAndBias[1].size(); i++)
-    {
-        unflattenedWeightsAndBias[1][i].print();
-        cout << endl << "-----------------------------" << endl;
-    }
-}
-
-void flattenUtilGNNWeightsAndBias()
-{
-    vector<int> topology = {2, 3, 4};
-
-    NeuralNetwork nn(topology);
-    
-    vector<Mat> nnWeights = nn.getWeights();
-    vector<Mat> nnBias = nn.getBias();
-
-    cout << endl;
-    cout << "Weights:" << endl << "-----------------------------" << endl;
-
-    for (size_t i = 0; i < nnWeights.size(); i++)
-    {
-        nnWeights[i].print();
-        cout << endl << "-----------------------------" << endl;
-    }
-
-    cout << endl;
-    cout << "Bias:" << endl << "-----------------------------" << endl;
-
-    for (size_t i = 0; i < nnBias.size(); i++)
-    {
-        nnBias[i].print();
-        cout << endl << "-----------------------------" << endl;
-    }
-
-    Mat representativeVector = UtilG::getARepresentativeVectorOfNeuralNetwork(nn);
-
-    cout << endl << endl;
-
-    representativeVector.set(0, 0, 0.1234);
-
-    UtilG::setRepresentativeVectorOnNeuralNetwork(representativeVector, nn);
-
-    nnWeights = nn.getWeights();
-    nnBias = nn.getBias();
-
-    cout << "Weights:" << endl << "-----------------------------" << endl;
-
-    for (size_t i = 0; i < nnWeights.size(); i++)
-    {
-        nnWeights[i].print();
-        cout << endl << "-----------------------------" << endl;
-    }
-
-    cout << endl;
-    cout << "Bias:" << endl << "-----------------------------" << endl;
-
-    for (size_t i = 0; i < nnBias.size(); i++)
-    {
-        nnBias[i].print();
-        cout << endl << "-----------------------------" << endl;
-    }
-}
-
-void DNACrossoverAndMutation()
-{
-    Mat mA(1, 5);
-    Mat mB = UtilG::getRandomMatrix(1, 5);
-
-    DNA a(mA);
-    DNA b(mB);
-
-    cout << "DNA a:" << endl;
-    a.getGenes().print();
-
-    cout << endl;
-
-    cout << "DNA b:" << endl;
-    b.getGenes().print();
-
-    cout << endl;
-
-    Mat crossover1 = a.crossover(b, 0, 0).getGenes();
-    Mat crossover2 = b.crossover(a, 0, 0).getGenes();
-    Mat crossover3 = b.crossover(b, 0, 0).getGenes();
-
-    cout << "Crossover a->b:" << endl;
-    crossover1.print();
-    cout << endl;
-    cout << "Crossover b->a:" << endl;
-    crossover2.print();
-    cout << endl;
-    cout << "Crossover b->b:" << endl;
-    crossover3.print();
-    cout << endl;
-
-    cout << endl << "Mutation:" << endl;
-    srand(time(NULL));
-
-    for (int i = 0; i < 100; i++)
-    {
-        DNA mutated = a;
-
-        mutated.mutate();
-
-        if (a == mutated)
-        {
-            cout << "Same";
-        }
-        else
-        {
-            cout << endl;
-            cout << "Different!" << endl;
-            cout << "a: ";
-            a.getGenes().print();
-            cout << endl << "muteted: ";
-            mutated.getGenes().print();
-            cout << endl << endl;
-        }
-    }
-
-    cout << endl;
-}
-
-NeuralNetwork play(const vector<int> &topology, Game game, int maxGenerations, int population, double mutationRate, size_t elitism, size_t weightsFactor, bool fitnessSharing, ofstream &bestFitnessAndScoreFileTxt, ofstream &bestFitnessAndScoreFileWeights, const vector<double> &initialElitism, const vector<WeightInitializationRange> &weightsInitialization)
-{
-    int score = 0;
-    int steps = 0;
-    GeneticNN geneticAlg(topology, game, initialElitism, weightsInitialization, population, elitism, weightsFactor);
-    NeuralNetwork nn(topology);
-    vector<vector<Mat>> weightsAndBias;
-    DNA best;
-    int bestScore = numeric_limits<int>::min();
-    double fitnessValue = 0.0;
-    bool improvedScore = true;
-    bool improvedFitness = true;
-
-    geneticAlg.createPopulation();
-    geneticAlg.setMutationRate(mutationRate);
-
-    for (int i = 0; i < maxGenerations; i++)
-	{
-        
-        if (fitnessSharing)
-        {
-            geneticAlg.fitnessSharing();
-        }
-        else
-        {
-            geneticAlg.computeFitness();
-        }
-
-        double fitnessAux = geneticAlg.getCurrentBestDNAFitness();
-
-        if (fitnessAux > fitnessValue)
-        {
-            improvedFitness = true;
-        }
-        else
-        {
-            improvedFitness = false;
-        }
-			
-        fitnessValue = fitnessAux;
-        DNA currentBest = geneticAlg.getCurrentBestDNA();
-        Mat genes = currentBest.getGenes();
-        vector<int> playerResults;
-
-        // Weights and bias of the best Neural Network
-        weightsAndBias = UtilG::setRepresentativeVectorOnNeuralNetwork(genes, nn);
-
-        //score = Player::playBreakout(nn);
-        //playerResults = Player::playBreakout(nn, true);   // If you want to see the best DNA of the generation. Can't be closed and continue.. It has to end.
-
-        switch (game)
-        {
-            case Game::breakout:
-                playerResults = Player::playBreakout(nn);           // If you don't want to see the best DNA.
-                break;
-            case Game::boxing:
-                playerResults = Player::playBoxing(nn);           // If you don't want to see the best DNA.
-                break;
-            case Game::demonAttack:
-                playerResults = Player::playDemonAttack(nn);           // If you don't want to see the best DNA.
-                break;
-            case Game::starGunner:
-                playerResults = Player::playStarGunner(nn);           // If you don't want to see the best DNA.
-                break;
-            default:
-                //cerr << "ERROR: game unknown." << endl;   // Standard error output is redirected to /dev/null
-                cout << "ERROR: game unknown." << endl;
-        }
-
-        if (playerResults[0] > score)
-        {
-            improvedScore = true;
-        }
-        else
-        {
-            improvedScore = false;
-        }
-
-        score = playerResults[0];
-        steps = playerResults[1];
-
-        //cout << "Generation " << geneticAlg.getCurrentGeneration() << ": " << best << endl;
-        cout << "--------------------------------------------------------------------" << endl;
-        cout << "--------------------------------------------------------------------" << endl;
-        cout << "------------------- Generation " << geneticAlg.getCurrentGeneration() + 1 << endl;
-
-        if (improvedFitness)
-        {
-            cout << "------------------- Best fitness = \033[1;32m" << fitnessValue << "\033[0m" << endl;
-        }
-        else
-        {
-            cout << "------------------- Best fitness = \033[1;31m" << fitnessValue << "\033[0m" << endl;
-        }
-
-        if (improvedScore)
-        {
-            cout << "------------------- Score playing = \033[1;32m" << score << "\033[0m" << endl;
-        }
-        else
-        {
-            cout << "------------------- Score playing = \033[1;31m" << score << "\033[0m" << endl;
-        }
-
-        bestFitnessAndScoreFileTxt << "Generation " << (i + 1) << endl;
-        bestFitnessAndScoreFileTxt << "---------------------------" << endl;
-        bestFitnessAndScoreFileTxt << "  Fitness: " << fitnessValue << endl;
-        bestFitnessAndScoreFileTxt << "  Score: " << score << endl;
-        bestFitnessAndScoreFileTxt << endl;
-
-        cout << "------------------- Steps playing = " << steps << endl;
-        cout << "--------------------------------------------------------------------" << endl;
-        cout << "--------------------------------------------------------------------" << endl;
-        cout << endl;
-
-        if (bestScore < score)
-        {
-            bestScore = score;
-            best = currentBest;
-        }
-
-        /*
-        if (game == Game::breakout && score == 864)
-        {
-            cout << "MAX SCORE IN BREAKOUT: 864!" << endl;
-            break;
-        }
-        */
-
-        geneticAlg.nextGeneration();
-    }
-
-    Mat flattenedWeightsAndBiasBest = best.getGenes();
-
-    cout << "Weights and Bias flattened of the best DNA found (score = " << bestScore << "): ";
-    flattenedWeightsAndBiasBest.print(", ");
-    cout << endl << endl;
-
-    bestFitnessAndScoreFileWeights << "Weights and biases" << endl;
-    bestFitnessAndScoreFileWeights << "---------------------------" << endl;
-    flattenedWeightsAndBiasBest.print(bestFitnessAndScoreFileWeights, ", ");
-    bestFitnessAndScoreFileWeights << endl;
-
-    UtilG::setRepresentativeVectorOnNeuralNetwork(flattenedWeightsAndBiasBest, nn);
-
-    // See best DNA of last generation
-    cout << "Best neural network is playing!" << endl;
-    switch (game)
-    {
-        case Game::breakout:
-            Player::playBreakout(nn, true);
-            break;
-        case Game::boxing:
-            Player::playBoxing(nn, true);
-            break;
-        case Game::demonAttack:
-            Player::playDemonAttack(nn, true);
-            break;
-        case Game::starGunner:
-            Player::playStarGunner(nn, true);
-            break;
-        default:
-            //cerr << "ERROR: game unknown." << endl;   // Standard error output is redirected to /dev/null
-            cout << "ERROR: game unknown." << endl;
-    }
-
-    return nn;
-}
-
 int main (int argc, char **argv)
 {
-    if (argc != 5)
+    if (argc == 2)
     {
-        cerr << "ERROR: Usage: ./main <GAME = 1 (breakout), 2 (boxing), 3 (demon attack), 4 (star gunner)> maxGenerations population filenameToSaveRecords" << endl;
+        Game game = (Game)atoi(argv[1]);
+
+        if (game == Game::breakout)
+        {
+            vector<double> weightsAndBiases = {-0.0475447, -1.44612, -1.03555, 1.19032, -0.0180972, 1.39592, -1.65275, -0.400388, 0.313902, -0.911924};
+            Mat weightsAndBiasesMat = UtilG::getMatFromVector(weightsAndBiases);
+            vector<int> topology = {4, 2};
+            NeuralNetwork nn(topology);
+            UtilG::setRepresentativeVectorOnNeuralNetwork(weightsAndBiasesMat, nn);
+            vector<int> values = Player::playBreakout(nn, true);
+
+            cout << "Score: " << values[0] << endl;
+            cout << "Steps: " << values[1] << endl;
+        }
+        else if (game == Game::boxing)
+        {
+            vector<double> weightsAndBiases = {1.84625, -0.261621, -0.752879, 0.933104, 0.998058, -1.75949, -1.09565, -1.5496, -0.0616241, -0.0961609, 0.410759, 1.81586, 0.861455, 0.358694, 1.99665, 1.26765, -0.510498, -1.94463, -0.207363, -1.83149, 0.809997, -1.56389, 1.82184, 0.0756448, -0.751285};
+            Mat weightsAndBiasesMat = UtilG::getMatFromVector(weightsAndBiases);
+            vector<int> topology = {4, 5};
+            NeuralNetwork nn(topology);
+            UtilG::setRepresentativeVectorOnNeuralNetwork(weightsAndBiasesMat, nn);
+            vector<int> values = Player::playBoxing(nn, true);
+
+            cout << "Score: " << values[0] << endl;
+            cout << "Steps: " << values[1] << endl;
+        }
+        else if (game == Game::demonAttack)
+        {
+            vector<double> weightsAndBiases = {-0.787538, -0.949064, 0.310924, -1.32299, 0.71908, -0.0709453, 1.49602, -0.094367, 0.500397, 0.404399, -0.263846, -0.431822};
+            Mat weightsAndBiasesMat = UtilG::getMatFromVector(weightsAndBiases);
+            vector<int> topology = {3, 3};
+            NeuralNetwork nn(topology);
+            UtilG::setRepresentativeVectorOnNeuralNetwork(weightsAndBiasesMat, nn);
+            vector<int> values = Player::playDemonAttack(nn, true);
+
+            cout << "Score: " << values[0] << endl;
+            cout << "Steps: " << values[1] << endl;
+        }
+        else if (game == Game::starGunner)
+        {
+            vector<double> weightsAndBiases = {0.171788, 0.954718, 0.434003, -0.57256, -0.806731, -0.435586, -0.0937895, 0.310619, -0.308204, -0.517226, -0.104929, -0.893615, -0.49165, -0.170597, -0.138965, 0.0929738, -1.02856, 0.633477, -1.24683, 0.756926, 0.57379, 0.981531, -0.586579, 0.191376, 0.652615, 0.0737398, 0.0531118, 0.774934, 0.277529, -1.083, -0.438313, -0.539808, 0.045639, -0.110905, 0.160107, 0.532854, -0.144477, -0.390065, 0.625603, -0.0595559, -0.444677, -0.655645, -0.0493453, 0.590344, 0.639938, -0.658841, 0.356061, -0.475919, 0.0739151, 0.755685, -0.537857, -0.483144, 0.0420367, 0.519662, 0.38397, -0.284232, -0.902964, 0.36212, 0.024936, -1.01229, 1.26559, -0.695163, 0.4479, -0.61269, 0.574092};
+            Mat weightsAndBiasesMat = UtilG::getMatFromVector(weightsAndBiases);
+            vector<int> topology = {12, 5};
+            NeuralNetwork nn(topology);
+            UtilG::setRepresentativeVectorOnNeuralNetwork(weightsAndBiasesMat, nn);
+            vector<int> values = Player::playStarGunner(nn, true);
+
+            cout << "Score: " << values[0] << endl;
+            cout << "Steps: " << values[1] << endl;
+        }
+        else
+        {
+            cerr << "ERROR: unknown game." << endl;
+        }
+
+        return 0;
+    }
+    else if (argc != 5)
+    {
+        cerr << "ERROR:" << endl;
+        cerr << "  Usage_1 (train): ./main <GAME = 1 (breakout), 2 (boxing), 3 (demon attack), 4 (star gunner)> maxGenerations population filenameToSaveRecords" << endl;
+        cerr << "  Usage_2 (play):  ./main <GAME = 1 (breakout), 2 (boxing), 3 (demon attack), 4 (star gunner)>" << endl;
 
         return 0;
     }
 
+    /*
     string filenameToSaveRecords(argv[4]);
     ofstream bestFitnessAndScoreFileTxt(("records/" + filenameToSaveRecords + ".txt").c_str());
     ofstream bestFitnessAndScoreFileWeights(("records/" + filenameToSaveRecords + ".weights").c_str());
@@ -407,6 +93,7 @@ int main (int argc, char **argv)
 
         return 0;
     }
+    */
 
     // representation SCORE GAME
 
@@ -451,10 +138,7 @@ int main (int argc, char **argv)
     // 3505 Demon Attack
     // 0.676937, -0.59529, -0.387351, -0.044617, 0.176473,0.335892, -0.599553, -0.103169, -0.53585, 0.14999, -0.134388, 0.00355079
 
-    vector<int> topologyBreakout = {4, 2};
-    vector<int> topologyBoxing = {4, 5};
-    vector<int> topologyDemonAttack = {3, 3};
-    vector<int> topologyStarGunner = {12, 5};
+    
 
     // Redirect error output to /dev/null -> all messages in ALE are displayed in the error output.......
     int save_out = dup(STDERR_FILENO);
@@ -463,73 +147,155 @@ int main (int argc, char **argv)
 
     dup2(devNull, STDERR_FILENO);
 
-    double mutationRate = 0.2;
-    size_t elitism = 5;
-    size_t weightsFactor = 2;
+    int generations = atoi(argv[2]);
+    int population = atoi(argv[3]);
+    string filenameToSaveRecords(argv[4]);
     vector<double> initialElitism;
     vector<WeightInitializationRange> weightsInitialization;
 
-    bestFitnessAndScoreFileTxt << "Configuration" << endl;
-    bestFitnessAndScoreFileTxt << "---------------------------" << endl;
-    bestFitnessAndScoreFileTxt << "Generations: " << argv[2] << endl;
-    bestFitnessAndScoreFileTxt << "Population: " << argv[3] << endl;
-    bestFitnessAndScoreFileTxt << "Mutation rate: " << mutationRate << endl;
-    bestFitnessAndScoreFileTxt << "Elitism: " << elitism << endl;
-    bestFitnessAndScoreFileTxt << "Weights Factor: " << weightsFactor << endl;
-
     Game game = (Game)atoi(argv[1]);
 
-    switch (game)
+    if (game == Game::breakout)
     {
-        case Game::breakout:
-            bestFitnessAndScoreFileTxt << "Game: Breakout" << endl;
-            bestFitnessAndScoreFileTxt << "Topology: ";
-            UtilG::printVector(topologyBreakout, bestFitnessAndScoreFileTxt);
-            bestFitnessAndScoreFileTxt << endl << endl;
+        //initialElitism = {0.189794, -0.560286, -0.460457, 0.823264, -0.65252, 0.115743, -0.194485, 0.109773, 0.382016, 0.0633527};
 
-            //initialElitism = {0.189794, -0.560286, -0.460457, 0.823264, -0.65252, 0.115743, -0.194485, 0.109773, 0.382016, 0.0633527};
+        //weightsInitialization.resize(10);
 
-            //weightsInitialization.resize(10);
+        //weightsInitialization[0] = WeightInitializationRange(-0.04754, 0.47709);
+        //weightsInitialization[1] = WeightInitializationRange(-1.44612, -0.54442);
+        //weightsInitialization[2] = WeightInitializationRange(-1.03555, 0.51202);
+        //weightsInitialization[3] = WeightInitializationRange(-0.50003, 1.19032);
+        //weightsInitialization[4] = WeightInitializationRange(-0.65252, -0.0181);
+        //weightsInitialization[5] = WeightInitializationRange(0.12, 1.39592);
+        //weightsInitialization[6] = WeightInitializationRange(-1.65275, 0.26552);
+        //weightsInitialization[7] = WeightInitializationRange(-0.40039, 0.83252);
+        //weightsInitialization[8] = WeightInitializationRange(0.11188, 0.38202);
+        //weightsInitialization[9] = WeightInitializationRange(-0.91, 0.19889);
 
-            //weightsInitialization[0] = WeightInitializationRange(-0.04754, 0.47709);
-            //weightsInitialization[1] = WeightInitializationRange(-1.44612, -0.54442);
-            //weightsInitialization[2] = WeightInitializationRange(-1.03555, 0.51202);
-            //weightsInitialization[3] = WeightInitializationRange(-0.50003, 1.19032);
-            //weightsInitialization[4] = WeightInitializationRange(-0.65252, -0.0181);
-            //weightsInitialization[5] = WeightInitializationRange(0.12, 1.39592);
-            //weightsInitialization[6] = WeightInitializationRange(-1.65275, 0.26552);
-            //weightsInitialization[7] = WeightInitializationRange(-0.40039, 0.83252);
-            //weightsInitialization[8] = WeightInitializationRange(0.11188, 0.38202);
-            //weightsInitialization[9] = WeightInitializationRange(-0.91, 0.19889);
+        double mutationRate = 0.2;
+        double crossoverRate = 0.7;
+        size_t elitism = (population < 100 ? 1 : population / 100);
+        size_t weightsFactor = 1;
+        vector<int> topologyBreakout = {4, 2};
 
-            play(topologyBreakout, game, atoi(argv[2]), atoi(argv[3]), mutationRate, elitism, weightsFactor, false, bestFitnessAndScoreFileTxt, bestFitnessAndScoreFileWeights, initialElitism, weightsInitialization);
-            break;
-        case Game::boxing:
-            bestFitnessAndScoreFileTxt << "Game: Boxing" << endl;
-            bestFitnessAndScoreFileTxt << "Topology: ";
-            UtilG::printVector(topologyBoxing, bestFitnessAndScoreFileTxt);
-            bestFitnessAndScoreFileTxt << endl << endl;
+        GANNWrapper gannWrapper(topologyBreakout, Game::breakout, generations, population, elitism, weightsFactor, filenameToSaveRecords);
 
-            play(topologyBoxing, game, atoi(argv[2]), atoi(argv[3]), mutationRate, elitism, weightsFactor, false, bestFitnessAndScoreFileTxt, bestFitnessAndScoreFileWeights, initialElitism, weightsInitialization);
-            break;
-        case Game::demonAttack:
-            bestFitnessAndScoreFileTxt << "Game: Demon Attack" << endl;
-            bestFitnessAndScoreFileTxt << "Topology: ";
-            UtilG::printVector(topologyDemonAttack, bestFitnessAndScoreFileTxt);
-            bestFitnessAndScoreFileTxt << endl << endl;
+        //gannWrapper.getGANN().setInitialElitism(initialElitism);
+        //gannWrapper.getGANN().setWeightInitializationRange(weightsInitialization);
+        gannWrapper.getGANN().setMutationRate(mutationRate);
+        gannWrapper.getGANN().setCrossoverRate(crossoverRate);
+        
+        gannWrapper.writeInScore("Configuration\n");
+        gannWrapper.writeInScore("---------------------------\n");
+        gannWrapper.writeInScore("Generations: " + to_string(generations) + "\n");
+        gannWrapper.writeInScore("Population: " + to_string(population) + "\n");
+        gannWrapper.writeInScore("Mutation rate: " + to_string(mutationRate) + "\n");
+        gannWrapper.writeInScore("Elitism: " + to_string(elitism) + "\n");
+        gannWrapper.writeInScore("Weights Factor: " + to_string(weightsFactor) + "\n");
+        gannWrapper.writeInScore("Game: Breakout\n");
+        gannWrapper.writeInScore("Topology: ");
+        UtilG::printVector(topologyBreakout, gannWrapper.getBestFitnessAndScoreFileTxt());
+        gannWrapper.writeInScore("\n\n");
 
-            play(topologyDemonAttack, game, atoi(argv[2]), atoi(argv[3]), mutationRate, elitism, weightsFactor, false, bestFitnessAndScoreFileTxt, bestFitnessAndScoreFileWeights, initialElitism, weightsInitialization);
-            break;
-        case Game::starGunner:
-            bestFitnessAndScoreFileTxt << "Game: StarGunner" << endl;
-            bestFitnessAndScoreFileTxt << "Topology: ";
-            UtilG::printVector(topologyStarGunner, bestFitnessAndScoreFileTxt);
-            bestFitnessAndScoreFileTxt << endl << endl;
+        NeuralNetwork nn = gannWrapper.trainAndGetBestNN();
 
-            play(topologyStarGunner, game, atoi(argv[2]), atoi(argv[3]), mutationRate, elitism, weightsFactor, false, bestFitnessAndScoreFileTxt, bestFitnessAndScoreFileWeights, initialElitism, weightsInitialization);
-            break;
-        default:
-            error = true;
+        cout << "Best neural network is playing!" << endl;
+        Player::playBreakout(nn, true);
+    }
+    else if (game == Game::boxing)
+    {
+        double mutationRate = 0.2;
+        double crossoverRate = 0.7;
+        size_t elitism = 5;
+        size_t weightsFactor = 2;
+        vector<int> topologyBoxing = {4, 5};
+
+        GANNWrapper gannWrapper(topologyBoxing, Game::boxing, generations, population, elitism, weightsFactor, filenameToSaveRecords);
+
+        gannWrapper.getGANN().setMutationRate(mutationRate);
+        gannWrapper.getGANN().setCrossoverRate(crossoverRate);
+        
+        gannWrapper.writeInScore("Configuration\n");
+        gannWrapper.writeInScore("---------------------------\n");
+        gannWrapper.writeInScore("Generations: " + to_string(generations) + "\n");
+        gannWrapper.writeInScore("Population: " + to_string(population) + "\n");
+        gannWrapper.writeInScore("Mutation rate: " + to_string(mutationRate) + "\n");
+        gannWrapper.writeInScore("Elitism: " + to_string(elitism) + "\n");
+        gannWrapper.writeInScore("Weights Factor: " + to_string(weightsFactor) + "\n");
+        gannWrapper.writeInScore("Game: Boxing\n");
+        gannWrapper.writeInScore("Topology: ");
+        UtilG::printVector(topologyBoxing, gannWrapper.getBestFitnessAndScoreFileTxt());
+        gannWrapper.writeInScore("\n\n");
+
+        NeuralNetwork nn = gannWrapper.trainAndGetBestNN();
+
+        cout << "Best neural network is playing!" << endl;
+        Player::playBoxing(nn, true);
+    }
+    else if (game == Game::demonAttack)
+    {
+        double mutationRate = 0.2;
+        double crossoverRate = 0.7;
+        size_t elitism = 5;
+        size_t weightsFactor = 2;
+        vector<int> topologyDemonAttack = {3, 3};
+
+        GANNWrapper gannWrapper(topologyDemonAttack, Game::demonAttack, generations, population, elitism, weightsFactor, filenameToSaveRecords);
+
+        gannWrapper.getGANN().setMutationRate(mutationRate);
+        gannWrapper.getGANN().setCrossoverRate(crossoverRate);
+        
+        gannWrapper.writeInScore("Configuration\n");
+        gannWrapper.writeInScore("---------------------------\n");
+        gannWrapper.writeInScore("Generations: " + to_string(generations) + "\n");
+        gannWrapper.writeInScore("Population: " + to_string(population) + "\n");
+        gannWrapper.writeInScore("Mutation rate: " + to_string(mutationRate) + "\n");
+        gannWrapper.writeInScore("Elitism: " + to_string(elitism) + "\n");
+        gannWrapper.writeInScore("Weights Factor: " + to_string(weightsFactor) + "\n");
+        gannWrapper.writeInScore("Game: Demon Attack\n");
+        gannWrapper.writeInScore("Topology: ");
+        UtilG::printVector(topologyDemonAttack, gannWrapper.getBestFitnessAndScoreFileTxt());
+        gannWrapper.writeInScore("\n\n");
+
+        NeuralNetwork nn = gannWrapper.trainAndGetBestNN();
+
+        cout << "Best neural network is playing!" << endl;
+        Player::playDemonAttack(nn, true);
+    }
+    else if (game == Game::starGunner)
+    {
+        double mutationRate = 0.2;
+        double crossoverRate = 0.7;
+        size_t elitism = 5;
+        size_t weightsFactor = 2;
+        vector<int> topologyStarGunner = {12, 5};
+
+        GANNWrapper gannWrapper(topologyStarGunner, Game::starGunner, generations, population, elitism, weightsFactor, filenameToSaveRecords);
+
+        gannWrapper.getGANN().setMutationRate(mutationRate);
+        gannWrapper.getGANN().setCrossoverRate(crossoverRate);
+        
+        gannWrapper.writeInScore("Configuration\n");
+        gannWrapper.writeInScore("---------------------------\n");
+        gannWrapper.writeInScore("Generations: " + to_string(generations) + "\n");
+        gannWrapper.writeInScore("Population: " + to_string(population) + "\n");
+        gannWrapper.writeInScore("Mutation rate: " + to_string(mutationRate) + "\n");
+        gannWrapper.writeInScore("Elitism: " + to_string(elitism) + "\n");
+        gannWrapper.writeInScore("Weights Factor: " + to_string(weightsFactor) + "\n");
+        gannWrapper.writeInScore("Game: StarGunner\n");
+        gannWrapper.writeInScore("Topology: ");
+        UtilG::printVector(topologyStarGunner, gannWrapper.getBestFitnessAndScoreFileTxt());
+        gannWrapper.writeInScore("\n\n");
+
+        NeuralNetwork nn = gannWrapper.trainAndGetBestNN();
+
+        cout << "Best neural network is playing!" << endl;
+        Player::playStarGunner(nn, true);
+    }
+    else
+    {
+        //cerr << "ERROR: game unknown." << endl;   // Standard error output is redirected to /dev/null
+        cout << "ERROR: game unknown." << endl;
     }
 
     // Restore error output
@@ -539,9 +305,6 @@ int main (int argc, char **argv)
     {
         cerr << "ERROR: unknown game." << endl;
     }
-
-    bestFitnessAndScoreFileTxt.close();
-    bestFitnessAndScoreFileWeights.close();
 
     return 0;
 }

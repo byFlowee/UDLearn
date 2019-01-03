@@ -1,0 +1,31 @@
+Weights: 0.641333, 0.350653, 0.657562
+Updating weights
+Predictions: 1 1 1 1
+
+Weights: -0.358667, 0.350653, 0.657562
+Updating weights
+Predictions: -1 1 -1 1
+
+Weights: -1.35867, 0.350653, -0.342438
+Updating weights
+Predictions: -1 -1 -1 -1
+
+Weights: -0.358667, 1.35065, 0.657562
+Updating weights
+Predictions: -1 1 1 1
+
+Weights: -1.35867, 0.350653, 0.657562
+Updating weights
+Predictions: -1 -1 -1 -1
+
+Weights: -0.358667, 1.35065, 1.65756
+Updating weights
+Predictions: -1 1 1 1
+
+Weights: -1.35867, 1.35065, 0.657562
+100% accuracy on training set!
+
+1 1 : 1
+0 0 : -1
+0 1 : -1
+1 0 : -1

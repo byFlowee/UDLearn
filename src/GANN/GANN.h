@@ -1,5 +1,5 @@
-#ifndef _GeneticNN_
-#define _GeneticNN_
+#ifndef _GANN_
+#define _GANN_
 
 #include <string>
 
@@ -51,7 +51,7 @@ struct WeightInitializationRange
         }
 };
 
-class GeneticNN
+class GANN
 {
     
     private:
@@ -65,7 +65,7 @@ class GeneticNN
         size_t DNASize;
         Game currentGame;
         // Elitism.
-        size_t bestToAdd;
+        size_t elitism;
         size_t weightsFactor;
 
         vector<int> fitness(const DNA&);
@@ -73,7 +73,7 @@ class GeneticNN
         double getFitnessValue(const vector<int>&);
 
     public:
-        GeneticNN(const vector<int>&, Game, const vector<double>&, const vector<WeightInitializationRange>&, size_t = 50, size_t = 0, size_t = 1);
+        GANN(const vector<int>&, Game, const vector<double>&, const vector<WeightInitializationRange>&, size_t = 50, size_t = 0, size_t = 1);
         void setMutationRate(double);
         void setCrossoverRate(double);
         void createPopulation();
@@ -85,6 +85,8 @@ class GeneticNN
         void nextGeneration();
         size_t getCurrentGeneration() const;
         void setCurrentGame(Game);
+        void setWeightInitializationRange(const vector<WeightInitializationRange>&);
+        void setInitialElitism(const vector<double>&);
 
 };
 

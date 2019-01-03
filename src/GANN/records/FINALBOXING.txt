@@ -1,0 +1,110 @@
+Configuration
+---------------------------
+Generations: 20
+Population: 1000
+Mutation rate: 0.200000
+Elitism: 5
+Weights Factor: 2
+Game: Boxing
+Topology: 4, 5
+
+Generation 1
+---------------------------
+  Fitness: 296.273
+  Score: 17
+
+Generation 2
+---------------------------
+  Fitness: 296.273
+  Score: 17
+
+Generation 3
+---------------------------
+  Fitness: 296.273
+  Score: 17
+
+Generation 4
+---------------------------
+  Fitness: 296.273
+  Score: 17
+
+Generation 5
+---------------------------
+  Fitness: 296.273
+  Score: 17
+
+Generation 6
+---------------------------
+  Fitness: 296.273
+  Score: 17
+
+Generation 7
+---------------------------
+  Fitness: 296.273
+  Score: 17
+
+Generation 8
+---------------------------
+  Fitness: 296.273
+  Score: 17
+
+Generation 9
+---------------------------
+  Fitness: 296.273
+  Score: 17
+
+Generation 10
+---------------------------
+  Fitness: 296.273
+  Score: 17
+
+Generation 11
+---------------------------
+  Fitness: 296.273
+  Score: 17
+
+Generation 12
+---------------------------
+  Fitness: 296.273
+  Score: 17
+
+Generation 13
+---------------------------
+  Fitness: 296.273
+  Score: 6
+
+Generation 14
+---------------------------
+  Fitness: 296.273
+  Score: 17
+
+Generation 15
+---------------------------
+  Fitness: 296.273
+  Score: 17
+
+Generation 16
+---------------------------
+  Fitness: 296.273
+  Score: 17
+
+Generation 17
+---------------------------
+  Fitness: 296.273
+  Score: 17
+
+Generation 18
+---------------------------
+  Fitness: 296.273
+  Score: 17
+
+Generation 19
+---------------------------
+  Fitness: 296.273
+  Score: 17
+
+Generation 20
+---------------------------
+  Fitness: 296.273
+  Score: 17
+

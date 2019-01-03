@@ -40,13 +40,54 @@ Una vez tenemos la información recogida y procesada, la podremos utilizar para 
 
 \subsubsection{Modificando ALE}
 \label{subsubsec:ramanalisi:modale}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur diam quam, placerat sit amet ornare ut, dignissim non orci. Suspendisse et pellentesque sem, id facilisis magna. Morbi consequat blandit ipsum, sed accumsan ex vehicula quis. Maecenas interdum malesuada neque, non laoreet magna dignissim a. Vivamus rhoncus enim eget neque pretium, condimentum hendrerit leo venenatis. Vestibulum elementum semper sem a ultricies. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nullam pulvinar pellentesque quam viverra consectetur. Donec sit amet enim eu ante porttitor commodo elementum eget orci. Duis lobortis mattis nibh, sodales feugiat sapien efficitur sed. Duis ultrices turpis eu nisl maximus, id luctus justo elementum. Curabitur porttitor nec nibh at ullamcorper.
 
-Aliquam egestas elit vitae faucibus tincidunt. Donec dolor nulla, congue quis lobortis quis, euismod at elit. Phasellus viverra auctor augue nec luctus. Aenean elementum facilisis sapien, a imperdiet lacus maximus varius. Mauris in maximus urna. Mauris quis varius mi, id commodo nibh. Vivamus et quam ultrices, sollicitudin justo a, egestas mauris.
+La primera aproximación que se hizo a la hora de analizar los datos de los diferentes juegos fue básica y útil, pero presentaba varios problemas. El problema más serio que nos encontramos era la cantidad de datos que teníamos ante nuestros ojos, cosa que puede dificultar bastante el encontrar la información importante que necesitamos y, además, que dependemos totalmente de nuestra "intuición" para saber que significa cierta posición de la RAM. Intentando solventar un poco este problema, se nos ocurrió aislar las posiciones que hay en la RAM y, además, poder modificar esos valores aislados para no depender totalmente de nuestra intuición, sino saber más a ciencia cierta, a base de prueba y error, saber qué hace cierta posición de RAM, lo cual nos daría la ventaja de profundizar más en aquellas posiciones de RAM que por alguna razón, en el paso anterior, hemos visto que podían resultar relevantes.
 
-Aenean ut egestas ipsum. Praesent placerat ex sit amet mauris eleifend auctor sit amet tincidunt nibh. Fusce in varius justo, eget euismod tortor. Pellentesque sagittis bibendum mi, vel mollis dolor congue a. Nulla vitae pharetra ex, quis commodo justo. Cras a volutpat nisi, vitae lobortis sem. Aenean ullamcorper, erat eget vehicula tempor, magna nunc rhoncus turpis, ac commodo dolor risus id sem. Morbi efficitur vel felis at finibus. Nullam tristique erat id est ornare, sed finibus libero bibendum. Cras at tellus ligula. Ut eget pretium ante, condimentum tristique nisi.
+A la hora de intentar poner esta idea en práctica lo primero que intentamos es obtener una referencia de la RAM desde el objeto que hemos ido empleando en todo momento: \textbf{ALEInterface}. Este objeto nos dota del método \textit{getRAM()} que hemos ido utilizando en todo momento para el análisis de los datos (y para posteriormente el tratamiento de los mismos) y que está en el archivo \textit{src/ale\_interface.cpp}. La implementación de dicho método es la siguiente:
 
-Quisque condimentum nunc id nisi sollicitudin elementum et at diam. Etiam facilisis cursus urna, mollis euismod magna efficitur at. Praesent ullamcorper varius accumsan. Sed quis est id orci sollicitudin sollicitudin. Donec consectetur, ante quis eleifend ultrices, risus turpis efficitur justo, eget fermentum ipsum nisi ac ipsum. Integer accumsan facilisis viverra. Aliquam id nisl faucibus, pharetra dui vel, venenatis elit. Morbi auctor, magna ac pellentesque fringilla, urna ex aliquam velit, ut lacinia enim diam nec augue. Nulla posuere auctor imperdiet. Praesent cursus cursus erat, ac varius odio vulputate in. Morbi ultricies consequat ex, eu convallis purus pretium non. Duis tincidunt nibh eget fermentum auctor.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1\textwidth]{Figures/methodGetRAM}
+	\caption{Método \textit{getRAM()}}
+	\label{fig:methodGetRAM}
+\end{figure}
+
+Como observamos, el método \textit{getRAM()} nos devuelve una referencia de un objeto de tipo \textbf{ALERAM}, por lo que vamos a ver que método nos pueden servir para modificar la RAM. Cuando investigamos el archivo \textit{src/environment/ale\_ram.hpp} encontramos la definición del objeto ALERAM y la implementación de sus métodos. Contiene 2 métodos que pueden servirnos para nuestro propósito (modificar la RAM), los cuales se muestran en la siguiente figura.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1\textwidth]{Figures/ALEMethodsToGetReferencesToRAM}
+	\caption{Métodos de acceso a la RAM de ALEInteface}
+	\label{fig:ALEMethodsToGetReferencesToRAM}
+\end{figure}
+
+\newpage
+Una vez ya encontramos estos métodos, intentamos hacer una pequeña prueba, la cual falla, ya que al intentar hacer uso del método \textit{array()} vemos que modificamos un valor y que, efectivamente, al volver a comprobar el valor, se ha modificado, pero nada sucede en el juego (la prueba la realizamos sobre el videojuego \textit{breakout}, el cual tiene la coordenada X de la barra en la posición 72). Lo que estaba sucediendo, después de indagar un poco por el código de ALE era que el método \textit{getRAM()} de \textit{ale\_interface.cpp} era un método que a su vez llamaba a otro método llamado \textit{getRAM()} pero del objeto \textbf{StellaEnvironment}, objecto que es el encargado de manejar todo el entorno de ALE. Este objeto, de nuevo, devuelve otra vez un objeto de tipo ALERAM por referencia, por lo que de nuevo parece que no hay problema, pero este objeto, \textit{StellaEnvironment}, contiene una copia de la RAM del objeto \textbf{OSystem}, objeto que es el núcleo de la Atari 2600 (del emulador). El problema consiste en que este objeto ALERAM con el que constantemente trabajamos es una copia del que el objeto \textit{OSystem} contiene, es decir, cada vez que llamados al método \textit{getRAM()} desde \textit{ale\_interface.hpp}, se hace otra llamada al método \textit{getRAM()} de \textit{src/environment/stella\_environment.cpp} y este devuelve su copia interna, no la del núcleo de la consola. Cada vez que el objeto \textit{StellaEnvironment} actualiza su copia hace uso del método \textit{processRAM()}.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1\textwidth]{Figures/StellaEnviromentProcessRAMMethod}
+	\caption{Método \textit{processRAM()} de StellaEnviroment}
+	\label{fig:StellaEnviromentProcessRAMMethod}
+\end{figure}
+
+Una vez llegado a este punto, lo que se puede hacer si se quiere modificar la RAM que contiene el objeto \textit{OSystem} es implementar un método que lo que haga es actualizar la RAM del objeto \textit{OSystem} del mismo método que que podemos observar que se puede obtener una copia de la RAM con su método \textit{console().system().peek()}, pero tenemos que comprobar si existe el método que nosotros necesitamos, y es que en vez de \textit{peek()} necesitamos un método que nos permita actualizar. De nuevo, buscando en el código, encontramos el archivo \textit{src/emucore/OSystem.hxx}, el cual nos lleva al archivo \textit{src/emucore/Console.hxx}, el cual nos lleva, finalmente, al archivo \textit{src/emucore/System.hxx}. En este último encontramos el método \textit{poke(uInt16, uInt8)}, el cual nos indica a través de su descripción que modifica un valor de la RAM de la consola Atari 2600. Parece ser que ya lo tenemos todo, pero nos queda un último problema, y es que este método no es accesible desde el objeto \textit{StellaEnvironment}, ya que su referencia del objeto \textit{OSystem}, a diferencia del objeto \textit{ALEInterface}, está en su parte privada y no nos da ningún método público para obtener una copia de la referencia. El último paso que nos queda para solucionar este último problema es modificar el código y añadir un método que nos permita actualizar la RAM de la Atari 2600 a partir de la copia que tiene internamente el objeto \textit{StellaEnvironment}, ya que esta última sí que podemos modificarla.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1\textwidth]{Figures/pokeMethod}
+	\caption{Método \textit{poke(uInt16, uInt8)}}
+	\label{fig:pokeMethod}
+\end{figure}
+
+El método que hemos implementado es muy sencillo. Es igual que el método \textit{processRAM()} pero utilizando el método \textit{poke()} en vez de \textit{peek()}. Una vez ya implementado el método, simplemente implementamos otro método en el objeto \textit{ALEInterface} que simplemente haga una llamada a este método que está en el objeto \textit{StellaEnvironment} y ya habremos actualizado la RAM de la Atari 2600. Por último solo quedaría recompilar ALE. Este proceso que hemos realizado a sido con el único objetivo de comprender mejor el significado de las posiciones de RAM de los diferentes juegos a analizar durante este trabajo. Se adjuntarán para cada juego un archivo denominado \textbf{RAM.txt} en el cual hemos analizado cada posición de RAM de manera aislada.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1\textwidth]{Figures/processBackRAM}
+	\caption{Método que actualiza la RAM de la Atari 2600}
+	\label{fig:processBackRAM}
+\end{figure}
 
 \newpage
 \subsection{Bots básicos}

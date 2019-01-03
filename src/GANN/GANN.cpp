@@ -2,24 +2,22 @@
 #include <iostream>
 #include <limits>
 
-#include "GeneticNN.h"
+#include "GANN.h"
 #include "UtilG.h"
 #include "../NeuralNetwork/neuralNetwork.h"
 #include "Player.h"
 
-GeneticNN::GeneticNN(const vector<int> &topology, Game game, const vector<double> &initialElitism, const vector<WeightInitializationRange> &weightsInitializationRange, size_t population, size_t bestToAdd, size_t weightsFactor) :
+GANN::GANN(const vector<int> &topology, Game game, const vector<double> &initialElitism, const vector<WeightInitializationRange> &weightsInitializationRange, size_t population, size_t elitism, size_t weightsFactor) :
     population(population),
     fitnessValues(population),
     topology(topology),
     DNASize(0),
     currentGame(game),
-    bestToAdd(bestToAdd),
+    elitism(elitism),
     weightsFactor(weightsFactor)
 {
     this->currentGeneration = 0;
     this->populationSize = population;
-    this->initialElitism = initialElitism;
-    this->weightsInitializationRange = weightsInitializationRange;
 
     if (this->weightsFactor <= 0)
     {
@@ -31,6 +29,14 @@ GeneticNN::GeneticNN(const vector<int> &topology, Game game, const vector<double
         this->DNASize += this->topology[i] * this->topology[i + 1];
         this->DNASize += this->topology[i + 1];
     }
+
+    this->setInitialElitism(initialElitism);
+    this->setWeightInitializationRange(weightsInitializationRange);
+}
+
+void GANN::setWeightInitializationRange(const vector<WeightInitializationRange> &weightsInitializationRange)
+{
+    this->weightsInitializationRange = weightsInitializationRange;
 
     if (this->weightsInitializationRange.empty() || this->weightsInitializationRange.size() != this->DNASize)
     {
@@ -45,7 +51,12 @@ GeneticNN::GeneticNN(const vector<int> &topology, Game game, const vector<double
     }
 }
 
-void GeneticNN::createPopulation()
+void GANN::setInitialElitism(const vector<double> &initialElitism)
+{
+    this->initialElitism = initialElitism;
+}
+
+void GANN::createPopulation()
 {
     this->currentGeneration = 0;
     
@@ -58,12 +69,12 @@ void GeneticNN::createPopulation()
             elitismInitialization.set(0, i, this->initialElitism[i]);
         }
 
-        for (size_t i = 0; i < min(this->bestToAdd, this->populationSize); i++)
+        for (size_t i = 0; i < min(this->elitism, this->populationSize); i++)
         {
             this->population[i] = DNA(elitismInitialization);
         }
 
-        for (size_t i = this->bestToAdd; i < this->populationSize; i++)
+        for (size_t i = this->elitism; i < this->populationSize; i++)
         {
             //this->population[i] = DNA(UtilG::getRandomMatrix(1, this->DNASize, this->weightsFactor));
             this->population[i] = DNA(UtilG::getRandomMatrix(1, this->DNASize, this->weightsInitializationRange));
@@ -79,7 +90,7 @@ void GeneticNN::createPopulation()
     }
 }
 
-vector<int> GeneticNN::fitness(const DNA &dna)
+vector<int> GANN::fitness(const DNA &dna)
 {
     //int res = -1;
     vector<int> res;
@@ -110,7 +121,7 @@ vector<int> GeneticNN::fitness(const DNA &dna)
     return res;
 }
 
-void GeneticNN::setMutationRate(double mutationRate)
+void GANN::setMutationRate(double mutationRate)
 {
     for (size_t i = 0; i < this->population.size(); i++)
     {
@@ -118,7 +129,7 @@ void GeneticNN::setMutationRate(double mutationRate)
     }
 }
 
-void GeneticNN::setCrossoverRate(double crossoverRate)
+void GANN::setCrossoverRate(double crossoverRate)
 {
     for (size_t i = 0; i < this->population.size(); i++)
     {
@@ -126,7 +137,7 @@ void GeneticNN::setCrossoverRate(double crossoverRate)
     }
 }
 
-void GeneticNN::fitnessSharing()
+void GANN::fitnessSharing()
 {
     const int scoreDivision = 5;
     const int stepsDivision = 5;
@@ -235,19 +246,30 @@ void GeneticNN::fitnessSharing()
     cout << endl;
 }
 
-double GeneticNN::getFitnessValue(const vector<int> &currentFitness)
+double GANN::getFitnessValue(const vector<int> &currentFitness)
 {
     // Modify fitness function HERE!
 
     double fitness = 0.0;
+    int score = currentFitness[0];
+    int steps = currentFitness[1];
 
     switch(this->currentGame)
     {
         case Game::breakout:
-            fitness = currentFitness[0];   // Score
+            fitness = score;
             break;
         case Game::boxing:
-            fitness = currentFitness[0] + (double)currentFitness[2] * ((double)currentFitness[2] / (double)(currentFitness[3] + 1));
+            //fitness = currentFitness[0] + (double)currentFitness[2] * ((double)currentFitness[2] / (double)(currentFitness[3] + 1));
+            
+            if (score < 0)
+            {
+                fitness = score * (1 - (double)currentFitness[4] / (double)steps) * (1 - (double)currentFitness[5] / (double)steps) * (1 - (double)currentFitness[6] / (double)steps) * (1 - (double)currentFitness[7] / (double)steps) + (double)currentFitness[2] * ((double)currentFitness[2] / (double)(currentFitness[3] + 1));
+            }
+            else
+            {
+                fitness = score * ((double)currentFitness[4] / (double)steps) * ((double)currentFitness[5] / (double)steps) * ((double)currentFitness[6] / (double)steps) * ((double)currentFitness[7] / (double)steps) + (double)currentFitness[2] * ((double)currentFitness[2] / (double)(currentFitness[3] + 1));
+            }
             break;
         case Game::demonAttack:
             //fitness = currentFitness[0] * ((currentFitness[2] / 100.0) * (currentFitness[3] / 100.0));
@@ -278,13 +300,13 @@ double GeneticNN::getFitnessValue(const vector<int> &currentFitness)
 
             if (min(currentFitness[2], currentFitness[3]) != 0)
             {
-                double punch = (double)currentFitness[5] / (double)currentFitness[1];
-                double score = (double)currentFitness[0];
+                double punch = (double)currentFitness[5] / (double)steps;
+                double dscore = (double)score;
 
                 punch *= punch;
-                score /= 10;
+                dscore /= 10;
 
-                fitness = score * punch;
+                fitness = dscore * punch;
             }
             else
             {
@@ -293,7 +315,7 @@ double GeneticNN::getFitnessValue(const vector<int> &currentFitness)
 
             break;
         case Game::starGunner:
-            fitness = currentFitness[0] / 100;
+            fitness = score / 100;
             break;
         default:
             //cerr << "ERROR: game unknown." << endl;   // Standard error output is redirected to /dev/null
@@ -303,7 +325,7 @@ double GeneticNN::getFitnessValue(const vector<int> &currentFitness)
     return fitness;
 }
 
-void GeneticNN::computeFitness()
+void GANN::computeFitness()
 {
     double bestFitness = numeric_limits<double>::lowest();
 
@@ -333,7 +355,7 @@ void GeneticNN::computeFitness()
     }
 }
 
-DNA GeneticNN::crossover() const
+DNA GANN::crossover() const
 {
     size_t index1 = this->getRandomMostLikelyGeneIndex();
     size_t index2 = this->getRandomMostLikelyGeneIndex();
@@ -344,7 +366,7 @@ DNA GeneticNN::crossover() const
     return p1.crossover(p2, this->fitnessValues[index1], this->fitnessValues[index2]);
 }
 
-DNA GeneticNN::getCurrentBestDNA() const
+DNA GANN::getCurrentBestDNA() const
 {
     double bestFitness = numeric_limits<double>::lowest();
     int index = 0;
@@ -361,7 +383,7 @@ DNA GeneticNN::getCurrentBestDNA() const
     return this->population[index];
 }
 
-double GeneticNN::getCurrentBestDNAFitness() const
+double GANN::getCurrentBestDNAFitness() const
 {
     double bestFitness = numeric_limits<double>::lowest();
     int index = 0;
@@ -378,7 +400,7 @@ double GeneticNN::getCurrentBestDNAFitness() const
     return this->fitnessValues[index];
 }
 
-void GeneticNN::nextGeneration()
+void GANN::nextGeneration()
 {
     // We need a new vector because we can't rewrite directly on this->population
     //  due to the fact that we need the original population to get the new population.
@@ -387,12 +409,12 @@ void GeneticNN::nextGeneration()
     // Elitism.
     DNA bestDNA = getCurrentBestDNA();
     
-    for (size_t i = 0; i < min(this->bestToAdd, this->populationSize); i++)
+    for (size_t i = 0; i < min(this->elitism, this->populationSize); i++)
     {
         newPopulation[i] = bestDNA;
     }
 
-    for (size_t i = this->bestToAdd; i < this->populationSize; i++)
+    for (size_t i = this->elitism; i < this->populationSize; i++)
     {
         DNA newDNA = this->crossover();
 
@@ -406,7 +428,7 @@ void GeneticNN::nextGeneration()
     this->currentGeneration++;
 }
 
-size_t GeneticNN::getRandomMostLikelyGeneIndex() const
+size_t GANN::getRandomMostLikelyGeneIndex() const
 {
     double sum = 0.0;
 
@@ -434,12 +456,12 @@ size_t GeneticNN::getRandomMostLikelyGeneIndex() const
     return index;
 }
 
-size_t GeneticNN::getCurrentGeneration() const
+size_t GANN::getCurrentGeneration() const
 {
     return this->currentGeneration;
 }
 
-void GeneticNN::setCurrentGame(Game game)
+void GANN::setCurrentGame(Game game)
 {
     this->currentGame = game;
 }

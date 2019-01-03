@@ -147,6 +147,10 @@ vector<int> Player::playBoxing(NeuralNetwork &nn, bool displayScreen)
 
     int score = 0;
     int step = 0;
+    int movementLeft = 0;
+    int movementUp = 0;
+    int movementRight = 0;
+    int movementDown = 0;
 
     for (step = 0; !alei.game_over() && step < maxSteps; ++step) 
     {   
@@ -180,15 +184,19 @@ vector<int> Player::playBoxing(NeuralNetwork &nn, bool displayScreen)
                 reward += alei.act(PLAYER_A_FIRE);
                 break;
             case 1:
+                movementLeft++;
                 reward += alei.act(PLAYER_A_LEFT);
                 break;
             case 2:
+                movementRight++;
                 reward += alei.act(PLAYER_A_RIGHT);
                 break;
             case 3:
+                movementUp++;
                 reward += alei.act(PLAYER_A_UP);
                 break;
             case 4:
+                movementDown++;
                 reward += alei.act(PLAYER_A_DOWN);
                 break;
             default:
@@ -206,6 +214,10 @@ vector<int> Player::playBoxing(NeuralNetwork &nn, bool displayScreen)
     res.push_back(step);
     res.push_back(alei.getRAM().get(18));   // Final score of P1
     res.push_back(alei.getRAM().get(19));   // Final score of P2
+    res.push_back(movementLeft);
+    res.push_back(movementUp);
+    res.push_back(movementRight);
+    res.push_back(movementDown);
 
     return res;
 }
@@ -576,7 +588,7 @@ vector<int> Player::playDemonAttack(NeuralNetwork &nn, bool displayScreen)
             cout << "enemyBulletCoordinateX = " << enemyBulletCoordinateX << endl;
         }
 
-        int distanceFactor = 8;
+        int distanceFactor = 10;
 
         if (!UtilG::compareDouble(0.0, currentObjectiveCoordinateX) && 
             abs(currentObjectiveCoordinateX * 255.0 - playerCoordinateX * 255.0) < distanceFactor)
