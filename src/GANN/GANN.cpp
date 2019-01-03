@@ -251,14 +251,25 @@ double GANN::getFitnessValue(const vector<int> &currentFitness)
     // Modify fitness function HERE!
 
     double fitness = 0.0;
+    int score = currentFitness[0];
+    int steps = currentFitness[1];
 
     switch(this->currentGame)
     {
         case Game::breakout:
-            fitness = currentFitness[0];   // Score
+            fitness = score;
             break;
         case Game::boxing:
-            fitness = currentFitness[0] + (double)currentFitness[2] * ((double)currentFitness[2] / (double)(currentFitness[3] + 1));
+            //fitness = currentFitness[0] + (double)currentFitness[2] * ((double)currentFitness[2] / (double)(currentFitness[3] + 1));
+            
+            if (score < 0)
+            {
+                fitness = score * (1 - (double)currentFitness[4] / (double)steps) * (1 - (double)currentFitness[5] / (double)steps) * (1 - (double)currentFitness[6] / (double)steps) * (1 - (double)currentFitness[7] / (double)steps) + (double)currentFitness[2] * ((double)currentFitness[2] / (double)(currentFitness[3] + 1));
+            }
+            else
+            {
+                fitness = score * ((double)currentFitness[4] / (double)steps) * ((double)currentFitness[5] / (double)steps) * ((double)currentFitness[6] / (double)steps) * ((double)currentFitness[7] / (double)steps) + (double)currentFitness[2] * ((double)currentFitness[2] / (double)(currentFitness[3] + 1));
+            }
             break;
         case Game::demonAttack:
             //fitness = currentFitness[0] * ((currentFitness[2] / 100.0) * (currentFitness[3] / 100.0));
@@ -289,13 +300,13 @@ double GANN::getFitnessValue(const vector<int> &currentFitness)
 
             if (min(currentFitness[2], currentFitness[3]) != 0)
             {
-                double punch = (double)currentFitness[5] / (double)currentFitness[1];
-                double score = (double)currentFitness[0];
+                double punch = (double)currentFitness[5] / (double)steps;
+                double dscore = (double)score;
 
                 punch *= punch;
-                score /= 10;
+                dscore /= 10;
 
-                fitness = score * punch;
+                fitness = dscore * punch;
             }
             else
             {
@@ -304,7 +315,7 @@ double GANN::getFitnessValue(const vector<int> &currentFitness)
 
             break;
         case Game::starGunner:
-            fitness = currentFitness[0] / 100;
+            fitness = score / 100;
             break;
         default:
             //cerr << "ERROR: game unknown." << endl;   // Standard error output is redirected to /dev/null

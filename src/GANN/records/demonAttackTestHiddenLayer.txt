@@ -1,0 +1,15 @@
+Configuration
+---------------------------
+Generations: 20
+Population: 100
+Mutation rate: 0.200000
+Elitism: 5
+Weights Factor: 2
+Game: Demon Attack
+Topology: 3, 1, 3
+
+Generation 1
+---------------------------
+  Fitness: 0
+  Score: 0
+

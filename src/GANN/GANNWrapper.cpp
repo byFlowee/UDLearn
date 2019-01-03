@@ -76,7 +76,6 @@ void GANNWrapper::writeInScore(const string &message)
 
 NeuralNetwork GANNWrapper::trainAndGetBestNN()
 {
-    cout << "in" << endl;
     int score = 0;
     int steps = 0;
     NeuralNetwork nn(this->topology);

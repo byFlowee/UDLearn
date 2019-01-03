@@ -1,0 +1,35 @@
+Configuration
+---------------------------
+Generations: 5
+Population: 100
+Mutation rate: 0.200000
+Elitism: 5
+Weights Factor: 2
+Game: Boxing
+Topology: 4, 5
+
+Generation 1
+---------------------------
+  Fitness: 196.446
+  Score: 31
+
+Generation 2
+---------------------------
+  Fitness: 196.446
+  Score: 31
+
+Generation 3
+---------------------------
+  Fitness: 196.446
+  Score: 31
+
+Generation 4
+---------------------------
+  Fitness: 196.446
+  Score: 31
+
+Generation 5
+---------------------------
+  Fitness: 196.446
+  Score: 31
+
