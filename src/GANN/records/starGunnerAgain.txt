@@ -1,0 +1,110 @@
+Configuration
+---------------------------
+Generations: 20
+Population: 1000
+Mutation rate: 0.200000
+Elitism: 5
+Weights Factor: 2
+Game: StarGunner
+Topology: 12, 5
+
+Generation 1
+---------------------------
+  Fitness: 11
+  Score: 1100
+
+Generation 2
+---------------------------
+  Fitness: 13
+  Score: 1300
+
+Generation 3
+---------------------------
+  Fitness: 13
+  Score: 1300
+
+Generation 4
+---------------------------
+  Fitness: 14
+  Score: 1400
+
+Generation 5
+---------------------------
+  Fitness: 14
+  Score: 1400
+
+Generation 6
+---------------------------
+  Fitness: 14
+  Score: 1400
+
+Generation 7
+---------------------------
+  Fitness: 14
+  Score: 1400
+
+Generation 8
+---------------------------
+  Fitness: 14
+  Score: 1400
+
+Generation 9
+---------------------------
+  Fitness: 14
+  Score: 1400
+
+Generation 10
+---------------------------
+  Fitness: 16
+  Score: 1600
+
+Generation 11
+---------------------------
+  Fitness: 16
+  Score: 1600
+
+Generation 12
+---------------------------
+  Fitness: 16
+  Score: 1600
+
+Generation 13
+---------------------------
+  Fitness: 16
+  Score: 1600
+
+Generation 14
+---------------------------
+  Fitness: 18
+  Score: 1800
+
+Generation 15
+---------------------------
+  Fitness: 32
+  Score: 3200
+
+Generation 16
+---------------------------
+  Fitness: 32
+  Score: 3200
+
+Generation 17
+---------------------------
+  Fitness: 32
+  Score: 3200
+
+Generation 18
+---------------------------
+  Fitness: 32
+  Score: 3200
+
+Generation 19
+---------------------------
+  Fitness: 32
+  Score: 3200
+
+Generation 20
+---------------------------
+  Fitness: 32
+  Score: 3200
+
