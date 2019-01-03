@@ -4,7 +4,7 @@
 
 #include "neuralNetwork.h"
 
-NeuralNetwork::NeuralNetwork(const vector<int> &size) : 
+NeuralNetwork::NeuralNetwork(const vector<int> &size) :
     size(size),
     dropout(size.size(), 0.0),
     learningRate(0.1)
@@ -22,7 +22,7 @@ NeuralNetwork::NeuralNetwork(const vector<int> &size, const vector<double> &drop
 
         this->initialize();
     } else {
-        cerr << "ERROR: dropout must have the same topology as size, couldn't build NeuralNetwork.";
+        cerr << "ERROR: dropout must have the same topology as size, couldn't build NeuralNetwork." << endl;
         throw;
     }
 }
