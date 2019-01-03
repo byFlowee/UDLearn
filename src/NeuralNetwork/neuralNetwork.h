@@ -32,7 +32,7 @@ class NeuralNetwork
         NeuralNetwork(const vector<int> &size, const vector<double> &dropout);
         void initialize();
         void setLearningRate(double learningRate);
-        Mat forwardPropagation(const Mat &initial);
+        Mat forwardPropagation(const Mat &initial, bool training = false);
         void backPropagation(const Mat &inputs, const Mat &expectedOutputs);
         void train(const vector<Mat> &inputs, const vector<Mat> &expectedOutputs, int iterations);
         string description() const;

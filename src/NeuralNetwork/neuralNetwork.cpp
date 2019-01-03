@@ -15,6 +15,7 @@ NeuralNetwork::NeuralNetwork(const vector<int> &size)
 
 NeuralNetwork::NeuralNetwork(const vector<int> &size, const vector<double> &dropout)
 {
+    //last dropout value corresponding to output layer wont have any effect
     if (dropout.size() == size.size()) {
         this->dropout = dropout;
         this->size = size;
@@ -93,7 +94,7 @@ void NeuralNetwork::updateDropoutMats() {
     }
 }
 
-Mat NeuralNetwork::forwardPropagation(const Mat &initial)
+Mat NeuralNetwork::forwardPropagation(const Mat &initial, bool training)
 {
     Mat res(1, this->size[this->size.size() - 1]);
     Mat outputs = initial.copy();   // In first layer input = output (we do not apply activation function).
@@ -118,10 +119,10 @@ Mat NeuralNetwork::forwardPropagation(const Mat &initial)
         this->da.push_back(outputs.copy());
 
         //--DROPOUT
-        if (this->dropout[i] > 0.0) {
-            this->a.back().mult(this->dropoutMats[i]);
-            this->da.back().mult(this->dropoutMats[i]);
-            outputs.mult(this->dropoutMats[i]);
+        if (training && this->dropout[i] > 0.0) {
+            this->a.back() = this->a.back().mult(this->dropoutMats[i]);
+            this->da.back() = this->da.back().mult(this->dropoutMats[i]);
+            outputs = outputs.mult(this->dropoutMats[i]);
         }
         //--DROPOUT
     }
@@ -233,10 +234,6 @@ void NeuralNetwork::train(const vector<Mat> &inputs, const vector<Mat> &expected
             this->backPropagation(inputs[j], expectedOutputs[j]);
         }
     }
-
-    //Una vez hemos entrenado quitamos el dropout para que las predicciones utilicen todas las neuronas
-    for (size_t i = 0; i < dropout.size(); ++i)
-        dropout[i] = 0.0;
 }
 
 string NeuralNetwork::description() const
