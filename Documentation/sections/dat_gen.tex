@@ -52,7 +52,7 @@ A la hora de intentar poner esta idea en práctica lo primero que intentamos es 
 	\label{fig:methodGetRAM}
 \end{figure}
 
-Como observamos, el método \textit{getRAM()} nos devuelve una referencia de un objeto de tipo \textbf{ALERAM}, por lo que vamos a ver que método nos pueden servir para modificar la RAM. Cuando investigamos el archivo \textit{src/environment/ale\_ram.hpp} encontramos la definición del objeto ALERAM y la implementación de sus métodos. Contiene 2 métodos que pueden servirnos para nuestro propósito (modificar la RAM), los cuales se muestran en la siguiente figura.
+Como observamos, el método \textit{getRAM()} nos devuelve una referencia de un objeto de tipo \textbf{ALERAM}, por lo que vamos a ver que método nos pueden servir para modificar la RAM. Cuando investigamos el archivo \textit{src/environment/ale\_ram.hpp} encontramos la definición del objeto ALERAM y la implementación de sus métodos. Contiene 2 métodos que pueden servirnos para nuestro propósito (modificar la RAM), los cuales se muestran en la figura \ref{fig:ALEMethodsToGetReferencesToRAM}.
 
 \begin{figure}[h]
 	\centering
@@ -218,7 +218,7 @@ En este agente hemos tomado una estrategia agresiva, si el rival lanza un puñet
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.7\textwidth]{Figures/boxingAleatoriedad}
+	\includegraphics[width=0.7\textwidth]{Figures/BoxingAleatoriedad}
 	\caption{Uso de \textbf{rand()} para evitar el determinismo.}
 	\label{fig:boxingAleatoriedad}
 \end{figure}
@@ -277,7 +277,7 @@ Es por ello por lo que se dedujo que para implementar un bot básico (sin machin
 	\label{fig:demonAttackVision}
 \end{figure}
 
-La visión de la nave se divide principalmente en 3 partes. En la figura vemos una línea roja representada con el número 1, esta línea roja representa la visión de la nave en función a la anchura de la misma. El número 2 es un area parametrizable que permite ampliar esta visión de forma simétrica por los dos lados de la nave. Tanto el rectángulo rojo como el azul se extienden por casi toda la "Y" de la pantalla y lo único que filtran son los disparos enemigos, como los disparos enemigos tienen el mismo color es muy simple filtrarlos. Por lo tanto 1 y 2 se encargan de detectar disparos enemigos, una vez detectados se actuará en consecuencia.
+La visión de la nave se divide principalmente en 3 partes. En la figura vemos una línea roja representada con el número 1, esta línea roja representa la visión de la nave en función a la anchura de la misma. El número 2 es un área parametrizable que permite ampliar esta visión de forma simétrica por los dos lados de la nave. Tanto el rectángulo rojo como el azul se extienden por casi toda la "Y" de la pantalla y lo único que filtran son los disparos enemigos, como los disparos enemigos tienen el mismo color es muy simple filtrarlos. Por lo tanto 1 y 2 se encargan de detectar disparos enemigos, una vez detectados se actuará en consecuencia.
 
 El número 3 es un área reducida dentro del área completa que se encarga de detectar todas las posibles amenazas, no solo disparos, que estén cerca de la nave. Es decir, el objetivo de la visión es la detección de entidades peligrosas en un área de riesgo para posteriormente evitarlas.
 
@@ -416,8 +416,127 @@ En la segunda parte, podemos considerar que el jugador uno está a salvo de posi
 %----------------------------------------------------------------------------------------------%
 %----------------------------------------------------------------------------------------------%
 \newpage
+\subsection{Perceptrón}
+\label{subsec:perceptron}
+
+El perceptrón es una de las técnicas de \textit{Machine Learning} más sencillas de comprender, implementar y útiles. En su sencillez radica los buenos resultados que suele dar, siempre que el problema a resolver no sea muy complejo, ya que pasado cierto nivel de complejidad, el perceptrón seguramente no sea la mejor opción. El perceptrón lo que intenta hacer es separar los datos que le demos, asegurándonos que obtendrá la mejor solución posible si los datos de los cuales partimos son linealmente separables, y en el caso de no serlo, deberemos dar la mejor solución posible (aquella con menor error).
+
+El perceptrón es una técnica de aprendizaje supervisado en la que le damos datos etiquetados y, a partir del error obtenido al intentar etiquetar los datos, se hacen ajustes en la configuración para acercarnos más a los resultados correctos. Esta técnica puede utilizarse para clasificación o para regresión. El resultado que al final obtendremos será, dependiendo del número de entradas que tengamos, una línea, un plano o un hiperplano. Los elementos del perceptrón son las entradas, los pesos y la salida.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.79\textwidth]{Figures/perceptron}
+	\caption{Estructura del perceptrón}
+	\label{fig:perceptron}
+\end{figure}
+
+La salida que tiene el perceptrón, en el caso del clasificador, es siempre de +1 o -1. Para obtener esta salida, la fórmula que se aplica es la siguiente cuando tenemos N entradas:
+
+\[y=signo(\sum_{i=1}^{N}x_{i}*w_{i})\]
+
+Ahora bien, como hemos dicho, lo que el perceptron hace es separar datos, es decir, encontrar la linea, plano o hiperplano que los separa, pero si nos fijamos en la fórmula que hemos descrito encontramos un problema, y es que no hay término independiente, todos los pesos están asociados con alguna entrada, por lo que la linea, plano o hiperplano siempre pasará por el origen de coordenadas, cosa que seguramente no sea así para la mayoría de los problemas. La solución es, como hemos dicho, añadir un término independiente, al cual se le suele llamar \textit{bias}. Una manera de hacerlo es añadir un peso w0 y una entrada x0 artificial que siempre tenga el valor 1, con lo que al final nos queda la siguiente fórmula:
+
+\[x_0=1\]
+\[y=signo(\sum_{i=0}^{N}x_{i}*w_{i})\]
+
+En nuestro trabajo hemos implementado el algoritmo de aprendizaje del perceptrón (PLA), el cual nos permite ir ajustando la configuración del perceptrón, lo que quiere decir que vamos ajustando los pesos con el fin de que obtengamos el resultado que buscamos para las entradas. El algoritmo de aprendizaje del perceptrón es el siguiente:
+
+\vspace{2mm}
+\begin{algorithm}[H]
+    predictions $= getPredictions(inputs);$
+    
+    mPoint $= getRandomMisclassfiedPoint(predictions, targets);$
+    
+    \eIf{$mPoint.empty()$}
+    {
+		$return;$
+	}
+	{
+	    \For{$i \gets 0$ to $N$}
+        {
+            weights[i] $+= mPoint.target$*$mPoint.prediction$
+        }
+	}
+	\caption{PLA}
+	\label{alg:pla}
+\end{algorithm}
+\vspace{2mm}
+
+El código del PLA debería ejecutarse tantas veces como fuera necesario, y eventualmente llegaría a una solución, siempre que los datos fueran linealmente separables. Ya que no siempre van a ser linealmente separables, podemos poner un bucle y hacer tantas iteraciones como fuera necesario (a cada iteración de este bucle se le conoce con el concepto de \textbf{época}).
+
+
+\newpage
+\begin{algorithm}[H]
+    \For{$epoch \gets 1$ to $epochs$}
+    {
+        predictions $= getPredictions(inputs);$
+        
+        mPoint $= getRandomMisclassfiedPoint(predictions, targets);$
+        
+        \eIf{$mPoint.empty()$}
+        {
+    		$return;$
+    	}
+    	{
+    	    \For{$i \gets 0$ to $N$}
+            {
+                weights[i] $+= mPoint.target$*$mPoint.prediction$
+            }
+    	}
+	}
+	\caption{PLA con épocas}
+	\label{alg:plawithepochs}
+\end{algorithm}
+\vspace{2mm}
+
+Por último, vemos el problema de que si no tenemos datos linealmente separables, las épocas no solucionan el problema totalmente (solucionan el problema de no quedarnos en un bucle infinito), ya que puede que antes de llegar a la última época, ya hayamos encontrado una solución bastante buena, pero que la hayamos perdido por el camino al actualizar los pesos, por lo que a cada época que se esté ejecutando el PLA, deberíamos de estar guardando la mejor solución hasta el momento. A esto se le conoce con el nombre del algoritmo \textit{Pocket}.
+
+\newpage
+\begin{algorithm}[H]
+    pocket $= []$
+    
+    \For{$epoch \gets 1$ to $epochs$}
+    {
+        predictions $= getPredictions(inputs);$
+        
+        mPoint $= getRandomMisclassfiedPoint(predictions, targets);$
+        
+        \If{$numberOfMisclassifiedPoints(pocket, targets)$ > $numberOfMisclassifiedPoints(weights, targets)$}
+        {
+            pocket $= weights$
+        }
+        
+        \eIf{$mPoint.empty()$}
+        {
+    		$return;$
+    	}
+    	{
+    	    \For{$i \gets 0$ to $N$}
+            {
+                weights[i] $+= mPoint.target$*$mPoint.prediction$
+            }
+    	}
+	}
+	
+	\If{$!pocket.empty()$}
+	{
+	    weights $= pocket$
+	}
+	\caption{PLA con épocas y Pocket}
+	\label{alg:plawithepochsandpocket}
+\end{algorithm}
+\vspace{2mm}
+
+Nuestro código es muy similar al descrito, ya que la parte más importante es la que hemos explicado, la del PLA. La estructura que hemos empleado es la de una clase llamada \textbf{Perceptron} que contiene los métodos necesarios para obtener una predicción, la cual se obtiene haciendo uso del método \textit{double getPrediction(const vector\textless double\textgreater \&inputs)} y el PLA se ejecuta haciendo uso del método \textit{void trainPerceptron(unsigned epochs, const vector\textless vector\textless double\textgreater \textgreater \&inputs, const vector\textless double\textgreater \&targets)}.
+
+\newpage
 \subsection{Redes neuronales}
 \label{subsec:nn}
+
+
+\newpage
+\subsubsection{Algoritmo Genético (GANN)}
+\label{subsubsec:nn:gann}
 
 
 \newpage
