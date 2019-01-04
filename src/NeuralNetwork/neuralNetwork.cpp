@@ -90,6 +90,8 @@ void NeuralNetwork::updateDropoutMats() {
             }
         }
 
+        //dropout.print();
+        //cout << endl;
         this->dropoutMats.push_back(dropout);
     }
 }
@@ -119,10 +121,9 @@ Mat NeuralNetwork::forwardPropagation(const Mat &initial, bool training)
         this->da.push_back(outputs.copy());
 
         //--DROPOUT
-        if (training && this->dropout[i] > 0.0) {
-            this->a.back() = this->a.back().mult(this->dropoutMats[i]);
-            this->da.back() = this->da.back().mult(this->dropoutMats[i]);
-            outputs = outputs.mult(this->dropoutMats[i]);
+        if (training && this->dropout[i+1] > 0.0) {
+            this->a.back() = this->a.back().directMult(this->dropoutMats[i+1]);
+            this->da.back() = this->da.back().directMult(this->dropoutMats[i+1]);
         }
         //--DROPOUT
     }
@@ -134,7 +135,7 @@ Mat NeuralNetwork::forwardPropagation(const Mat &initial, bool training)
 
 void NeuralNetwork::backPropagation(const Mat &inputs, const Mat &expectedOutputs)
 {
-    Mat outputs = this->forwardPropagation(inputs);
+    Mat outputs = this->forwardPropagation(inputs, true);
     Mat error = expectedOutputs.sub(outputs);
     Mat derror = expectedOutputs.sub(outputs);
 
@@ -171,7 +172,7 @@ void NeuralNetwork::backPropagation(const Mat &inputs, const Mat &expectedOutput
         for (int j = 0; j < delta[i].size(); j++)
         {
             //Double value = this.da.get(i + 1).get(0, j);
-            double value = this->da[i + 1].get(0, j);
+            double value = this->da[i + 1].get(0, j) * this->dropoutMats[i+1].get(0, j); //multiplied by 0 if the neuron is disabled so the delta is not considered
 
             for (int k = 0; k < delta[i + 1].size(); k++)
             {
@@ -182,10 +183,6 @@ void NeuralNetwork::backPropagation(const Mat &inputs, const Mat &expectedOutput
             //delta.get(i).set(0, j, value);
             delta[i].set(0, j, value);
         }
-
-        //--DROPOUT
-        delta[i].mult(this->dropoutMats[i]);
-        //--DROPOUT
     }
 
     // Weights update.
@@ -225,6 +222,7 @@ void NeuralNetwork::train(const vector<Mat> &inputs, const vector<Mat> &expected
         return;
     }
 
+    cout << "Training!" << endl;
     for (int i = 0; i < iterations; i++)
     {
         //Para cada iteración cambiamos las neuronas marcadas como inactivas
