@@ -7,11 +7,12 @@
 USE_SDL := 1
 
 # This will likely need to be changed to suit your installation.
-ALE := ../../../../ALE
+#ALE := ../../../../ALE
+ALE := $(ALEPath)
 
 FLAGS := -I$(ALE)/src -I$(ALE)/src/controllers -I$(ALE)/src/os_dependent -I$(ALE)/src/environment -I$(ALE)/src/external -L$(ALE)
 CXX := g++
-FILE := naive
+FILE := breakout_bot
 LDFLAGS := -lale -lz
 
 UNAME_S := $(shell uname -s)
@@ -28,10 +29,10 @@ ifeq ($(strip $(USE_SDL)), 1)
   LDFLAGS += $(shell sdl-config --libs)
 endif
 
-all: minimal_agent
+all: breakout_bot
 
-minimal_agent:
+breakout_bot: breakout_bot.cpp
 	$(CXX) $(DEFINES) $(FLAGS) $(FILE).cpp $(LDFLAGS) -o $(FILE)
 
 clean:
-	rm -rf naive *.o
+	rm -rf breakout_bot *.o
