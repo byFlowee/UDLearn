@@ -1,11 +1,73 @@
 \section{Manual de utilización}
-\subsection{Actividad principal de la empresa}
+\label{sec:usageManual}
+
+Antes de empezar con el manual de utilización para las tecnologías concretas desarrolladas hay que tener en cuenta dos cuestiones fundamentales:
+
+\begin{enumerate}
+    \item La tecnología que hemos desarrollado se implementado bajo entorno linux, concretamente todo está probado en la distribución \textit{Manjaro Linux}. No se garantiza el correcto funcionamiento de la tecnología en otros sistemas.
+    \item La tecnología que hemos desarrollado utiliza el entorno ALE (\textit{Arcade Learning Environment}), por lo que lo que es necesario para el funcionamiento de los experimentos y de la tecnología en sí.
+\end{enumerate}
+
+Respecto a ALE, es necesario saber dónde está instalado, por lo que hemos utilizado la variable de entorno del sistema \textbf{ALEPath} para localizar el entorno y poder compilar y utilizar la tecnología sin problema. La manera de indicar donde está ALE, si por ejemplo estuviera en la ruta /home/UDLearn/ Escritorio/ALE, sería con el siguiente comando desde la terminal: \textit{export ALEPath=/home/UDLearn/Escritorio/ALE}. De esta manera ya estaría todo listo para poder compilar la tecnología desarrollada y utilizarla.
+
+Para poder utilizar la tecnología solo es necesario compilar, lo cual es sencillo ya que solo habrá que ejecutar \textit{make} en la terminal, ya que cada una de las tecnologías desarrolladas viene con su correspondiente fichero \textit{makefile}.
+
+Una vez ya se ha indicado donde está ALE y compilada la tecnología que se quiera utilizar, en los siguientes apartados se indica el uso concreto de cada una de ellas.
+
+\newpage
+\subsection{Bots y bots naive}
 
 
-\subsection{Departamento del estudiante en prácticas}
+\newpage
+\subsection{Red Neuronal}
 
 
-\subsection{Infraestructura del centro, materiales y personal del lugar de trabajo}
+\newpage
+\subsection{Red Neuronal y Genético: \textit{GANN}}
 
+La utilización del GANN es muy sencilla. Lo primero que habría que hacer es compilar, lo cual haciendo \textit{make} desde la terminal ya lo tendríamos (consultar sección \ref{sec:usageManual} para más detalles). A continuación, se detallan los modos de uso.
+
+Con el GANN tenemos 2 modos de funcionamiento:
+
+\begin{enumerate}
+    \item Modo de \textbf{entrenamiento}: en este modo lo que se hace es utilizar el GANN para obtener resultados entrenando a cualquiera de los 4 juegos disponibles. Mientras se ejecuta se va mostrando la información del progreso y se va guardando un registro con la información más importante. Cuando termina de ejecutarse, guarda los pesos de la mejor red encontrada.
+    \item Modo de \textbf{ejecución}: en este modo lo único que se hace es ejecutar la mejor red que hemos encontrado conforme hemos ido haciendo pruebas. Los pesos están directamente escritos en el código, así que lo que se verá será directamente el juego elegido y el mejor bot que hemos encontrado jugando.
+\end{enumerate}
+
+Para seleccionar el juego, la codificación que hemos escogido es un número para cada juego. La codificación es la siguiente:
+
+\begin{itemize}
+    \item Breakout = 1
+    \item Boxing = 2
+    \item Demon Attack = 3
+    \item StarGunner = 4
+\end{itemize}
+
+La ejecución de ambos modos es muy sencilla, y se describe a continuación:
+
+\begin{enumerate}
+    \item Modo de Entrenamiento: 
+    \begin{enumerate}
+        \item De modo general:
+        \begin{enumerate}
+            \item \textit{./main juego generaciones población nombreFicheroRegistros}
+        \end{enumerate}
+        \item Ejemplo: Breakout con 5 generaciónes, 100 individuos en la pobla-ción y archivo llamado "breakoutRecords.txt" (registro) y archivo "breakoutRecords.weights" (pesos).
+        \begin{enumerate}
+            \item \textit{./main 1 5 100 breakoutRecords}
+        \end{enumerate}
+    \end{enumerate}
+    \Item Modo de ejecución:
+    \begin{enumerate}
+        \item De modo general:
+        \begin{enumerate}
+            \item \textit{./main juego}
+        \end{enumerate}
+        \item Ejemplo: ver el bot del Breakout.
+        \begin{enumerate}
+            \item \textit{./main 1}
+        \end{enumerate}
+    \end{enumerate}
+\end{enumerate}
 
 \newpage
