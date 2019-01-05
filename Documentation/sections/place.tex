@@ -16,6 +16,23 @@ Una vez ya se ha indicado donde está ALE y compilada la tecnología que se quie
 
 \newpage
 \subsection{Bots y bots naive}
+Una vez que la variable de entorno está aplicada correctamente ya se pueden compilar y utilizar los bots. Dentro del directorio principal de UDLearn encontraremos varias carpetas con los nombres de los juegos. Dentro de cada una de éstas carpetas (excluyendo el strgunner), podemos encontrar un subdirectorio llamado "naive". Este subdirectorio representa la versión de Inteligencia Artificial simple realizada para ese juego en concreto, el directorio raíz contendrá diversos archivos específicos a la implementación mediante redes neuronales.
+
+Para compilar los bots naive, haremos lo siguiente:
+
+\begin{enumerate}
+	\item Abrir la consola en el directorio del bot naive deseado (ejemplo dattack/naive).
+	\item Dentro del directorio, escribir en la consola "make" y pulsar intro, esto compilará los ficheros involucrados.
+\end{enumerate}
+
+Una vez hemos compilado el fichero, solo queda ejecutarlo. Para esto, desde la misma consola que hemos compilado el bot, podremos escribir lo siguiente:
+
+\begin{itemize}
+	\item \textit{./nombre\_ejecutable nombre\_rom}. Este modo ejecutará el bot sin ningun tipo de información multimedia disponible.
+	\item \textit{./nombre\_ejecutable nombre\_rom 1}. Si queremos habilitar o deshabilitar explicitamente el contenido multimedia (audio y video), tendremos que escribir a continuacion un 1 o un 0, respectivamente.
+	\item \textit{./nombre\_ejecutable nombre\_rom 1 1}. Si queremos habilitar o deshabilitar además la visualización de RAM, tendremos que escribir a continuacion un 1 o un 0 respectivamente.
+	\item Cualquier opción extra no común no reflejada en la documentación aparecerá en el ejecutable siempre y cuando no se introduzca el input correctamente.
+\end{itemize}
 
 
 \newpage
