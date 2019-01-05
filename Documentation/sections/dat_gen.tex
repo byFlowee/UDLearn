@@ -538,5 +538,480 @@ Nuestro código es muy similar al descrito, ya que la parte más importante es l
 \subsubsection{Algoritmo Genético (GANN)}
 \label{subsubsec:nn:gann}
 
+Los algoritmos genéticos pertenecen a la categoría de los algoritmos evolutivos, los cuales intentan optimizar algún problema basándose en la biología, basándose en como la naturaleza ha evolucionado a lo largo de miles de años e intentando utilizar la misma técnica. Concretamente, los algoritmos genéticos intentan imitar la estructura genética de los individuos y como esta estructura va evolucionando de una generación de individuos a la siguiente, esa es la idea principal de dichos algoritmos. Antes de pasar a explicar la combinación de los algoritmos genéticos con las redes neuronales vamos a explicar las ideas principales de los algoritmos genéticos.
+
+Como hemos dicho, los algoritmos genéticos se basan en la evolución de la estructura genética de los individuos y como se transmite esta herencia genética de una generación a la siguiente. Hablando sobre esta estructura, todo \textbf{individuo} vivo tiene una serie de \textbf{células} y cada una de estas células contiene el mismo conjunto de \textbf{cadenas de ADN}, lo que se conoce como \textbf{cromosomas}. El ADN que contiene un cromosoma es una doble cadena en forma de hebra, y las hebras están conectadas entre sí en una \textbf{doble espiral}. Finalmente, esta doble espiral está formada por pequeños bloques básicos, llamados \textbf{genes}, que a su vez están formados por sustancias llamadas \textbf{nucleótidos}. Solo hay 4 tipos de nucleótidos: timina, adenina, guanina y citosina. En la figura \ref{fig:basicDNAStructure} se puede apreciar lo que hemos comentado de una manera más gráfica. Esta es la estructura básica de la información genética de los seres vivos.
+
+Ahora sabemos un poco más cuál es la estructura básica, pero aún no hemos explicado qué es lo que contienen estas partes, lo cual va a ser lo importante para poder comprender correctamente el funcionamiento biológico y así poder hacer una buena aproximación con los algoritmos genéticos a este enfoque de la evolución respecto a la herencia genética. Lo importante es comprender que la información que hay dentro de una célula (conjunto de cadenas de ADN, los cromosomas) es lo que contiene toda la información que define a un individuo y, por lo tanto, tiene toda la información que podría pasarse al individuo de la siguiente generación (normalmente de forma parcial, no total). Esta colección de cromosomas (información genética dentro de la célula) es lo que se conoce como \textbf{genoma}, que no es más que la colección de genes que definen las características del individuo (e.g. ojos marrones, pelo liso, color del pelo, etc.). Volviendo a los \textbf{genes}, la configuración que cada gen puede tener es lo que da rasgo a alguna característica concreta, y a esto se le llama \textbf{alelo} (característica concreta del individuo), y la posición física donde está el gen a lo largo de la cadena del cromosoma se le llama \textbf{locus}.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.79\textwidth]{Figures/basicDNAStructure}
+	\caption{Estructura básica del ADN}
+	\label{fig:basicDNAStructure}
+\end{figure}
+
+Ahora bien, el estado de los alelos en un genoma particular se conoce como \textbf{genotipo} (información genética que da lugar a las características del individuo). El genotipo es una información que una vez está definida no cambia. Al organismo en sí, al individuo, a la expresión de ese genotipo en el mundo real, se le conoce como \textbf{fenotipo}. Por poner un ejemplo, el ADN que tiene cada ser humano sería el genotipo propio de cada uno, mientras que la persona en sí, el como se expresa en el mundo físico, sería su fenotipo, el cual, además, está influido por el ambiente. En la figura \ref{fig:genotypeVSphenotype} se ve esta diferencia claramente, que es lo que se conoce como genotipo vs fenotipo.
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+        %\draw (0,0) grid (3,3);
+        %\draw (0,0) circle [radius=0.3] node {$Genotipo$};
+        \node[draw,circle,minimum size=2cm,inner sep=0pt] at (0,0) {$Genotipo$};
+        \node[draw,circle,minimum size=2.5cm,inner sep=0pt] at (4,-2) {$Fenotipo$};
+        \node[draw,circle,minimum size=2cm,inner sep=0pt] at (0,-4) {$Ambiente$};
+        \node[draw=none,fill=none,font=\fontsize{1cm}{1cm}\selectfont] at (0,-2) {$+$};
+        \node[draw=none,fill=none,font=\fontsize{1cm}{1cm}\selectfont] at (2,-2) {$=$};
+    \end{tikzpicture}
+    \caption{Genotipo vs Fenotipo}
+	\label{fig:genotypeVSphenotype}
+\end{figure}
+
+Observando la figura \ref{fig:genotypeVSphenotype}, podemos darnos cuenta de algo, y es que aunque tengamos 2 copias exactas a nivel genético de un individuo (i.e. clones), lo que significaría que tienen el mismo genotipo, podrían no tener el mismo fenotipo, ya que el ambiente importa, aunque respecto a los algoritmos genéticos esto se obvía normalmente, al no ser que de alguna forma el individuo evolucione mientras está en vida (nos referimos a algoritmos, no a seres vivos). Si tuviéramos un algoritmo genético que combinado con otra técnica, el individuo evolucionase a la vez que se ejecuta entonces podríamos hablar de que el entorno importa (e.g. algoritmo genético que resuelve un camino en un laberinto y aprende a la vez que lo recorre, pero además el laberinto varía, por lo que un individuo podría aprender muy bien a resolverlo, pero otro individuo con el mismo genotipo tiene un laberinto complicado, por lo que no aprende bien, así que el fenotipo varía).
+
+Una vez hablado de todo lo anterior, lo que es la parte biológica, necesario para comprender correctamente el funcionamiento de un algoritmo genético, podemos pasar a explicar como funciona el algoritmo en sí. Los algoritmos genéticos lo que intentan es aproximar el enfoque de la evolución desde el punto de vista de la herencia genética: de algún modo codifican el genotipo del individuo, de algún modo se evalúa lo bien que hace su tarea para sobrevivir, para tener más posibilidades de pasar parte de su información genética a la siguiente generación, y se hace evaluando su fenotipo. En definitiva, los algoritmos genéticos se basan en los principios de Charles Darwin de su teoría de la selección natural. Resumidamente es la supervivencia del más apto.
+
+Las fases principales de los algoritmos genéticos son:
+\begin{enumerate}
+    \item Crear una \textbf{población inicial} de individuos. Esta población suele generarse de forma aleatoria y, aunque muchos individuos harán mal su tarea, otros lo harán medio bien o incluso bien. También se pueden inicializar siguiendo una distribución de probabilidad que se sabe que sigue el patrón de los individuos que hacen bien su tarea.
+    \item Calcular su \textbf{\textit{fitness}}. Este valor se calcula de la función de \textit{fitness}, la cual nos indica como de bien un individuo hace la tarea para la que se supone que ha sido concebido. El objetivo suele ser maximizar esta función.
+    \item \textbf{Selección}. Seleccionar los individuos más aptos para pasar su información a la siguiente generación. Esto es una cuestión de probabilidad, no de directamente hacer que los mejores individuos sean los que pasen su información a la siguiente generación. Los mejores individuos tendrán más posibilidades, pero los peores también tendrán una pequeña posbilidad de pasar su información a la siguiente generación.
+    \item \textbf{\textit{Crossover} (emparejamiento)}. Unir la información genética de los individuos seleccionados para pasar a la siguiente generación.
+    \item \textbf{Mutación}. Las mutaciones son algo que sucede cuando hablamos de la genética. A veces son buenas y a veces son malas, pero está claro que son necesarias. La mutación puede aportarnos algo que puede que ningún individuo de la población inicial tuviera en su información genética, y esa mutación podría hacer que un nuevo gen surgiera y predominara por encima de todos.
+    \label{enum:geneticAlgorithmSteps}
+\end{enumerate}
+
+La estructura principal de los algoritmos genéticos se muestra en el algoritmo \ref{alg:generalGAStructure}.
+
+\vspace{2mm}
+\begin{algorithm}[H]
+    population $= createNewPopulation();$
+    
+    \While{true}
+    {
+        fitness $= evaluatePopulation(population);$
+        
+        newPopulation $= [];$
+        
+        \For{$individual \gets 1$ to $population$}
+        {
+            parents $= doSelection(population, fitness);$
+            
+            newIndividual $= doCrossover(parents);$
+            
+            newIndividual $= doMutation(newIndividual);$
+            
+            newPopulation[individual] $= newIndividual;$
+        }
+        
+        population $= newPopulation;$
+    }
+	\caption{Estructura general de los algoritmos genéticos}
+	\label{alg:generalGAStructure}
+\end{algorithm}
+\vspace{2mm}
+
+Conforme se vaya pasando de generación en generación, los nuevos individuos irán mejorando, ya que han ido obteniendo los mejores genes de sus antepasados o al menos esa es la idea principal de estos algoritmos. Dentro de estos algoritmos luego hay muchos aspectos que controlar para que estos funcione como es debido, aunque lo básico ya está expuesto. Ahora pasaremos a hablar por qué pueden ser útiles a la hora de combinarlos con las redes neuronales.
+
+Las redes neuronales forman parte de los algoritmos de aprendizaje supervisado, lo que quiere decir que necesita de datos que previamente estén etiquetados. Con estos datos utiliza el algoritmo de aprendizaje \textit{back propagation} (propagación hacia atrás), el cual es el mejor algoritmo de aprendizaje hasta la fecha para las redes neuronales para el aprendizaje supervisado, pero no el único. La idea de juntar los algoritmos genéticos con las redes neuronales (GANN) es la de no utilizar el algoritmo de aprendizaje \textit{back propagation}, sino que en su lugar utilizar el propio algoritmo genético como algoritmo de aprendizaje para la red neuronal. Como hemos dicho, el algoritmo de aprendizaje \textit{back propagation} es el mejor que se conoce a día de hoy para el aprendizaje supervisado en las redes neuronales, así que ¿cuál es el objetivo de utilizar un algoritmo genético como algoritmo de aprendizaje? Hay varias razones, y una de las principales razones es que al utilizar un algoritmo genético como algoritmo de aprendizaje para las redes neuronales dejamos de estar utilizando aprendizaje supervisado y pasamos a estar utilizando \textbf{aprendizaje por refuerzo}.
+
+El aprendizaje por refuerzo no necesita de datos etiquetados como sí lo necesita el aprendizaje supervisado. Este en su lugar necesita una medida de como de bien está comportándose el algoritmo, lo cual encaja a la perfección con la función de \textit{fitness}, que es justamente lo que hace. La idea es codificar de alguna manera las redes neuronales de manera que un algoritmo genético pueda tratarlas, modificarlas, etc. Tenemos que conseguir el genotipo de la red neuronal, y la forma de hacerlo es con la codificación de la red. Hay muchos tipos de codificaciones, siendo la más típica la \textbf{codificación binaria}, la cual coge \textit{N} bits para representar un peso de la red neuronal y entonces ya ejecuta todas las fases que hemos comentado. Esta codificación es la más típica, pero también es muy restrictiva y nos aporta poca flexibilidad. En nuestro caso, la codificación que hemos hecho de la red neuronal es una codificación de \textbf{números reales}, en la cual cada peso de la red se trata como lo que es, un número real. Esta codificación también trae problemas, siendo uno de ellos el límite superior e inferior que se le da a los pesos, ya que en función de esos límites podremos generar unos pesos en un rango o en otro.
+
+Por la forma en la que tenemos nuestra implementación de la red neuronal, en la cual hemos implementado el perceptrón multicapa, la manera más sencilla para representar la red, para codificarla, era coger nuestras matrices de pesos y aplanarlas para obtener un vector. Respecto a los \textit{biases} hicimos lo mismo, coger la matriz que contiene todos los \textit{biases}, aplanarla, y añadir todos los pesos al final del vector que contiene los pesos. Como luego es necesario decodificar y volver a obtener nuestras matrices de pesos y \textit{biases}, con el vector de topología, que es el vector que nos indica cual es la topología de esa codificación en concreto, se puede volver a desaplanar sin ningún problema. El aplanamiento y unión de matrices de pesos y \textit{biases} es sencillo, pero el desaplanar puede no serlo tanto, así que se puede observar el código en el algoritmo \ref{alg:unflatteningOfWeightsAndBiases}.
+
+\vspace{2mm}
+\begin{algorithm}[H]
+\KwData{const vector\textless int\textgreater \&topology, const Mat \&flattened}
+\KwResult{vector\textless vector\textless Mat\textgreater\textgreater weightsAndBiases}
+    $vector$\textless $vector$\textless $Mat$\textgreater\textgreater $res;$
+    
+    $vector$\textless $Mat$\textgreater $weights;$
+    
+    $vector$\textless $Mat$\textgreater $bias;$
+    
+    $int$ $flattenedCol = 0;$
+    
+    \For{$(size\_t$ $i = 0; i < topology.size() - 1; i++)$}
+    {
+        $Mat$ $matWeights(topology[i], topology[i + 1]);$
+
+        \For{$(int$ $row = 0; row < matWeights.rows(); row++)$}
+        {
+            \For{$(int$ $col = 0; col < matWeights.cols(); col++)$}
+            {
+                $matWeights.set(row, col, flattened.get(0, flattenedCol));$
+
+                $flattenedCol++;$
+            }
+        }
+
+        $weights.push\_back(matWeights);$
+    }
+    \For{$(size\_t$ $i = 0; i < topology.size() - 1; i++)$}
+    {
+        $Mat$ $matBias(1, topology[i + 1]);$
+
+        \For{$(int$ $col = 0; col < matBias.cols(); col++)$}
+        {
+            $matBias.set(0, col, flattened.get(0, flattenedCol));$
+
+            $flattenedCol++;$
+        }
+
+        $bias.push\_back(matBias);$
+    }
+
+    $res.push\_back(weights);$
+    $res.push\_back(bias);$
+
+    $return$ $res;$
+    
+	\caption{Desaplanamiento de las matrices de pesos y \textit{biases}}
+	\label{alg:unflatteningOfWeightsAndBiases}
+\end{algorithm}
+\vspace{2mm}
+
+Una vez ya desaplanados los pesos y \textit{biases} ya solo nos quedaba crear una nueva red neuronal y utilizar \textit{setWeights()} y \textit{setBiases()}.
+
+Ahora vamos a pasar a la parte más importante de nuestra implementación de la GANN, que son los operadores genéticos que hemos empleado. Los operadores genéticos son las operaciones que realizamos para obtener la selección, el emparejamiento y la mutación de los individuos.
+
+Para la selección de los individuos hay varios operadores genéticos, siendo los más famosos los siguientes:
+
+\begin{enumerate}
+    \item Selección proporcional del \textit{fitness} (Fitness proportionate selection) más conocido con el nombre de Roulette Wheel Selection. Este operador de selección consiste en asignarle a cada individuo una probabilidad basada en su \textit{fitness} respecto a la suma total del \textit{fitness} de toda la población. De esta manera, luego se simula la rotación de una ruleta, donde los que mayor probabilidad tienen son los que mayor sector tienen en la ruleta. Es el operador de selección más utilizado y \underline{es el que hemos utilizado en nuestra implementación}. La fórmula que utiliza es la siguiente:
+    \[p_{i}=\dfrac{f_{i}}{\sum_{j=1}^{N}{f_{j}}}\]
+    \item Selección por torneo. Este método intenta simular un torneo, donde la probabilidad de selección varía a cada iteración. Cuando se han ejecutado los torneos que se haya configurado, es cuando se escoge a los mejores individuos (donde K es el número de individuos que participan en el torneo). La fórmula que utiliza es la siguiente:
+    \[p_{0}=p\]
+    \[p_{iteration}=p*(1-p)^{iteration}\]
+    \item Selección basada en recompensas. Este método recomensa a los individuos que han hecho algo de forma correcta. Hay muchas fórmulas que pueden ser utilizadas como recomensa, una básica es la siguiente:
+    \[individual^{(generation + 1)} selected \Rightarrow reward^{(generation)} = 1\]
+\end{enumerate}
+
+Respecto al emparejamiento de individuos, hay muchas maneras de hacerlo. Nosotros utilizamos 2 enfoques diferentes, y en ambos era para el emparejamiento de 2 individuos, es decir, de 2 redes neuronales. En el primero de ellos lo que hacíamos era alternar entre coger un peso de una red y luego otro de la otra, con lo que acabábamos con una nueva red con cerca del 50\% del genotipo de las 2 redes que se utilizaban como padres. El segundo enfoque lo que hacíamos era coger los 2 pesos de la misma posición de los padres y hacer una media ponderada, lo cual nos daba más seguridad de que los resultados obtenidos en la función de \textit{fitness} de la nueva red neuronal iban a ser más próximos a los de las redes padre, ya que si ambas redes neuronales padre obtenían buenos valores de \textit{fitness} la probabilidad de que sus pesos se parecieran es muy alta, como veremos que sucede en los experimentos realizados. Esta último enfoque es el que se ha quedado en la última versión del GANN. Podemos ver ambos enfoques en el algoritmo \ref{alg:crossoverOperator}.
+
+\begin{algorithm}[H]
+\KwData{const DNA \&a, double ownFitness, double aFitness}
+\KwResult{DNA newIndividual}
+    $DNA$ $res(a.genes.rows(), a.genes.cols());$
+
+    $double$ $random = UtilG::getRandomDouble(0.0, 1.0);$
+
+    \eIf{$random <= this->crossoverRate$}
+    {
+        $res.setMutationRate(this->mutationRate);$
+        
+        $res.setCrossoverRate(this->crossoverRate);$
+
+        \If{$a.genes.rows() == this->genes.rows() \&\&
+            a.genes.cols() == this->genes.cols()$}
+        {
+            \For{$(int$ $row = 0; row < a.genes.rows(); row++)$}
+            {
+                \For{$(int$ $col = 0; col < a.cols(); col++)$}
+                {
+                    $//$ $First$ $approach$
+                    
+                    \eIf{$(row + col) \% 2 == 0$}
+                    {
+                        $res.genes.set(row, col, this->genes.get(row, col));$
+                    }
+                    {
+                        $res.genes.set(row, col, a.genes.get(row, col));$
+                    }
+
+                    $//$ $Second$ $and$ $definitive$ $approach.$ $Average$
+                    
+                    $res.genes.set(row, col, (a.genes.get(row, col) + this->genes.get(row, col)) / 2.0);$
+                }
+            }
+        }
+    }
+    {
+        \eIf{$ownFitness > aFitness$}
+        {
+            $res = *this;$
+        }
+        {
+            $res = a;$
+        }
+    }
+
+    $return$ $res;$
+    
+	\caption{Operadores genéticos de emparejamiento empleados}
+	\label{alg:crossoverOperator}
+\end{algorithm}
+
+Por último, al igual que con los operadores genéticos de emparejamiento, hay muchas posibilidades para los operadores genéticos de mutación. En nuestra implementación aplicamos 2 tipos de mutaciones. La primera mutación que aplicamos es cambiar un número real por otro, por defecto en el rango [-1.0, 1.0], aunque es posible multiplicar dicho rango por factor, dando lugar a [-1.0*factor,1.0*factor]. El otro operador genético de mutación que hemos empleado ha sido la permutación. La implementación de ambos operadores se muestra en el algoritmo \ref{alg:mutationOperator}.
+
+\vspace{2mm}
+\begin{algorithm}[H]
+    
+    $//$ $First$ $mutation.$ $Replace$ $a$ $real-number$
+    
+    \For{$(int$ $row = 0; row < this->genes.rows(); row++)$}
+    {
+        \For{$(int$ $col = 0; col < this->genes.cols(); col++)$}
+        {
+            $double$ $random = UtilG::getRandomDouble(0.0, 1.0);$
+
+            \If{$random <= this->mutationRate$}
+			{
+				$this->genes.set(row, col, UtilG::getRandomDouble((double)factor * -1.0, (double)factor * 1.0));$
+			}
+        }
+    }
+    
+    $//$ $Second$ $mutation.$ $Permute$ $2$ $weights/biases$
+    
+    \For{$(int$ $row = 0; row < this->genes.rows(); row++)$}
+    {
+        \For{$(int$ $col = 0; col < this->genes.cols(); col++)$}
+        {
+            $double$ $random = UtilG::getRandomDouble(0.0, 1.0);$
+
+            \If{$random <= this->mutationRate$}
+			{
+                $int$ $randomRow1 = rand() \% this->genes.rows();$
+                $int$ $randomCol1 = rand() \% this->genes.cols();$
+                $int$ $randomRow2 = rand() \% this->genes.rows();$
+                $int$ $randomCol2 = rand() \% this->genes.cols();$
+                $double$ $value1 = this->genes.get(randomRow1, randomCol1);$
+                $double$ $value2 = this->genes.get(randomRow2, randomCol2);$
+
+                $this->genes.set(randomRow1, randomCol1, value2);$
+                $this->genes.set(randomRow2, randomCol2, value1);$
+			}
+        }
+    }
+    
+	\caption{Operadores genéticos de mutación empleados}
+	\label{alg:mutationOperator}
+\end{algorithm}
+
+\newpage
+Una vez ya hemos visto los operadores genéticos que hemos empleado solo nos queda por ver dos cosas más: la función de \textit{fitness} y otras técnicas que hemos implementado para evitar la rápida convergencia o para evitar la pérdida de los individuos más aptos.
+
+Vamos a empezar por las funciones de \textit{fitness} que hemos empleado, las cuales van ligadas al problema que queremos resolver, y en este caso el problema que queremos resolver es enseñar a un algoritmo a jugar lo mejor posible a los 4 videojuegos para la videoconsola Atari 2600 que comentamos al inicio (i.e. breakout, boxing, demon attack y stargunner) de esta memoria. Las funciones de \textit{fitness} que hemos empleado han ido cambiando mucho, ya que cuando utilizábamos una u otra, veíamos que los resultados variaban, y mucho. A continuación, mostramos las funciones de \textit{fitness} que hemos empleado para cada uno de los videojuegos.
+
+\begin{enumerate}
+    \item Breakout:
+    \begin{enumerate}
+        \item $fitness = score;$ // Ha funcionado a la perfección desde el principio.
+    \end{enumerate}
+    \item Boxing:
+    \begin{enumerate}
+        \item $fitness = score;$ // Se quedaba quieto todo el rato y aprendia a dar golpes de vez en cuando.
+        \item $fitness = score + (double)scoreP1 * ((double)scoreP1 / (double)$ $(scoreP2 + 1));$ // Intentábamos recomensar a P1 cuando la diferencia de resultados no fuera exagerada a favor de P2 y que, cuando mejor lo hiciera P1, más se le recompensaba. Obtuvo mejores resultados que el anterior, llegando a obtener puntuaciones igualadas, pero sin muy buenos resultados.
+        \item Algoritmo \ref{alg:bestFitnessFunctionBoxing}. Se mueve hacia la derecha y acorrala todo el rato al oponente, consiguiendo doble de puntos. Los resultados suelen ser de 100 a 10 ganando P1. A pesar de obtener unas puntuaciones muy buenas no parece que haya aprendido muy bien a jugar: solo avanza y golpea.
+    \end{enumerate}
+    \item Demon Attack:
+    \begin{enumerate}
+        \item $fitness = score;$ // Obtenía unas puntuaciones de 3000, las mejores que hemos obtenido, pero la jugabilidad por parte del bot era pésima: se quedaba en el centro y disparaba.
+        \item $fitness = score * ((moveLeft / 100.0) * (moveRight / 100.0));$ // Se le recompensaba al bot cuando más se moviera. El problema era que aprendia a matar a algún enemigo muy esporádicamente a moverse todo el rato.
+        \item $fitness = ((double)(score^{2}) / (500.0^{2})) * ((moveLeft / 1000.0) * (moveRight / 1000.0));$ // Intentamos arreglar el problema anterior penalizando un poco el moverse y aumentando más la recompensa por disparar y matar a los enemigos. Factores de multiplicación muy desbalanceados. Muy malos resultados.
+        \item $fitness = ((double)(score^{2}) / (500.0^{2})) * ((moveLeft / 1000) * ($ $moveRight / 1000)) * ((score / 1000) + 1);$ // Intentamos que la puntuación no fuera un factor extremadamente determinante como en la anterior función. Resultados aceptables en cuanto a jugabilidad.
+        \item $fitness = (score / 10) * ((moveLeft / 1000) * (moveRight / 1000));$ // Intento de simplificar todo lo anterior. Sin éxito.
+        \item $fitness = (score / 10) * ((moveLeft / (int)((steps * 500.0) / 15000.0))$ $* (moveRight / (int)((steps * 500.0) / 15000.0)) * (shooting / (int)(($ $steps * 1000.0) / 15000.0)));$ // Intento de volver a la compleja función de antes pero esta vez recompensando el que bot disparara, sin importar si mataba. El bot aprendía a disparar y moverse todo el rato en el punto ciego del juego (lago izquierdo normalmente). Los movimiento que hacía eran izquierda - derecha constantemente, con lo que maximizaba todos los valores y de vez en cuando mataba a algún enemigo. Se terminaba el tiempo y obtenía un \textit{fitness} muy elevado y una puntuación muy baja. Además, intentamos que el \textit{fitness} obtenido fuera en función de lo que había tardado en jugar el bot.
+        \item $fitness = (score / 100)^{2} * ((moveLeft + moveRight) / 1000) * ($ $shooting / 2000) * (min(moveLeft, moveRight) / 100);$ // Intento de obtener un mínimo en los disparos y en el movimiento y a la vez simplificar la función. Malos resultados.
+        \item $fitness = (score / 10) * (shooting / 500) * (min(moveLeft, moveRight$ $) / 100);$ // Intento de mejorar la función anterior restándole importancia a la puntuación e intentnado obtener un valor mínimo en el movimiento y en los disparos. Resultados decentes: cerca de los 1000 puntos.
+        \item $fitness = (score / 10)^{2} * (min(moveLeft, moveRight) / 100);$ // Simplificación de la fórmula. Al elevar al cuadrado la puntuación, forzábamos a que el bot disparara sin tener que poner explícitamente los disparos en la función. Mejores resultados que la fórmula anterior.
+        \item Algoritmo \ref{alg:fitnessFunctionDemonAttackFollowingEnemy}. Con esta función de \textit{fitness} le pasamos un nuevo valor que calculamos gracias a las coordenadas X de los enemigos y hacemos que cuando siga al enemigo que se le indica, se le recompense. Muy buenos resultados: sigue al enemigo más cerca vivo en todo momento (si ya no aparece el más cercano, el siguiente objetivo será el de en medio, y luego el final. Cuando empieza la fase de las moscas, va buscando cual es la mosca más cercana viva, teniendo en cuenta la mosca que se acerca al jugador como si fuera una bala), intentando eliminar al enemigo más cercano, ya que es el más fácil de dispararle y acertar. El problema es que no aprende muy bien a evitar los disparos del enemigo más cercano.
+    \end{enumerate}
+    \item StarGunner:
+    \begin{enumerate}
+        \item $fitness = score;$ // No muy buenos resultados, ya que la puntuación al ser de 100 en 100 al eliminar un objetivo, cuando un individuo eliminaba a un objetivo más que otro, su probabilidad de ser seleccionado era muy elevada aunque el bot fuera mucho más malo.
+        \item $fitness = score / 100;$ // Intento de mejorar el problema anterior. El bot juega bastante bien: en algunas ocasiones se queda quieto pero en otras empieza a seguir a los objetivos, consiguiendo unas puntuaciones de 3000.
+    \end{enumerate}
+\end{enumerate}
+
+
+\begin{algorithm}
+    \eIf{$score < 0$}
+    {
+        $fitness = score * (1 - \newline(double)moveLeft / (double)steps) * (1 - (double)moveUp / (double)steps) * (1 - (double)moveRight / (double)steps) * (1 - (double)moveDown / (double)steps) + (double)scoreP1 * ((double)scoreP1 / (double)(scoreP2 + 1));$
+    }
+    {
+        $fitness = score * (\newline(double)moveLeft / (double)steps) * ((double)moveUp / (double)steps) * ((double)moveRight / (double)steps) * ((double)moveDown / (double)steps) + (double)scoreP1 * ((double)scoreP1 / (double)(scoreP2 + 1));$
+    }
+    \caption{Mejor función de \textit{fitness} para boxing encontrada}
+    \label{alg:bestFitnessFunctionBoxing}
+\end{algorithm}
+
+\begin{algorithm}
+    \eIf{$min(moveLeft, moveRight) != 0$}
+    {
+        $double$ $punch = (double)inRangeOfEnemy / (double)steps;$
+        
+        $double$ $dscore = (double)score;$
+        
+        $punch *= punch;$
+        
+        $dscore /= 10;$
+        
+        $fitness = dscore * punch;$
+    }
+    {
+        $fitness = 0.0;$
+    }
+    \caption{Función de \textit{fitness} del Demon Attack que sigue al enemigo}
+    \label{alg:fitnessFunctionDemonAttackFollowingEnemy}
+\end{algorithm}
+
+\newpage
+Una vez ya comentadas las funciones de \textit{fitness} que hemos probado nos falta comentar las otras técnicas que hemos implementado. Otras técnicas que hemos implementado en pro del GANN han sido las siguientes:
+
+\begin{itemize}
+    \item Elitismo. El elitismo es una técnica muy sencilla la cual nos permite no perder los mejores individuos de una determinada generación. Consiste en coger el mejor individuo de una generación y pasarlo directamente a la siguiente generación N veces. Un elitismo de 0 significa que no hay elitismo.
+    \item Inicialización de Elitismo. El elitismo se aplica a partir de la segunda generación, pero no en la primera. Un intento de una rápida convergencia, cosa que casi nunca es buena en los genéticos, ha sido nuestra implementación de utilizar elitismo en la creación de la población. Por sí solo no funciona muy bien, ya que para funcionar bien debería de generarse individuos con los que pudiera hacer un emparejamiento lo suficientemente bueno y para ello normalmente los individuos deben parecerse. Ahora bien, cuando se utiliza junto con una distribución de probabilidad obtiene buenos resultados, pero solo debería de aplicarse a problemas sencillos, ya que los complejos necesitan de una convergencia más lenta, donde haya más diversidad.
+    \item Técnicas de nicho. Estas técnicas intentan que la diversidad de la población aumente y lo hace castigando a aquellos individuos que se parezcan mucho y premiando a aquellos individuos que aporten novedad a la población. La fórmula que utiliza para ello es la siguiente:
+        \[fitness_{i}=\dfrac{fitness_{i}}{\sum_{j=1}^{N}{individual_{i} \simeq  individual_{j} ? 1 : 0}}\]
+    \item Creación de población por rango de valores (distribución de probabilidad). Inicialmente se generan pesos y \textit{biases} aleatorios entre un rango, pero si supiéramos la distribución de probabilidad que sigue cierto problema, una buena inicialización podría hacer que obtuviéramos mejores resultados antes. El problema es que hay que ir obteniendo buenos resultados poco a poco y, entonces, ir utilizando esa distribución para obtener buenos resultados. En los experimentos vemos un ejemplo de esto.
+\end{itemize}
+
+\newpage
+
+Tanto el elitismo, la inicialización con elitismo y la inicialización con rangos son sencillos de entender, por lo que no vamos a mostrar la implementación aquí en la documentación. En cambio, vamos a explicar qué criterio hemos utilizado para decir que dos individuos son similares. El criterio que hemos utilizado ha sido el de asignar a cada individuo un id de nicho, que es lo que se suele hacer con estas técnicas. El id del nicho que se asigna a cada individuo depende de la puntuación y de los pasos realizados al jugar alguno de los videojuegos. Dependiendo de esos dos valores, y del valor máximo de puntuación de toda la población de una generación concreta y el valor máximo de pasos de toda la población de la misma generación y ponemos los puntos obtenidos en el plano. Entonces dividimos el eje X en 10 regiones, y hacemos los hacemos lo mismo con el eje Y. Cada región de las 100 obtenidas es un id de nicho diferente. En la figura \ref{fig:brekaoutNichingID} se muestra lo que estamos explicando poniendo como ejemplo el videojuego Breakout (suponiendo que los pasos son 7500 y están en el eje Y y la puntuación máxima obtenida por algún individuo ha sido la máxima, la cual es 864).
+
+\begin{figure}
+    \centering
+    
+    \begin{tikzpicture}
+    
+    \draw[step=1.0,black,thin,xshift=0cm,yshift=0cm,x=.67cm,y=.555cm] (0,0) grid (10,10);
+    
+    \node at (.35,.30) {1};
+    \node at (1.01,.30) {2};
+    \node at (1.67,.30) {3};
+    \node at (2.33,.30) {4};
+    \node at (3.01,.30) {5};
+    \node at (3.67,.30) {6};
+    \node at (4.34,.30) {7};
+    \node at (5.01,.30) {8};
+    \node at (5.69,.30) {9};
+    \node at (6.36,.30) {10};
+    
+    \node at (.35,.85) {11};
+    \node at (1.01,.85) {12};
+    \node at (1.67,.85) {13};
+    \node at (2.33,.85) {14};
+    \node at (3.01,.85) {15};
+    \node at (3.67,.85) {16};
+    \node at (4.34,.85) {17};
+    \node at (5.01,.85) {18};
+    \node at (5.69,.85) {19};
+    \node at (6.36,.85) {20};
+    
+    \node at (.35,1.4) {21};
+    \node at (1.01,1.4) {22};
+    \node at (1.67,1.4) {23};
+    \node at (2.33,1.4) {24};
+    \node at (3.01,1.4) {25};
+    \node at (3.67,1.4) {26};
+    \node at (4.34,1.4) {27};
+    \node at (5.01,1.4) {28};
+    \node at (5.69,1.4) {29};
+    \node at (6.36,1.4) {30};
+    
+    \node at (.35,1.95) {31};
+    \node at (1.01,1.95) {32};
+    \node at (1.67,1.95) {33};
+    \node at (2.33,1.95) {34};
+    \node at (3.01,1.95) {35};
+    \node at (3.67,1.95) {36};
+    \node at (4.34,1.95) {37};
+    \node at (5.01,1.95) {38};
+    \node at (5.69,1.95) {39};
+    \node at (6.36,1.95) {40};
+    
+    \node at (.35,2.5) {41};
+    \node at (1.01,2.5) {42};
+    \node at (1.67,2.5) {43};
+    \node at (2.33,2.5) {44};
+    \node at (3.01,2.5) {45};
+    \node at (3.67,2.5) {46};
+    \node at (4.34,2.5) {47};
+    \node at (5.01,2.5) {48};
+    \node at (5.69,2.5) {49};
+    \node at (6.36,2.5) {50};
+    
+    \node at (.35,3.05) {51};
+    \node at (1.01,3.05) {52};
+    \node at (1.67,3.05) {53};
+    \node at (2.33,3.05) {54};
+    \node at (3.01,3.05) {55};
+    \node at (3.67,3.05) {56};
+    \node at (4.34,3.05) {57};
+    \node at (5.01,3.05) {58};
+    \node at (5.69,3.05) {59};
+    \node at (6.36,3.05) {60};
+    
+    \node at (.35,3.6) {61};
+    \node at (1.01,3.6) {62};
+    \node at (1.67,3.6) {63};
+    \node at (2.33,3.6) {64};
+    \node at (3.01,3.6) {65};
+    \node at (3.67,3.6) {66};
+    \node at (4.34,3.6) {67};
+    \node at (5.01,3.6) {68};
+    \node at (5.69,3.6) {69};
+    \node at (6.36,3.6) {70};
+    
+    \node at (.35,4.15) {71};
+    \node at (1.01,4.15) {72};
+    \node at (1.67,4.15) {73};
+    \node at (2.33,4.15) {74};
+    \node at (3.01,4.15) {75};
+    \node at (3.67,4.15) {76};
+    \node at (4.34,4.15) {77};
+    \node at (5.01,4.15) {78};
+    \node at (5.69,4.15) {79};
+    \node at (6.36,4.15) {80};
+    
+    \node at (.35,4.7) {81};
+    \node at (1.01,4.7) {82};
+    \node at (1.67,4.7) {83};
+    \node at (2.33,4.7) {84};
+    \node at (3.01,4.7) {85};
+    \node at (3.67,4.7) {86};
+    \node at (4.34,4.7) {87};
+    \node at (5.01,4.7) {88};
+    \node at (5.69,4.7) {89};
+    \node at (6.36,4.7) {90};
+    
+    \node at (.35,5.25) {91};
+    \node at (1.01,5.25) {92};
+    \node at (1.67,5.25) {93};
+    \node at (2.33,5.25) {94};
+    \node at (3.01,5.25) {95};
+    \node at (3.67,5.25) {96};
+    \node at (4.34,5.25) {97};
+    \node at (5.01,5.25) {98};
+    \node at (5.69,5.25) {99};
+    \node at (6.36,5.25) {100};
+    
+    
+    \begin{axis}[
+        xmin=0,xmax=768,
+        ymin=0,ymax=7500,
+        axis lines=middle,
+        enlargelimits={abs=0.5},
+        axis line style={latex-latex},
+        ticklabel style={font=\tiny,fill=white},
+        x label style={at={(axis description cs:0.5,-0.1)},anchor=north},
+        y label style={at={(axis description cs:-0.1,.5)},rotate=90,anchor=south},
+        xlabel={Breakout score},
+        ylabel={Breakout steps}
+    ]
+    
+    \coordinate (O) at (0,0);
+    
+    \end{axis}
+    \end{tikzpicture}
+    
+    \caption{ID de nicho en Breakout}
+    \label{fig:brekaoutNichingID}
+\end{figure}
 
 \newpage
