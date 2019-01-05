@@ -64,7 +64,7 @@ void ANDFunction(bool showResults)
     expectedOutputs.push_back(expectedOutputs2);
     expectedOutputs.push_back(expectedOutputs2);
 
-    nn.train(inputs, expectedOutputs, 10000);
+    nn.train(inputs, expectedOutputs, 100000);
 
     Mat res1 = nn.forwardPropagation(inputs1);
     Mat res2 = nn.forwardPropagation(inputs2);
@@ -102,7 +102,7 @@ void XORFunction(bool showResults)
     vector<double> dropout = {0.0, 0.2, 0.0};
 
     NeuralNetwork nn(nodes, dropout);
-    nn.setLearningRate(0.1);
+    nn.setLearningRate(0.4);
 
     Mat inputs1(1, 2);
     Mat inputs2(1, 2);
@@ -200,11 +200,7 @@ std::vector<std::string> getNextLineAndSplitIntoTokens(std::istream& str)
     return result;
 }
 
-int main(int argc, char **argv)
-{
-    ANDFunction(true);
-    XORFunction(true);
-
+void breakoutTest() {
     ifstream file;
 
     file.open("../breakout/breakout.csv");
@@ -218,7 +214,7 @@ int main(int argc, char **argv)
 
     cout << endl;
 
-    vector<int> nodes = {2, 10, 1};
+    vector<int> nodes = {4, 10, 1};
     vector<double> dropout = {0.0, 0.2, 0.0};
 
     NeuralNetwork nn(nodes, dropout);
@@ -245,9 +241,16 @@ int main(int argc, char **argv)
         expectedOutputs.push_back(expectedOutputs1);
     }
 
-    nn.train(inputs, expectedOutputs, 100000);
+    nn.train(inputs, expectedOutputs, 1000);
 
     file.close();
+}
+
+int main(int argc, char **argv)
+{
+    //ANDFunction(true);
+    XORFunction(true);
+    //breakoutTest();
 
     return 0;
 }

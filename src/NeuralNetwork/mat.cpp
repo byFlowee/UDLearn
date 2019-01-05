@@ -124,7 +124,12 @@ Mat Mat::mult(const Mat &b) const
 		}
 	}
 	else
-	{
+	{	
+		this->print();
+		cerr << endl;
+		b.print();
+		cerr << endl;
+		cerr << this->cols() << " cols != " << b.rows() << " rows" << endl;
 		cerr << "ERROR: cannot multiply that matrices. Returning default matrix." << endl;
 	}
 	
@@ -147,6 +152,10 @@ Mat Mat::directMult(const Mat &b) const
 	}
 	else
 	{
+		this->print();
+		cerr << endl;
+		b.print();
+		cerr << endl;
 		cerr << "ERROR: cannot calculate direct multiplication of that matrices. Returning default matrix." << endl;
 	}
 	
