@@ -50,32 +50,32 @@ Algo interesante que podemos observar con este experimento es que el porcentaje 
 
 \begin{figure}[!h]
 \centering
-\begin{tikzpicture}
-\begin{axis}[ xlabel=Iteración PLA / Épocas, ylabel=\% Acierto, legend style={at={(0.47,0.95)}}]     \addplot[color=red,mark=*] coordinates
-    {
-    (1,25)
-    (2,75)
-    (3,75)
-    (4,50)
-    (5,75)
-    (6,50)
-    (7,100)
-    };
-    \addlegendentry{Sin \textit{Pocket}}
-    
-    \addplot[color=blue,mark=square*] coordinates
-    {
-    (1,25)
-    (2,75)
-    (3,75)
-    (4,75)
-    (5,75)
-    (6,75)
-    (7,100)
-    };
-    \addlegendentry{Con \textit{Pocket}}
-\end{axis}
-\end{tikzpicture}
+    \begin{tikzpicture}
+    \begin{axis}[ xlabel=Iteración PLA / Épocas, ylabel=\% Acierto, legend style={at={(0.47,0.95)}}]     \addplot[color=red,mark=*] coordinates
+        {
+        (1,25)
+        (2,75)
+        (3,75)
+        (4,50)
+        (5,75)
+        (6,50)
+        (7,100)
+        };
+        \addlegendentry{Sin \textit{Pocket}}
+        
+        \addplot[color=blue,mark=square*] coordinates
+        {
+        (1,25)
+        (2,75)
+        (3,75)
+        (4,75)
+        (5,75)
+        (6,75)
+        (7,100)
+        };
+        \addlegendentry{Con \textit{Pocket}}
+    \end{axis}
+    \end{tikzpicture}
 \caption{Resultados del PLA con y sin \textit{Pocket}}
 \label{plot:perceptronResultsWithAndWithoutPocket}
 \end{figure}
@@ -83,11 +83,154 @@ Algo interesante que podemos observar con este experimento es que el porcentaje 
 Como ya hemos comentado, el algoritmo del \textit{Pocket} también podemos verle la utilidad en este sencillo experimento. En la figura \ref{plot:perceptronResultsWithAndWithoutPocket} se ve como a cada iteración que se ejecuta del PLA (también se puede ver como una época) dependiendo de si tenemos el algoritmo del \textit{Pocket} o no, al final obtendremos un resultado u otro. Esto es esencial cuando nos enfrentamos a un problema que no es linealmente separable y la mayoría de los problemas a los que se les puede aplicar el perceptrón y obtener unos resultados aceptables no serán linealmente separables.
 
 \newpage
-\subsection{Descripción de las tareas y trabajos desarrollados}
-
+\subsection{Experimentos con la Red Neuronal}
+\label{subsec:nnexperiments}
 
 \newpage
-\subsection{Descripción de los conocimientos y competencias adquiridos}
+\subsection{Experimentos con la Red Neuronal: \textit{Dropout}}
+\label{subsubsec:nnexperiments:Dropout}
+
+\newpage
+\subsection{Experimentos con la Red Neuronal: \textit{Cross Validation} 10}
+\label{subsubsec:nnexperiments:CV10}
+
+\newpage
+\subsection{Experimentos con la Red Neuronal y Genético: \textit{GANN}}
+\label{subsubsec:nnexperiments:GANN}
+
+Los experimentos realizados con el GANN han consistido en la variación de diferentes parámetros como pueden ser la activación del elitismo, cambiar la probabilidad de mutación, etc. y ver como se convergía antes, o como se alcanzaban mejores puntuaciones, etc.
+
+El primer experimento vamos a ver los mejores resultados obtenidos en el videojuego Breakout cuando tenemos elitismo y cuando no lo tenemos. Como podemos observar en la figura \ref{fig:breakoutWithAndWithoutElitism}, el elitismo hace que no perdamos el mejor individuo de una generación, como sí que sucede cuando no lo utilizamos. El elitismo es parecido al algoritmo del \textit{Pocket} que vimos en la sección \ref{subsec:perceptron} con la teoría y en la sección \ref{subsec:perceptronexperiment} con los experimentos.
+
+\begin{figure}[!h]
+    \centering
+    
+    \begin{tikzpicture}
+    \begin{axis}[width=12cm,xlabel=Generaciones, ylabel=Puntuación, legend style={at={(0.95,0.18)}}]
+    
+        \addplot table [x=Generation, y=ScoreElitism0, col sep=comma] {CSVFiles/experiment1breakout100generations500population1factorWeights.csv};
+        \addlegendentry{Elitismo = 0}
+        
+        \addplot table [x=Generation, y=ScoreElitism5, col sep=comma] {CSVFiles/experiment1breakout100generations500population1factorWeights.csv};
+        \addlegendentry{Elitismo = 5}
+    
+    \end{axis}
+    \end{tikzpicture}
+    
+    \caption{Breakout con y sin Elitismo}
+    \label{fig:breakoutWithAndWithoutElitism}
+\end{figure}
+
+Otro de los experimentos que realizamos fue inicializar los pesos en el rango [-2.0, 2.0] en vez de [-1.0, 1.0]. Este cambio depende mucho del problema, ya que al aumentar el rango al doble de posibles valores debería de ser más dificil de obtener una mejor inicialización, pero eventualmente, como ahora tenemos pesos que no están solo limitados al rango [-1.0, 1.0] sino que ahora pueden tener un rango mayor de valores, puede que ahora tengan la posibilidad de obtener mejores resultados que antes. Esto es justo lo que sucede en la figura \ref{fig:breakoutWeightsFactor2}. Hay que destacar que en ambos hay un elitismo de 5 y el resto de parámetros son iguales para poder comparar los resultados. Lo único que cambia es el factor por el que se multiplica el rango de los números reales. El resultado al final es que converge a una puntuación mayor a pesar de tener que buscar unos pesos y \textit{biases} en un rango de valores más amplios, por lo que quizá en tener ese rango de valores le ha permitido aprender mejor a como jugar.
+
+\begin{figure}[!h]
+    \centering
+    
+    \begin{tikzpicture}
+    \begin{axis}[width=12cm,xlabel=Generaciones, ylabel=Puntuación, legend style={at={(0.95,0.18)}}]
+    
+        \addplot table [x=Generation, y=WeightsFactor1, col sep=comma] {CSVFiles/experiment2breakout100generations500population5elitism.csv};
+        \addlegendentry{Rango = [-1.0, 1.0]}
+        
+        \addplot table [x=Generation, y=WeightsFactor2, col sep=comma] {CSVFiles/experiment2breakout100generations500population5elitism.csv};
+        \addlegendentry{Rango = [-2.0, 2.0]}
+    
+    \end{axis}
+    \end{tikzpicture}
+    
+    \caption{Breakout con diferente rango de valores reales}
+    \label{fig:breakoutWeightsFactor2}
+\end{figure}
+
+Una vez tenemos muchos individuos que han jugado bien al videojuego podemos plantearnos lo que ya se comentó en la sección \ref{subsubsec:nn:gann}, en la que se habló de la inicialización con una distribución de probabilidad. El modo en el que nosotros hemos realizado este experimento es cogiendo los 10 pesos de los 7 mejores individuos que hemos encontrado, y hemos unido los puntos para comprobar si se seguía un patrón en los pesos, algo que pudiéramos utilizar como distribución de probabilidad. En la figura \ref{fig:breakoutProbabilityDistribution} podemos ver que los 10 pesos de los mejores individuos claramente siguen un patrón: la mayoría están próximos y en casi todos los casos se cumple que yendo de un punto a otro, o todos tienen pendiente ascendente o todos tienen pendiente descendente.
+
+\begin{figure}[!h]
+    \centering
+    
+    \begin{tikzpicture}
+    \begin{axis}[width=11cm,xlabel=Índice del peso, ylabel=Valor del peso, legend style={at={(1.1,1.1)}}]
+    
+        \addplot table [x=Weight, y=b822, col sep=comma] {CSVFiles/breakoutProbabilityDistribution.csv};
+        \addlegendentry{Puntuación = 822}
+        
+        \addplot table [x=Weight, y=b833, col sep=comma] {CSVFiles/breakoutProbabilityDistribution.csv};
+        \addlegendentry{Puntuación = 833}
+        
+        \addplot table [x=Weight, y=b847, col sep=comma] {CSVFiles/breakoutProbabilityDistribution.csv};
+        \addlegendentry{Puntuación = 847}
+        
+        \addplot table [x=Weight, y=b860a1, col sep=comma] {CSVFiles/breakoutProbabilityDistribution.csv};
+        \addlegendentry{Puntuación = 860}
+        
+        \addplot table [x=Weight, y=b860a2, col sep=comma] {CSVFiles/breakoutProbabilityDistribution.csv};
+        \addlegendentry{Puntuación = 860}
+    
+    \end{axis}
+    \end{tikzpicture}
+    
+    \caption{Distribución de probabilidad del Breakout}
+    \label{fig:breakoutProbabilityDistribution}
+\end{figure}
+
+\begin{figure}
+    \centering
+    
+    \includegraphics[width=1\textwidth,height=18cm]{Figures/breakoutProbabilityDistributionInterpolated}
+    
+    \caption{Distribución de probabilidad del Breakout interpolada}
+    \label{fig:breakoutProbabilityDistributionInterpolated}
+\end{figure}
+
+Si nos fijamos en la figura \ref{fig:breakoutProbabilityDistributionInterpolated} todavía es más claro el patrón, ya que al interpolar los puntos, queda más claro.
+
+\newpage
+Finalmente, para obtener la distribución de probabilidad que vamos a emplear cogemos los valores máximos y mínimos de cada uno de los pesos y ya tenemos los valores que podemos darle al GANN para utilizar con la población inicial. En la figura \ref{fig:breakoutProbabilityDistributionRes} observamos el resultado.
+
+\begin{figure}[!h]
+    \centering
+    
+    \begin{tikzpicture}
+    \begin{axis}[width=12cm,xlabel=Índice del peso, ylabel=Valor del peso, legend style={at={(0.95,0.95)}}]
+    
+        \addplot[name path=A,color=red,mark=*] table [x=Weight, y=max, col sep=comma] {CSVFiles/breakoutProbabilityDistribution.csv};
+        \addlegendentry{Valores máximos}
+    
+        \addplot[name path=B,color=red,mark=square*] table [x=Weight, y=min, col sep=comma] {CSVFiles/breakoutProbabilityDistribution.csv};
+        \addlegendentry{Valores mínimos}
+        
+        \addplot[pattern=north west lines, pattern color=red!90]fill between[of=A and B, soft clip={domain=1:10}];
+    
+    \end{axis}
+    
+    \end{tikzpicture}
+    
+    \caption{Distribución de probabilidad del Breakout (final)}
+    \label{fig:breakoutProbabilityDistributionRes}
+\end{figure}
+
+Una vez ya tenemos estos valores, podemos aplicar la distribución de probabilidad que se observa en la figura \ref{fig:breakoutProbabilityDistributionRes} y así poder valorar si se obtienen mejores resultados o no. Como se puede apreciar en la figura \ref{fig:breakoutProbabilityDistributionExperiment} sí que se obtienen buenos resultados, por lo que obtendremos una convergencía más rápida, lo cual no siempre es bueno, pero para problemas sencillos como el Breakout ahorra mucho tiempo.
+
+\begin{figure}
+    \centering
+    
+    \begin{tikzpicture}
+    \begin{axis}[width=12cm,xlabel=Individuos independientes, ylabel=Puntuación, legend style={at={(0.86,0.95)}}]
+    
+        \addplot[name path=A,color=red,mark=*] table [x=Individual, y=ScoreWeightsNoInitialization, col sep=comma] {CSVFiles/breakoutProbabilityDistributionResults.csv};
+        \addlegendentry{Sin distribución de probabilidad}
+    
+        \addplot[name path=B,color=blue,mark=square] table [x=Individual, y=ScoreWeightsInitialization, col sep=comma] {CSVFiles/breakoutProbabilityDistributionResults.csv};
+        \addlegendentry{Con distribución de probabilidad}
+    
+    \end{axis}
+    
+    \end{tikzpicture}
+    
+    \caption{Experimento: Distribución de probabilidad del Breakout}
+    \label{fig:breakoutProbabilityDistributionExperiment}
+\end{figure}
+
+
 
 
 \newpage

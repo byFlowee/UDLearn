@@ -52,7 +52,7 @@ A la hora de intentar poner esta idea en práctica lo primero que intentamos es 
 	\label{fig:methodGetRAM}
 \end{figure}
 
-Como observamos, el método \textit{getRAM()} nos devuelve una referencia de un objeto de tipo \textbf{ALERAM}, por lo que vamos a ver que método nos pueden servir para modificar la RAM. Cuando investigamos el archivo \textit{src/environment/ale\_ram.hpp} encontramos la definición del objeto ALERAM y la implementación de sus métodos. Contiene 2 métodos que pueden servirnos para nuestro propósito (modificar la RAM), los cuales se muestran en la figura \ref{fig:ALEMethodsToGetReferencesToRAM}.
+Como observamos, el método \textit{getRAM()} nos devuelve una referencia de un objeto de tipo \textbf{ALERAM}, por lo que vamos a ver que método nos pueden servir para modificar la RAM. Cuando investigamos el archivo \textit{src/environ-ment/ale\_ram.hpp} encontramos la definición del objeto ALERAM y la implementación de sus métodos. Contiene 2 métodos que pueden servirnos para nuestro propósito (modificar la RAM), los cuales se muestran en la figura \ref{fig:ALEMethodsToGetReferencesToRAM}.
 
 \begin{figure}[h]
 	\centering
@@ -294,7 +294,7 @@ La parte de detección funciona recogiendo la pantalla entera en grayscale, esto
 	\label{fig:demonAttackStaticOne}
 \end{figure}
 
-En la figura \ref{fig:demonAttackStaticOne} podemos observar diversas constantes, entre ellas el color de las balas del jugador 1, \textbf{P1\_BULLETS\_COLOR}, el color de la nave del jugador 1, \textbf{P1\_SHIP\_COLOR} y el color de las balas enemigas, \textbf{EN\_BULLETS\_COLOR}. Gracias a estar en grayscale, con tener un solo valor es suficiente. Además podemos observar otras constantes como \textbf{LINE\_WIDTH}, que representa el ancho en píxeles de la resolución de la Atari, \textbf{SHIP\_WIDTH}, el ancho en píxeles de la nave y \textbf{LEFT / RIGHT\_THRESOLD}, que es la coordenada "X" mínima y máxima en la que se puede mover la nave aliada.
+En la figura \ref{fig:demonAttackStaticOne} podemos observar diversas constantes, entre ellas el color de las balas del jugador 1, \textbf{P1\_BULLETS\_COLOR}, el color de la nave del jugador 1, \textbf{P1\_SHIP\_COLOR} y el color de las balas enemigas, \textbf{EN\_BULLETS\_COLOR}. Gracias a estar en grayscale, con tener un solo valor es suficiente. Además podemos observar otras constantes como \textbf{LINE\_WIDTH}, que representa el ancho en píxeles de la resolución de la Atari, \textbf{SHIP\_WIDTH}, el ancho en píxeles de la nave y \textbf{LEFT / RIGHT\_-THRESOLD}, que es la coordenada "X" mínima y máxima en la que se puede mover la nave aliada.
 
 \newpage
 Además de estas constantes, Demon Attack cuenta con cuatro constantes adicionales que nos permiten parametrizar algunas características de nuestro algoritmo, como se puede ver en la figura \ref{fig:demonAttackChangableOne} .
@@ -424,10 +424,36 @@ El perceptrón es una de las técnicas de \textit{Machine Learning} más sencill
 El perceptrón es una técnica de aprendizaje supervisado en la que le damos datos etiquetados y, a partir del error obtenido al intentar etiquetar los datos, se hacen ajustes en la configuración para acercarnos más a los resultados correctos. Esta técnica puede utilizarse para clasificación o para regresión. El resultado que al final obtendremos será, dependiendo del número de entradas que tengamos, una línea, un plano o un hiperplano. Los elementos del perceptrón son las entradas, los pesos y la salida.
 
 \begin{figure}[h]
-	\centering
-	\includegraphics[width=0.79\textwidth]{Figures/perceptron}
-	\caption{Estructura del perceptrón}
-	\label{fig:perceptron}
+    \centering
+    
+    \tikzset{basic/.style={draw,fill=blue!20,text width=1em,text badly centered}}
+    \tikzset{input/.style={basic,circle}}
+    \tikzset{weights/.style={basic,rectangle}}
+    \tikzset{functions/.style={basic,circle,fill=blue!10}}
+    
+    \begin{tikzpicture}
+        \node[functions,left=3em of center] (left) {$\sum$};
+            \path[draw,->] (left) -- (center);
+        \node[weights,left=3em of left] (2) {$w_3$} -- (2) node[input,left of=2] (l2) {$x_3$};
+            \path[draw,->] (l2) -- (2);
+            \path[draw,->] (2) -- (left);
+        \node[below of=2] (dots) {$\vdots$} -- (dots) node[left of=dots] (ldots) {$\vdots$};
+        \node[weights,below of=dots] (n) {$w_n$} -- (n) node[input,left of=n] (ln) {$x_n$};
+            \path[draw,->] (ln) -- (n);
+            \path[draw,->] (n) -- (left);
+        \node[weights,above of=2] (1) {$w_2$} -- (1) node[input,left of=1] (l1) {$x_2$};
+            \path[draw,->] (l1) -- (1);
+            \path[draw,->] (1) -- (left);
+        \node[weights,above of=1] (0) {$w_1$} -- (0) node[input,left of=0] (l0) {$x_1$};
+            \path[draw,->] (l0) -- (0);
+            \path[draw,->] (0) -- (left);
+        \node[below of=ln,font=\scriptsize] {inputs};
+        \node[below of=n,font=\scriptsize] {weights};
+        \node[right of=center,font=\scriptsize] {output};
+    \end{tikzpicture}
+    
+    \caption{Estructura básica del perceptrón}
+    \label{fig:perceptron}
 \end{figure}
 
 La salida que tiene el perceptrón, en el caso del clasificador, es siempre de +1 o -1. Para obtener esta salida, la fórmula que se aplica es la siguiente cuando tenemos N entradas:
@@ -439,7 +465,42 @@ Ahora bien, como hemos dicho, lo que el perceptron hace es separar datos, es dec
 \[x_0=1\]
 \[y=signo(\sum_{i=0}^{N}x_{i}*w_{i})\]
 
-En nuestro trabajo hemos implementado el algoritmo de aprendizaje del perceptrón (PLA), el cual nos permite ir ajustando la configuración del perceptrón, lo que quiere decir que vamos ajustando los pesos con el fin de que obtengamos el resultado que buscamos para las entradas. El algoritmo de aprendizaje del perceptrón es el siguiente:
+Finalmente, la figura \ref{fig:completeperceptron} muestra la estructura final del perceptrón.
+
+\begin{figure}[h]
+    \centering
+    
+    \tikzset{basic/.style={draw,fill=blue!20,text width=1em,text badly centered}}
+    \tikzset{input/.style={basic,circle}}
+    \tikzset{weights/.style={basic,rectangle}}
+    \tikzset{functions/.style={basic,circle,fill=blue!10}}
+    
+    \begin{tikzpicture}
+        \node[functions,left=3em of center] (left) {$\sum$};
+            \path[draw,->] (left) -- (center);
+        \node[weights,left=3em of left] (2) {$w_2$} -- (2) node[input,left of=2] (l2) {$x_2$};
+            \path[draw,->] (l2) -- (2);
+            \path[draw,->] (2) -- (left);
+        \node[below of=2] (dots) {$\vdots$} -- (dots) node[left of=dots] (ldots) {$\vdots$};
+        \node[weights,below of=dots] (n) {$w_n$} -- (n) node[input,left of=n] (ln) {$x_n$};
+            \path[draw,->] (ln) -- (n);
+            \path[draw,->] (n) -- (left);
+        \node[weights,above of=2] (1) {$w_1$} -- (1) node[input,left of=1] (l1) {$x_1$};
+            \path[draw,->] (l1) -- (1);
+            \path[draw,->] (1) -- (left);
+        \node[weights,above of=1] (0) {$w_0$} -- (0) node[input,left of=0] (l0) {$1$};
+            \path[draw,->] (l0) -- (0);
+            \path[draw,->] (0) -- (left);
+        \node[below of=ln,font=\scriptsize] {inputs};
+        \node[below of=n,font=\scriptsize] {weights};
+        \node[right of=center,font=\scriptsize] {output};
+    \end{tikzpicture}
+    
+    \caption{Estructura del perceptrón}
+    \label{fig:completeperceptron}
+\end{figure}
+
+En nuestro trabajo hemos implementado el algoritmo de aprendizaje del perceptrón (PLA), el cual nos permite ir ajustando la configuración del perceptrón, lo que quiere decir que vamos ajustando los pesos con el fin de que obtengamos el resultado que buscamos para las entradas. El algoritmo de aprendizaje del perceptrón se muestra en el algoritmo \ref{alg:pla}.
 
 \vspace{2mm}
 \begin{algorithm}[H]
@@ -464,8 +525,7 @@ En nuestro trabajo hemos implementado el algoritmo de aprendizaje del perceptró
 
 El código del PLA debería ejecutarse tantas veces como fuera necesario, y eventualmente llegaría a una solución, siempre que los datos fueran linealmente separables. Ya que no siempre van a ser linealmente separables, podemos poner un bucle y hacer tantas iteraciones como fuera necesario (a cada iteración de este bucle se le conoce con el concepto de \textbf{época}).
 
-
-\newpage
+\vspace{2mm}
 \begin{algorithm}[H]
     \For{$epoch \gets 1$ to $epochs$}
     {
@@ -874,7 +934,7 @@ Una vez ya comentadas las funciones de \textit{fitness} que hemos probado nos fa
 
 Tanto el elitismo, la inicialización con elitismo y la inicialización con rangos son sencillos de entender, por lo que no vamos a mostrar la implementación aquí en la documentación. En cambio, vamos a explicar qué criterio hemos utilizado para decir que dos individuos son similares. El criterio que hemos utilizado ha sido el de asignar a cada individuo un id de nicho, que es lo que se suele hacer con estas técnicas. El id del nicho que se asigna a cada individuo depende de la puntuación y de los pasos realizados al jugar alguno de los videojuegos. Dependiendo de esos dos valores, y del valor máximo de puntuación de toda la población de una generación concreta y el valor máximo de pasos de toda la población de la misma generación y ponemos los puntos obtenidos en el plano. Entonces dividimos el eje X en 10 regiones, y hacemos los hacemos lo mismo con el eje Y. Cada región de las 100 obtenidas es un id de nicho diferente. En la figura \ref{fig:brekaoutNichingID} se muestra lo que estamos explicando poniendo como ejemplo el videojuego Breakout (suponiendo que los pasos son 7500 y están en el eje Y y la puntuación máxima obtenida por algún individuo ha sido la máxima, la cual es 864).
 
-\begin{figure}
+\begin{figure}[!h]
     \centering
     
     \begin{tikzpicture}
