@@ -7,12 +7,14 @@
 NeuralNetwork::NeuralNetwork(const vector<int> &size) :
     size(size),
     dropout(size.size(), 0.0),
-    learningRate(0.1)
+    learningRate(0.1),
+    error(1, size[size.size() - 1])
 {
     this->initialize();
 }
 
-NeuralNetwork::NeuralNetwork(const vector<int> &size, const vector<double> &dropout)
+NeuralNetwork::NeuralNetwork(const vector<int> &size, const vector<double> &dropout) :
+    error(1, size[size.size() - 1])
 {
     //last dropout value corresponding to output layer wont have any effect
     if (dropout.size() == size.size()) {
@@ -147,6 +149,8 @@ void NeuralNetwork::backPropagation(const Mat &inputs, const Mat &expectedOutput
     error.scalar(0.5);
     derror.scalar(-1.0);
 
+    this->error = error;
+
     //ArrayList<Mat> delta = new ArrayList<>();
     vector<Mat> delta;
 
@@ -230,6 +234,9 @@ void NeuralNetwork::train(const vector<Mat> &inputs, const vector<Mat> &expected
         for (size_t j = 0; j < inputs.size(); j++)
         {
             this->backPropagation(inputs[j], expectedOutputs[j]);
+
+
+            // this->error contains the error: (1/2) * error * error
         }
     }
 }

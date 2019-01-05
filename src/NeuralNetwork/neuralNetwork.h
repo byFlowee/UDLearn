@@ -21,6 +21,7 @@ class NeuralNetwork
         vector<Mat> da;
         vector<Mat> dropoutMats;
         double learningRate;
+        Mat error;
 
         double sigmoid(double d) const;
         double sigmoidPrime(double d) const;
