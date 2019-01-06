@@ -9,7 +9,7 @@ using namespace std;
 
 void ANDFunction()
 {
-    string filename = "ANDFunction";
+    string filename = "records/ANDFunction";
     Perceptron p(2);
 
     int epochs = 20;
@@ -57,6 +57,8 @@ void ANDFunction()
                 weigthsOutputs << ",";
             }
         }
+
+        weigthsOutputs.close();
     }
 }
 
@@ -72,19 +74,25 @@ void functions(int function, int points, int epochs, bool verbose = false)
     cout << "Verbose: " << (verbose ? "yes" : "no") << endl;
     cout << endl;
 
-    string filename = "function" + to_string(function) + ".csv";
+    string filenameN1 = "records/function" + to_string(function) + "_-1.csv";
+    string filenameP1 = "records/function" + to_string(function) + "_+1.csv";
+    string filename = "records/function" + to_string(function) + ".csv";
     Perceptron p(2);
     vector<vector<double>> inputs;
     vector<double> targets;
     ofstream file(filename.c_str());
+    ofstream fileN1(filenameN1.c_str());
+    ofstream fileP1(filenameP1.c_str());
 
-    if (!file.is_open())
+    if (!file.is_open() || !fileN1.is_open() || !fileP1.is_open())
     {
-        cerr << "ERROR: could't open the file \"" << filename << "\"." << endl;
+        cerr << "ERROR: could't open the file \"" << filename << "\" or \"" << filenameN1 << "\" or \"" << filenameP1 << "\"." << endl;
     }
     else
     {
         file << "x,y,target" << endl;
+        fileN1 << "x,y" << endl;
+        fileP1 << "x,y" << endl;
     }
 
     for (int i = 0; i < points; i++)
@@ -119,11 +127,29 @@ void functions(int function, int points, int epochs, bool verbose = false)
                     target = -1.0;
                 }
                 break;
+            case 5:
+                if (y < 1 / (10 * x))
+                {
+                    change = false;
+                    target = -1.0;
+                }
+                break;
+            default:
+                cerr << "ERROR: Unknown function." << endl;
         }
 
         if (change)
         {
             target = 1.0;
+        }
+
+        if (target < 0.0)
+        {
+            fileN1 << x << "," << y << endl;
+        }
+        else
+        {
+            fileP1 << x << "," << y << endl;
         }
 
         if (file.is_open())
@@ -159,6 +185,21 @@ void functions(int function, int points, int epochs, bool verbose = false)
                 weigthsOutputs << ",";
             }
         }
+
+        weigthsOutputs.close();
+    }
+
+    if (file.is_open())
+    {
+        file.close();
+    }
+    if (fileN1.is_open())
+    {
+        fileN1.close();
+    }
+    if (fileP1.is_open())
+    {
+        fileP1.close();
     }
 }
 
@@ -167,7 +208,7 @@ int main(int argc, char **argv)
     if (argc != 2 && argc != 5)
     {
         cerr << "ERROR:" << endl;
-        cerr << "  Usage: ./main <FUNCTION = 1 (AND function), 2 (y = 0.5), 3 (y = 0.5 * x), 4 (y = -0.5 * x + 0.5)> [if FUNCTION != 1 -> quantityOfPoints epochs <VERBOSE 0 (no verbose) 1 (verbose)>]" << endl;
+        cerr << "  Usage: ./main <FUNCTION = 1 (AND function), 2 (y = 0.5), 3 (y = 0.5 * x), 4 (y = -0.5 * x + 0.5), 5 (y = 1 / (10 * x))> [if FUNCTION != 1 -> quantityOfPoints epochs <VERBOSE 0 (no verbose) 1 (verbose)>]" << endl;
 
         return 0;
     }
@@ -197,23 +238,18 @@ int main(int argc, char **argv)
         epochs = 200;
     }
 
-    switch (function)
+    if (function == 1)
     {
-        case 1:
-            ANDFunction();
-            break;
-        case 2:
-            functions(2, points, epochs, verbose);
-            break;
-        case 3:
-            functions(3, points, epochs, verbose);
-            break;
-        case 4:
-            functions(4, points, epochs, verbose);
-            break;
-        default:
-            cerr << "ERROR: unknown function." << endl;
-            cerr << "  Usage: ./main <FUNCTION = 1 (AND function), 2 (y = 0.5), 3 (y = 0.5 * x), 4 (y = -0.5 * x + 0.5)> [if FUNCTION != 1 -> quantityOfPoints epochs <VERBOSE 0 (no verbose) 1 (verbose)>]" << endl;
+        ANDFunction();
+    }
+    else if (function > 1 && function <= 5)
+    {
+        functions(function, points, epochs, verbose);
+    }
+    else
+    {
+        cerr << "ERROR: unknown function." << endl;
+        cerr << "  Usage: ./main <FUNCTION = 1 (AND function), 2 (y = 0.5), 3 (y = 0.5 * x), 4 (y = -0.5 * x + 0.5), 5 (y = 1 / (10 * x))> [if FUNCTION != 1 -> quantityOfPoints epochs <VERBOSE 0 (no verbose) 1 (verbose)>]" << endl;
     }
 
     return 0;
