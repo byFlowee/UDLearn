@@ -1,21 +1,26 @@
 \contentsline {section}{\numberline {1}Tecnologías implementadas y estado operativo.}{3}{section.1}
 \contentsline {subsection}{\numberline {1.1}Análisis de RAM}{3}{subsection.1.1}
 \contentsline {subsubsection}{\numberline {1.1.1}Modificando ALE}{5}{subsubsection.1.1.1}
-\contentsline {subsection}{\numberline {1.2}Bots básicos}{6}{subsection.1.2}
-\contentsline {subsubsection}{\numberline {1.2.1}Plantilla común}{6}{subsubsection.1.2.1}
-\contentsline {subsubsection}{\numberline {1.2.2}Breakout}{8}{subsubsection.1.2.2}
-\contentsline {subsubsection}{\numberline {1.2.3}Boxing}{10}{subsubsection.1.2.3}
-\contentsline {subsubsection}{\numberline {1.2.4}Demon Attack}{12}{subsubsection.1.2.4}
-\contentsline {subsection}{\numberline {1.3}Redes neuronales}{21}{subsection.1.3}
-\contentsline {section}{\numberline {2}Manual de utilización}{22}{section.2}
-\contentsline {subsection}{\numberline {2.1}Actividad principal de la empresa}{22}{subsection.2.1}
-\contentsline {subsection}{\numberline {2.2}Departamento del estudiante en prácticas}{22}{subsection.2.2}
-\contentsline {subsection}{\numberline {2.3}Infraestructura del centro, materiales y personal del lugar de trabajo}{22}{subsection.2.3}
-\contentsline {section}{\numberline {3}Experimentos realizados y resultados obtenidos}{23}{section.3}
-\contentsline {subsection}{\numberline {3.1}Objetivos planteados por la empresa al estudiante}{23}{subsection.3.1}
-\contentsline {subsection}{\numberline {3.2}Descripción de las tareas y trabajos desarrollados}{23}{subsection.3.2}
-\contentsline {subsection}{\numberline {3.3}Descripción de los conocimientos y competencias adquiridos}{23}{subsection.3.3}
-\contentsline {section}{\numberline {4}Conclusiones}{24}{section.4}
-\contentsline {subsection}{\numberline {4.1}Valoración personal de las prácticas realizadas}{24}{subsection.4.1}
-\contentsline {subsection}{\numberline {4.2}Indicar qué ha echado de menos el alumno en la formación recibida en la Universidad que considera le hubiera ayudado}{24}{subsection.4.2}
-\contentsline {subsection}{\numberline {4.3}Posibles sugerencias para mejorar las prácticas de empresa}{24}{subsection.4.3}
+\contentsline {subsection}{\numberline {1.2}Bots básicos}{9}{subsection.1.2}
+\contentsline {subsubsection}{\numberline {1.2.1}Plantilla común}{9}{subsubsection.1.2.1}
+\contentsline {subsubsection}{\numberline {1.2.2}Breakout}{11}{subsubsection.1.2.2}
+\contentsline {subsubsection}{\numberline {1.2.3}Boxing}{13}{subsubsection.1.2.3}
+\contentsline {subsubsection}{\numberline {1.2.4}Demon Attack}{15}{subsubsection.1.2.4}
+\contentsline {subsection}{\numberline {1.3}Perceptrón}{24}{subsection.1.3}
+\contentsline {subsection}{\numberline {1.4}Redes neuronales}{28}{subsection.1.4}
+\contentsline {subsubsection}{\numberline {1.4.1}Algoritmo Genético (GANN)}{29}{subsubsection.1.4.1}
+\contentsline {section}{\numberline {2}Manual de utilización}{45}{section.2}
+\contentsline {subsection}{\numberline {2.1}Bots y bots naive}{46}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Perceptrón}{47}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Red Neuronal}{49}{subsection.2.3}
+\contentsline {subsection}{\numberline {2.4}Red Neuronal y Genético: \textit {GANN}}{50}{subsection.2.4}
+\contentsline {section}{\numberline {3}Experimentos realizados y resultados obtenidos}{52}{section.3}
+\contentsline {subsection}{\numberline {3.1}Experimentos con el Perceptrón}{52}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Experimentos con la Red Neuronal}{59}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}Experimentos con la Red Neuronal: \textit {Dropout}}{60}{subsection.3.3}
+\contentsline {subsection}{\numberline {3.4}Experimentos con la Red Neuronal: \textit {Cross Validation} 10}{61}{subsection.3.4}
+\contentsline {subsection}{\numberline {3.5}Experimentos con la Red Neuronal y Genético: \textit {GANN}}{62}{subsection.3.5}
+\contentsline {section}{\numberline {4}Conclusiones}{64}{section.4}
+\contentsline {subsection}{\numberline {4.1}Valoración personal de las prácticas realizadas}{64}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Indicar qué ha echado de menos el alumno en la formación recibida en la Universidad que considera le hubiera ayudado}{64}{subsection.4.2}
+\contentsline {subsection}{\numberline {4.3}Posibles sugerencias para mejorar las prácticas de empresa}{64}{subsection.4.3}

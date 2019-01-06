@@ -1,7 +1,7 @@
-This is LuaTeX, Version 1.07.0 (MiKTeX 2.9.6730 64-bit)  (format=lualatex 2018.10.19)  16 DEC 2018 20:17
+This is LuaTeX, Version 1.07.0 (MiKTeX 2.9.6730 64-bit)  (format=lualatex 2018.10.19)  6 JAN 2019 12:52
  system commands enabled.
-**acronyms.tex
-(./acronyms.tex
+**Acronyms.tex
+(./Acronyms.tex
 LaTeX2e <2018-04-01> patch level 5
 Lua module: luaotfload-main 2017/01/29 2.80001 OpenType layout system.
 Lua module: lualibs 2017-02-01 2.5 ConTeXt Lua standard libraries.
@@ -33,7 +33,7 @@ Inserting `luaotfload.aux.set_capheight' at position 3 in `luaotfload.patch_font
 '.
 Inserting `luaotfload.rewrite_fontname' at position 4 in `luaotfload.patch_font'
 .
-luaotfload | main : initialization completed in 0.492 seconds
+luaotfload | main : initialization completed in 0.491 seconds
 ! Undefined control sequence.
 l.1 \acrodef
           {dtic}[DTIC]{\emph{Departamento de Tecnología Informática y Comp...
@@ -68,9 +68,300 @@ misspelled it (e.g., `\hobx'), type `I' and the correct
 spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
+! Undefined control sequence.
+l.3 \acrodef
+          {eps3}[EPS 3]{\emph{Escuela Politécnica Superior 3}}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.4 \acrodef
+          {ua}[UA]{\emph{Universidad de Alicante}}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.5 \acrodef
+          {ale}[ALE]{\emph{Arcade Learning Environment}}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.6 \acrodef
+          {csv}[CSV]{\emph{valores separados por comas}}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+Overfull \hbox (35.73001pt too wide) in paragraph at lines 1--7
+[]dtic[DTIC]\TU/lmr/m/it/10 De-
+ []
+
+
+Overfull \hbox (17.51001pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 par-
+ []
+
+
+Overfull \hbox (12.01001pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 ta-
+ []
+
+
+Overfull \hbox (26.83pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 mento
+ []
+
+
+Overfull \hbox (9.71pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 de
+ []
+
+
+Overfull \hbox (18.66002pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 Tec-
+ []
+
+
+Overfull \hbox (30.67001pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 nología
+ []
+
+
+Overfull \hbox (13.06pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 In-
+ []
+
+
+Overfull \hbox (15.98001pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 for-
+ []
+
+
+Overfull \hbox (28.88002pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 mática
+ []
+
+
+Overfull \hbox (4.86pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 y
+ []
+
+
+Overfull \hbox (24.03pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 Com-
+ []
+
+
+Overfull \hbox (37.31001pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 putación
+ []
+
+
+Overfull \hbox (12.66pt too wide) in paragraph at lines 1--7
+3dpl[3DPL]\TU/lmr/m/it/10 3D
+ []
+
+
+Overfull \hbox (19.18001pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 Per-
+ []
+
+
+Overfull \hbox (17.38002pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 cep-
+ []
+
+
+Overfull \hbox (17.12001pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 tion
+ []
+
+
+Overfull \hbox (15.47002pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 Lab
+ []
+
+
+Overfull \hbox (14.45pt too wide) in paragraph at lines 1--7
+3]\TU/lmr/m/it/10 Es-
+ []
+
+
+Overfull \hbox (22.24pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 cuela
+ []
+
+
+Overfull \hbox (33.11003pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 Politéc-
+ []
+
+
+Overfull \hbox (17.89001pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 nica
+ []
+
+
+Overfull \hbox (14.56999pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 Su-
+ []
+
+
+Overfull \hbox (12.78001pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 pe-
+ []
+
+
+Overfull \hbox (16.62001pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 rior
+ []
+
+
+Overfull \hbox (5.11pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 3
+ []
+
+
+Overfull \hbox (19.7pt too wide) in paragraph at lines 1--7
+ua[UA]\TU/lmr/m/it/10 Uni-
+ []
+
+
+Overfull \hbox (17.00002pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 ver-
+ []
+
+
+Overfull \hbox (10.74pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 si-
+ []
+
+
+Overfull \hbox (15.33pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 dad
+ []
+
+
+Overfull \hbox (9.71pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 de
+ []
+
+
+Overfull \hbox (13.18999pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 Al-
+ []
+
+
+Overfull \hbox (6.65001pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 i-
+ []
+
+
+Overfull \hbox (22.74002pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 cante
+ []
+
+
+Overfull \hbox (14.72pt too wide) in paragraph at lines 1--7
+ale[ALE]\TU/lmr/m/it/10 Ar-
+ []
+
+
+Overfull \hbox (18.91002pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 cade
+ []
+
+
+Overfull \hbox (28.38002pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 Learn-
+ []
+
+
+Overfull \hbox (13.29001pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 ing
+ []
+
+
+Overfull \hbox (15.98pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 En-
+ []
+
+
+Overfull \hbox (11.25002pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 vi-
+ []
+
+
+Overfull \hbox (18.02pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 ron-
+ []
+
+
+Overfull \hbox (21.72pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 ment
+ []
+
+
+Overfull \hbox (15.85pt too wide) in paragraph at lines 1--7
+csv[CSV]\TU/lmr/m/it/10 val-
+ []
+
+
+Overfull \hbox (17.51001pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 ores
+ []
+
+
+Overfull \hbox (17.38pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 sep-
+ []
+
+
+Overfull \hbox (8.69pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 a-
+ []
+
+
+Overfull \hbox (12.40001pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 ra-
+ []
+
+
+Overfull \hbox (14.31pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 dos
+ []
+
+
+Overfull \hbox (13.93001pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 por
+ []
+
+
+Overfull \hbox (12.78001pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 co-
+ []
+
+
+Overfull \hbox (17.68pt too wide) in paragraph at lines 1--7
+\TU/lmr/m/it/10 mas 
+ []
+
 )
 ! Emergency stop.
-<*> acronyms.tex
+<*> Acronyms.tex
              
 *** (job aborted, no legal \end found)
 
@@ -78,10 +369,10 @@ and I'll forget about whatever was undefined.
 
 Here is how much of LuaTeX's memory you used:
  11 strings out of 494412
- 100000,89155 words of node,token memory allocated 957 words of node memory still in use:
-   1 hlist, 1 local_par, 1 dir, 10 glue, 2 kern, 82 glyph, 10 attribute, 35 glue
-_spec, 10 attribute_list, 1 temp nodes
-   avail lists: 1:1,2:2,3:1,4:1,5:4,8:1,9:1
+ 100000,89155 words of node,token memory allocated 3771 words of node memory still in use:
+   53 hlist, 28 disc, 1 local_par, 1 dir, 105 glue, 27 kern, 29 penalty, 239 gly
+ph, 26 attribute, 35 glue_spec, 26 attribute_list nodes
+   avail lists: 1:1,2:3,4:2,5:4,7:52,8:1,10:1
  4304 multiletter control sequences out of 65536+200000
  15 fonts using 723239 bytes
  14i,1n,8p,98b,73s stack positions out of 5000i,500n,10000p,200000b,50000s
