@@ -267,6 +267,123 @@ string NeuralNetwork::description() const
     return res;
 }
 
+vector<string> NeuralNetwork::getNextLineAndSplitIntoTokens(istream& str)
+{
+    vector<string> result;
+    string line;
+    getline(str,line);
+
+    stringstream lineStream(line);
+    string cell;
+
+    while(getline(lineStream,cell, ','))
+    {
+        result.push_back(cell);
+    }
+    // This checks for a trailing comma with no data after it.
+    if (!lineStream && cell.empty())
+    {
+        // If there was a trailing comma then add an empty element.
+        result.push_back("");
+    }
+    return result;
+}
+
+double NeuralNetwork::getTotalError(const vector<Mat> &inputs, const vector<Mat> &expectedOutputs) {
+
+    for (size_t d = 0; d < inputs.size(); ++d) {
+        Mat outputs = this->forwardPropagation(inputs[d], false);
+        Mat error = expectedOutputs[d].sub(outputs);
+        Mat derror = expectedOutputs[d].sub(outputs);
+
+        for (int i = 0; i < error.size(); i++) {
+            error.set(0, i, error.get(0, i) * error.get(0, i));
+        }
+
+        error.scalar(0.5);
+        derror.scalar(-1.0);
+    
+    }
+}
+
+void NeuralNetwork::crossFoldValidation(unsigned epochs, unsigned folds, string filename) {
+    ifstream file;
+    file.open(filename);
+
+    if(file.is_open()) {
+        unsigned nInputs = this->size.front();
+        unsigned nOutputs = this->size.back();
+        vector<string> line;
+        string dataTrainingLabels;
+
+        getline(file, dataTrainingLabels);
+        cout << dataTrainingLabels << endl;
+    
+        vector<Mat> inputs;
+        vector<Mat> expectedOutputs;
+
+        bool eof = false;
+        unsigned totalDataInputs = 0;
+        line = getNextLineAndSplitIntoTokens(file);
+        
+        while(!eof) {            
+            Mat inputs1(1, nInputs);
+            Mat expectedOutputs1(1, nOutputs);
+
+            for (unsigned i = 0; i < nInputs; ++i) {
+                inputs1.set(0, i, atof(line[i].c_str()));
+            }
+            
+            for (unsigned o = 0; o < nOutputs; ++o) {
+                expectedOutputs1.set(0, o, atof(line[nInputs + o].c_str()));
+            }
+            
+            inputs.push_back(inputs1);
+            expectedOutputs.push_back(expectedOutputs1);
+
+            line.clear();
+            line = getNextLineAndSplitIntoTokens(file);
+            
+            totalDataInputs++;
+
+            if (line.size() < (nInputs + nOutputs)) 
+                eof = true;
+        }
+
+        unsigned perFoldSamples = totalDataInputs / folds;
+        unsigned currentSamples;
+
+        vector<Mat> validationInputs;
+        vector<Mat> validationOutputs;
+
+        vector<Mat> trainingInputs;
+        vector<Mat> trainingOutputs;
+
+        //CROSSFOLD VALIDATION
+        for (size_t f = 0; f < folds; ++f) {
+            cout << "Fold [" << f + 1 << "/" << folds << "]" << endl;
+            currentSamples = f * perFoldSamples;            
+            
+            //DATA SHUFFLING
+            for (size_t d = 0; d < totalDataInputs; ++d) {
+                if (d >= currentSamples && d < currentSamples + perFoldSamples) {
+                    validationInputs.push_back(inputs[d]);
+                    validationOutputs.push_back(expectedOutputs[d]);
+                } else {
+                    trainingInputs.push_back(inputs[d]);
+                    trainingOutputs.push_back(expectedOutputs[d]);
+                }
+            }
+
+            NeuralNetwork net(this->size, this->dropout);
+            net.train(trainingInputs, trainingOutputs, epochs);
+        }
+    }
+    else {
+        cerr << "File \"" << filename << "\" couldn't be oppened" << endl;
+    }
+}
+
 vector<Mat> NeuralNetwork::getWeights() const
 {
     return this->weights;

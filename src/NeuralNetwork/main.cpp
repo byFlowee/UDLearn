@@ -1,8 +1,5 @@
 
 #include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
 
 #include "neuralNetwork.h"
 
@@ -178,34 +175,12 @@ void XORFunction(bool showResults)
     }
 }
 
-std::vector<std::string> getNextLineAndSplitIntoTokens(std::istream& str)
-{
-    std::vector<std::string>   result;
-    std::string                line;
-    std::getline(str,line);
-
-    std::stringstream          lineStream(line);
-    std::string                cell;
-
-    while(std::getline(lineStream,cell, ','))
-    {
-        result.push_back(cell);
-    }
-    // This checks for a trailing comma with no data after it.
-    if (!lineStream && cell.empty())
-    {
-        // If there was a trailing comma then add an empty element.
-        result.push_back("");
-    }
-    return result;
-}
-
 void breakoutTest() {
     ifstream file;
 
     file.open("../breakout/breakout.csv");
 
-    vector<string> line = getNextLineAndSplitIntoTokens(file);
+    vector<string> line = NeuralNetwork::getNextLineAndSplitIntoTokens(file);
 
     for (size_t i = 0; i < line.size(); i++)
     {
@@ -226,7 +201,7 @@ void breakoutTest() {
     for (int i = 0; i < 4990; i++)
     {
         line.clear();
-        line = getNextLineAndSplitIntoTokens(file);
+        line = NeuralNetwork::getNextLineAndSplitIntoTokens(file);
 
         Mat inputs1(1, 4);
         Mat expectedOutputs1(1, 1);

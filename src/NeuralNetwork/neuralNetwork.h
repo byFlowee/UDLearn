@@ -6,6 +6,8 @@ using namespace std;
 
 #include <vector>
 #include <string>
+#include <fstream>
+#include <sstream>
 
 #include "mat.h"
 
@@ -43,6 +45,9 @@ class NeuralNetwork
         vector<int> getTopology() const;
         void updateDropoutMats();
         void setDropout(vector<double> &dropout) { this->dropout = dropout; }
+        void crossFoldValidation(unsigned epochs, unsigned folds, string filename);
+        static vector<string> NeuralNetwork::getNextLineAndSplitIntoTokens(istream& str);
+        double getTotalError(const vector<Mat> &inputs, const vector<Mat> &expectedOutputs);
 
 };
 
