@@ -47,7 +47,7 @@ class NeuralNetwork
         void updateDropoutMats();
         void setDropout(vector<double> &dropout) { this->dropout = dropout; }
         void crossFoldValidation(unsigned epochs, unsigned folds, string filename);
-        static vector<string> NeuralNetwork::getNextLineAndSplitIntoTokens(istream& str);
+        static vector<string> getNextLineAndSplitIntoTokens(istream& str);
         double getTotalError(const vector<Mat> &inputs, const vector<Mat> &expectedOutputs);
 
 };

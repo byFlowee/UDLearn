@@ -229,15 +229,21 @@ void NeuralNetwork::train(const vector<Mat> &inputs, const vector<Mat> &expected
     cout << "Training!" << endl;
     for (int i = 0; i < iterations; i++)
     {
+        double totalError = 0;
         //Para cada iteración cambiamos las neuronas marcadas como inactivas
         this->updateDropoutMats();
         for (size_t j = 0; j < inputs.size(); j++)
         {
             this->backPropagation(inputs[j], expectedOutputs[j]);
 
+            double meanError = 0;
+            for (size_t k = 0; k < this->error.size(); ++k) 
+                meanError += this->error.get(0, k);
 
-            // this->error contains the error: (1/2) * error * error
+            totalError += (meanError / this->error.size());
         }
+
+        cout << "Epoch " << i << "\n Error: " << totalError / inputs.size() << endl;
     }
 }
 
@@ -298,19 +304,28 @@ vector<string> NeuralNetwork::getNextLineAndSplitIntoTokens(istream& str)
 
 double NeuralNetwork::getTotalError(const vector<Mat> &inputs, const vector<Mat> &expectedOutputs) {
 
+    double current = 0;
+    double total = 0;
+
     for (size_t d = 0; d < inputs.size(); ++d) {
         Mat outputs = this->forwardPropagation(inputs[d], false);
         Mat error = expectedOutputs[d].sub(outputs);
-        Mat derror = expectedOutputs[d].sub(outputs);
-
+        
         for (int i = 0; i < error.size(); i++) {
             error.set(0, i, error.get(0, i) * error.get(0, i));
         }
 
         error.scalar(0.5);
-        derror.scalar(-1.0);
-    
+
+        for (size_t i = 0; i < error.size(); ++i) {
+            current += error.get(0, i);
+        }
+
+        current /= error.size();    //mean erro on one sample
+        total += current;
     }
+
+    return (total / inputs.size());
 }
 
 void NeuralNetwork::crossFoldValidation(unsigned epochs, unsigned folds, string filename) {
@@ -360,6 +375,9 @@ void NeuralNetwork::crossFoldValidation(unsigned epochs, unsigned folds, string 
         unsigned perFoldSamples = totalDataInputs / folds;
         unsigned currentSamples;
 
+        double totalFoldScore = 0;
+        double currentFoldScore = 0;
+
         vector<Mat> validationInputs;
         vector<Mat> validationOutputs;
 
@@ -384,7 +402,20 @@ void NeuralNetwork::crossFoldValidation(unsigned epochs, unsigned folds, string 
 
             NeuralNetwork net(this->size, this->dropout);
             net.train(trainingInputs, trainingOutputs, epochs);
+            
+            currentFoldScore = net.getTotalError(validationInputs, validationOutputs);
+            totalFoldScore += currentFoldScore;
+
+            validationInputs.clear();
+            validationOutputs.clear();
+            
+            trainingInputs.clear();
+            trainingOutputs.clear();
+
+            cout << "Fold total Score on validation set: " << currentFoldScore << endl;
         }
+
+        cout << "CrossValidation mean score: " << totalFoldScore / folds << endl;
     }
     else {
         cerr << "File \"" << filename << "\" couldn't be oppened" << endl;

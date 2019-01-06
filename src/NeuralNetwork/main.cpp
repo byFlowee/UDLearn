@@ -221,11 +221,22 @@ void breakoutTest() {
     file.close();
 }
 
+void crossValidationTest() {
+    vector<int> nodes = {4, 10, 1};
+    vector<double> dropout = {0.0, 0.2, 0.0};
+
+    NeuralNetwork nn(nodes, dropout);
+    nn.setLearningRate(0.1);
+
+    nn.crossFoldValidation(30, 10, "../breakout/breakout.csv");
+}
+
 int main(int argc, char **argv)
 {
     //ANDFunction(true);
-    XORFunction(true);
+    //XORFunction(true);
     //breakoutTest();
+    crossValidationTest();
 
     return 0;
 }
