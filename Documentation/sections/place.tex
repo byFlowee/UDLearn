@@ -1,11 +1,135 @@
 \section{Manual de utilización}
-\subsection{Actividad principal de la empresa}
+\label{sec:usageManual}
+
+Antes de empezar con el manual de utilización para las tecnologías concretas desarrolladas hay que tener en cuenta dos cuestiones fundamentales:
+
+\begin{enumerate}
+    \item La tecnología que hemos desarrollado se implementado bajo entorno linux, concretamente todo está probado en la distribución \textit{Manjaro Linux}. No se garantiza el correcto funcionamiento de la tecnología en otros sistemas.
+    \item La tecnología que hemos desarrollado utiliza el entorno ALE (\textit{Arcade Learning Environment}), por lo que lo que es necesario para el funcionamiento de los experimentos y de la tecnología en sí.
+\end{enumerate}
+
+Respecto a ALE, es necesario saber dónde está instalado, por lo que hemos utilizado la variable de entorno del sistema \textbf{ALEPath} para localizar el entorno y poder compilar y utilizar la tecnología sin problema. La manera de indicar donde está ALE, si por ejemplo estuviera en la ruta /home/UDLearn/ Escritorio/ALE, sería con el siguiente comando desde la terminal: \textit{export ALEPath=/home/UDLearn/Escritorio/ALE}. De esta manera ya estaría todo listo para poder compilar la tecnología desarrollada y utilizarla.
+
+Para poder utilizar la tecnología solo es necesario compilar, lo cual es sencillo ya que solo habrá que ejecutar \textit{make} en la terminal, ya que cada una de las tecnologías desarrolladas viene con su correspondiente fichero \textit{makefile}.
+
+Una vez ya se ha indicado donde está ALE y compilada la tecnología que se quiera utilizar, en los siguientes apartados se indica el uso concreto de cada una de ellas.
+
+\newpage
+\subsection{Bots y bots naive}
+Una vez que la variable de entorno está aplicada correctamente ya se pueden compilar y utilizar los bots. Dentro del directorio principal de UDLearn encontraremos varias carpetas con los nombres de los juegos. Dentro de cada una de éstas carpetas (excluyendo el strgunner), podemos encontrar un subdirectorio llamado "naive". Este subdirectorio representa la versión de Inteligencia Artificial simple realizada para ese juego en concreto, el directorio raíz contendrá diversos archivos específicos a la implementación mediante redes neuronales.
+
+Para compilar los bots naive, haremos lo siguiente:
+
+\begin{enumerate}
+	\item Abrir la consola en el directorio del bot naive deseado (ejemplo dattack/naive).
+	\item Dentro del directorio, escribir en la consola "make" y pulsar intro, esto compilará los ficheros involucrados.
+\end{enumerate}
+
+Una vez hemos compilado el fichero, solo queda ejecutarlo. Para esto, desde la misma consola que hemos compilado el bot, podremos escribir lo siguiente:
+
+\begin{itemize}
+	\item \textit{./nombre\_ejecutable nombre\_rom}. Este modo ejecutará el bot sin ningun tipo de información multimedia disponible.
+	\item \textit{./nombre\_ejecutable nombre\_rom 1}. Si queremos habilitar o deshabilitar explicitamente el contenido multimedia (audio y video), tendremos que escribir a continuacion un 1 o un 0, respectivamente.
+	\item \textit{./nombre\_ejecutable nombre\_rom 1 1}. Si queremos habilitar o deshabilitar además la visualización de RAM, tendremos que escribir a continuacion un 1 o un 0 respectivamente.
+	\item Cualquier opción extra no común no reflejada en la documentación aparecerá en el ejecutable siempre y cuando no se introduzca el input correctamente.
+\end{itemize}
+
+\newpage
+\subsection{Perceptrón}
+
+Para el perceptrón tenemos la posibilidad de ejecutar los experimentos que hemos implementado y están documentados en la sección \ref{subsec:perceptronexperiment}. El volver a ejecutarlos actualizará los pesos con otros diferentes (se utilizan datos aleatorios para la generación de los puntos).
+
+Hay un total de 5 experimentos, los cuales se codifican con un número. Tanto la codificación como la explicación de cada uno se describe:
+
+\begin{enumerate}
+    \item Experimento 1 (cod. = 1): se intenta que el perceptrón aprenda la función AND.
+    \item Experimento 2 (cod. = 2): se intenta que el perceptrón aprenda la función y = 0'5.
+    \item Experimento 3 (cod. = 3): se intenta que el perceptrón aprenda la función y = 0'5 * x.
+    \item Experimento 4 (cod. = 4): se intenta que el perceptrón aprenda la función y = -0'5 * x + 0.5.
+    \item Experimento 5 (cod. = 5): se intenta que el perceptrón aprenda la función y = 1/(10*x) la cual \textbf{no} es lineal.
+\end{enumerate}
+
+Al igual que el resto de tecnologías, solo habrá que ejecutar \textit{make} para obtener el fichero con el que se pueden ejecutar la tecnología (en caso de querer agregar nuevos experimentos habrá que entrar al cógido y modificarlo). Los posibles comandos se describen a continuación:
+
+\begin{enumerate}
+    \item De forma general:
+    \begin{enumerate}
+        \item ./main experimento [puntos épocas mensajes]
+    \end{enumerate}
+    \item Ejemplo 1: experimento 1 (función AND):
+    \begin{enumerate}
+        \item ./main 1
+    \end{enumerate}
+    \item Ejemplo 2: experimento 2 (y = 0.5) con 200 puntos, 100 épocas y activando mensajes:
+    \begin{enumerate}
+        \item ./main 2 200 100 1
+    \end{enumerate}
+\end{enumerate}
+
+Por defecto, el experimento 1 tiene 20 épocas asignadas y no se pueden cambiar. Esta decisión es debido a que la función AND suele obtener un acierto del 100\% en menos de 10 épocas. El resto de experimentos tienen asignado por defecto 40 puntos y 200 épocas y se puede modificar como se ha visto en los ejemplos. Para el experimento 1 se muestran todos los mensajes por defecto, ya que la cantidad no es excesiva y ayuda. Por el contrario, para el resto de experimentos por defecto los mensajes están desactivados, pero pueden activarse como se ha visto en los ejemplos.
+
+\newpage
+\subsection{Red Neuronal}
 
 
-\subsection{Departamento del estudiante en prácticas}
+\newpage
+\subsection{Red Neuronal y Genético: \textit{GANN}}
 
+La utilización del GANN es muy sencilla. Lo primero que habría que hacer es compilar, lo cual haciendo \textit{make} desde la terminal ya lo tendríamos (consultar sección \ref{sec:usageManual} para más detalles). A continuación, se detallan los modos de uso.
 
-\subsection{Infraestructura del centro, materiales y personal del lugar de trabajo}
+Con el GANN tenemos 2 modos de funcionamiento:
 
+\begin{enumerate}
+    \item Modo de \textbf{entrenamiento}: en este modo lo que se hace es utilizar el GANN para obtener resultados entrenando a cualquiera de los 4 juegos disponibles. Mientras se ejecuta se va mostrando la información del progreso y se va guardando un registro con la información más importante. Cuando termina de ejecutarse, guarda los pesos de la mejor red encontrada.
+    \item Modo de \textbf{ejecución}: en este modo lo único que se hace es ejecutar la mejor red que hemos encontrado conforme hemos ido haciendo pruebas. Los pesos están directamente escritos en el código, así que lo que se verá será directamente el juego elegido y el mejor bot que hemos encontrado jugando.
+\end{enumerate}
+
+Para seleccionar el juego, la codificación que hemos escogido es un número para cada juego. La codificación es la siguiente:
+
+\begin{itemize}
+    \item Breakout = 1
+    \item Boxing = 2
+    \item Demon Attack = 3
+    \item StarGunner = 4
+\end{itemize}
+
+La ejecución de ambos modos es muy sencilla, y se describe a continuación:
+
+\begin{enumerate}
+    \item Modo de Entrenamiento: 
+    \begin{enumerate}
+        \item De modo general:
+        \begin{enumerate}
+            \item \textit{./main juego generaciones población nombreFicheroRegistros}
+        \end{enumerate}
+        \item Ejemplo: Breakout con 5 generaciónes, 100 individuos en la pobla-ción y archivo llamado "breakoutRecords.txt" (registro) y archivo "breakoutRecords.weights" (pesos).
+        \begin{enumerate}
+            \item \textit{./main 1 5 100 breakoutRecords}
+        \end{enumerate}
+    \end{enumerate}
+    \item Modo de ejecución:
+    \begin{enumerate}
+        \item De modo general:
+        \begin{enumerate}
+            \item \textit{./main juego}
+        \end{enumerate}
+        \item Ejemplo: ver el bot del Breakout.
+        \begin{enumerate}
+            \item \textit{./main 1}
+        \end{enumerate}
+        \item Ejemplo: ver el bot del Boxing.
+        \begin{enumerate}
+            \item \textit{./main 2}
+        \end{enumerate}
+        \item Ejemplo: ver el bot del Demon Attack.
+        \begin{enumerate}
+            \item \textit{./main 3}
+        \end{enumerate}
+        \item Ejemplo: ver el bot del StarGunner.
+        \begin{enumerate}
+            \item \textit{./main 4}
+        \end{enumerate}
+    \end{enumerate}
+\end{enumerate}
 
 \newpage

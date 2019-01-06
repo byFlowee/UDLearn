@@ -15,6 +15,7 @@ class Perceptron{
         void setInputValues(const vector<double> &inputs);
         vector<double> pocket;
         unsigned bestSolution;
+        double bestAcc;
 
     public:
         Perceptron(unsigned);
@@ -22,7 +23,9 @@ class Perceptron{
         double getOutput();
         void updateWeights(double target);
         double getPrediction(const vector<double> &inputs);
-        void trainPerceptron(unsigned epochs, const vector<vector<double> > &inputs, const vector<double> &targets);
+        void trainPerceptron(unsigned epochs, const vector<vector<double> > &inputs, const vector<double> &targets, bool = true);
+        vector<double> getWeights() const;
+        double getBestAcc() const;
 };
 
 #endif

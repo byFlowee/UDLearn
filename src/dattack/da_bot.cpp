@@ -116,6 +116,17 @@ void checkKeys()
     }
 }
 
+/*
+ ***************************************************************************************
+ * *************************************************************************************
+ * *************************************************************************************
+ *  NOT ERASE: code only available when method alei.processBackRAM() is implemented! ***
+ *  NOT ERASE: code only available when method alei.processBackRAM() is implemented! ***
+ *  NOT ERASE: code only available when method alei.processBackRAM() is implemented! ***
+ * *************************************************************************************
+ * *************************************************************************************
+ ***************************************************************************************
+ *
 int currentValueOfRAM = 0;
 int stepsInitialization = 1;
 vector<int> freezePositions;
@@ -291,6 +302,18 @@ void checkAllValuesOfRAM()
 
     currentValueOfRAM++;
 }
+*
+***************************************************************************************
+* *************************************************************************************
+* *************************************************************************************
+*  NOT ERASE: code only available when method alei.processBackRAM() is implemented! ***
+*  NOT ERASE: code only available when method alei.processBackRAM() is implemented! ***
+*  NOT ERASE: code only available when method alei.processBackRAM() is implemented! ***
+* *************************************************************************************
+* *************************************************************************************
+***************************************************************************************
+*
+*/
 
 int getChar_X(int char_id)
 {
@@ -299,53 +322,6 @@ int getChar_X(int char_id)
     int const rawFirstNibble((7-((val & 0xF0)>>4)) & 0x0F);
     int const rawSecondNibble(val & 0x0F);
     return (rawSecondNibble*16) + rawFirstNibble; 
-}
-
-enum DemonAttackEnemy
-{
-    LeftFlyFarthest,
-    LeftFlyMiddle,
-    LeftFlyClosest,
-    RightFlyFarthest,
-    RightFlyMiddle,
-    RightFlyClosest
-};
-
-bool demonAttackIsEnemyAlive(DemonAttackEnemy enemy)
-{
-    int sprite = 255;
-
-    switch (enemy)
-    {
-        case LeftFlyFarthest:
-            sprite = alei.getRAM().get(29);
-            break;
-        case LeftFlyMiddle:
-            sprite = alei.getRAM().get(30);
-            break;
-        case LeftFlyClosest:
-            sprite = alei.getRAM().get(31);
-            break;
-        case RightFlyFarthest:
-            sprite = alei.getRAM().get(33);
-            break;
-        case RightFlyMiddle:
-            sprite = alei.getRAM().get(34);
-            break;
-        case RightFlyClosest:
-            sprite = alei.getRAM().get(35);
-            break;
-        default:
-            cout << "ERROR: unknown Demon Attack enemy." << endl;
-            return false;
-    }
-
-    if (sprite <= 3)
-    {
-        return false;
-    }
-
-    return true;
 }
 
 int min123 = 99999;
@@ -373,160 +349,18 @@ float manualMode()
         reward += alei.act(PLAYER_A_RIGHT);
     }
 
-    if (positionToDisplay == 500)
-    {
-        double leftFlyFarthestEnemyCoordinateX = (double)getChar_X(13) / 255.0;
-        double leftFlyMiddleEnemyCoordinateX = (double)getChar_X(14) / 255.0;
-        double leftFlyClosestEnemyCoordinateX = (double)getChar_X(15) / 255.0;
-
-        double playerCoordinateX = (double)getChar_X(16) / 255.0;
-
-        double rightFlyFarthestEnemyCoordinateX = (double)getChar_X(17) / 255.0;
-        double rightFlyMiddleEnemyCoordinateX = (double)getChar_X(18) / 255.0;
-        double rightFlyClosestEnemyCoordinateX = (double)getChar_X(19) / 255.0;
-
-        double enemyBulletCoordinateX = (double)getChar_X(20) / 255.0;
-
-        double currentObjectiveCoordinateX = 0.0;
-
-        if (demonAttackIsEnemyAlive(LeftFlyClosest) && demonAttackIsEnemyAlive(RightFlyClosest))
-        {
-            int distanceBetweenFlies = getChar_X(19) - getChar_X(15);
-
-            cout << "1. Closest enemy is alive!" << endl;
-
-            if (distanceBetweenFlies == 8 || distanceBetweenFlies == 9)
-            {
-                // There are no flies or they are very close, so there is no problem in focus them like they were just 1 enemy
-
-                cout << "1.1. Closest enemy is alive and is not a fly!" << endl;
-
-                currentObjectiveCoordinateX = (leftFlyClosestEnemyCoordinateX + rightFlyClosestEnemyCoordinateX) / 2.0;
-            }
-            else
-            {
-                cout << "1.2. Closest enemy is alive and is a fly!" << endl;
-            }
-        }
-        else if (demonAttackIsEnemyAlive(LeftFlyMiddle) && demonAttackIsEnemyAlive(RightFlyMiddle))
-        {
-            int distanceBetweenFlies = getChar_X(18) - getChar_X(14);
-
-            cout << "2. Middle enemy is alive!" << endl;
-
-            if (distanceBetweenFlies == 8 || distanceBetweenFlies == 9)
-            {
-                // There are no flies or they are very close, so there is no problem in focus them like they were just 1 enemy
-
-                cout << "2.1. Middle enemy is alive and is not a fly!" << endl;
-
-                currentObjectiveCoordinateX = (leftFlyMiddleEnemyCoordinateX + rightFlyMiddleEnemyCoordinateX) / 2.0;
-            }
-            else
-            {
-                cout << "2.2. Middle enemy is alive and is a fly!" << endl;
-            }
-        }
-        else if (demonAttackIsEnemyAlive(LeftFlyFarthest) && demonAttackIsEnemyAlive(RightFlyFarthest))
-        {
-            int distanceBetweenFlies = getChar_X(17) - getChar_X(13);
-
-            cout << "3. Farthest enemy is alive!" << endl;
-
-            if (distanceBetweenFlies == 8 || distanceBetweenFlies == 9)
-            {
-                // There are no flies or they are very close, so there is no problem in focus them like they were just 1 enemy
-
-                cout << "3.1. Farthest enemy is alive and is not a fly!" << endl;
-
-                currentObjectiveCoordinateX = (leftFlyFarthestEnemyCoordinateX + rightFlyFarthestEnemyCoordinateX) / 2.0;
-            }
-            else
-            {
-                cout << "3.2. Farthest enemy is alive and is a fly!" << endl;
-            }
-        }
-        else if (demonAttackIsEnemyAlive(LeftFlyClosest))
-        {
-            cout << "4. Closest left fly enemy is alive!" << endl;
-
-            currentObjectiveCoordinateX = leftFlyClosestEnemyCoordinateX;
-        }
-        else if (demonAttackIsEnemyAlive(LeftFlyMiddle))
-        {
-            cout << "5. Middle left fly enemy is alive!" << endl;
-
-            currentObjectiveCoordinateX = leftFlyMiddleEnemyCoordinateX;
-        }
-        else if (demonAttackIsEnemyAlive(LeftFlyFarthest))
-        {
-            cout << "6. Farthest left fly enemy is alive!" << endl;
-
-            currentObjectiveCoordinateX = leftFlyFarthestEnemyCoordinateX;
-        }
-        else if (demonAttackIsEnemyAlive(RightFlyClosest))
-        {
-            cout << "7. Closest right fly enemy is alive!" << endl;
-
-            currentObjectiveCoordinateX = rightFlyClosestEnemyCoordinateX;
-        }
-        else if (demonAttackIsEnemyAlive(RightFlyMiddle))
-        {
-            cout << "8. Middle right fly enemy is alive!" << endl;
-
-            currentObjectiveCoordinateX = rightFlyMiddleEnemyCoordinateX;
-        }
-        else if (demonAttackIsEnemyAlive(RightFlyFarthest))
-        {
-            cout << "9. Farthest right fly enemy is alive!" << endl;
-
-            currentObjectiveCoordinateX = rightFlyFarthestEnemyCoordinateX;
-        }
-        else
-        {
-            cout << "10. No one is alive D:" << endl;
-        }
-
-        if (enemyBulletCoordinateXHistory.size() < 3)
-        {
-            enemyBulletCoordinateXHistory.push_back(getChar_X(20));
-            enemyBulletCoordinateXHistoryIndex = (enemyBulletCoordinateXHistoryIndex + 1) % 3;
-        }
-        else
-        {
-            enemyBulletCoordinateXHistory[enemyBulletCoordinateXHistoryIndex] = getChar_X(20);
-            enemyBulletCoordinateXHistoryIndex = (enemyBulletCoordinateXHistoryIndex + 1) % 3;
-        }
-
-        if (enemyBulletCoordinateXHistory[0] != enemyBulletCoordinateXHistory[1] && 
-            enemyBulletCoordinateXHistory[0] != enemyBulletCoordinateXHistory[2] && 
-            enemyBulletCoordinateXHistory[1] != enemyBulletCoordinateXHistory[2]
-            )
-        {
-            // The fly that is a bullet is alive
-
-            cout << "BONUS! Following the fly!" << endl;
-
-            currentObjectiveCoordinateX = enemyBulletCoordinateX;
-
-            enemyBulletCoordinateX = 0.0;
-        }
-
-        if (currentObjectiveCoordinateX > 1.0 || currentObjectiveCoordinateX < -1.0 ||
-            playerCoordinateX > 1.0 || playerCoordinateX < -1.0 ||
-            enemyBulletCoordinateX > 1.0 || enemyBulletCoordinateX < -1.0)
-        {
-            cout << "ERROR: some variable is not in the expected range!" << endl;
-            cout << "currentObjectiveCoordinateX = " << currentObjectiveCoordinateX << endl;
-            cout << "playerCoordinateX = " << playerCoordinateX << endl;
-            cout << "enemyBulletCoordinateX = " << enemyBulletCoordinateX << endl;
-        }
-
-        cout << "currentObjectiveCoordinateX = " << currentObjectiveCoordinateX * 255.0 << endl;
-        cout << "playerCoordinateX = " << playerCoordinateX * 138.0 << endl;
-        cout << "enemyBulletCoordinateX = " << enemyBulletCoordinateX * 255.0 << endl;
-    }
-    else if (positionToDisplay != -1 && positionToDisplay >= 0 && positionToDisplay <= 127)
+    /*
+     ***************************************************************************************
+     * *************************************************************************************
+     * *************************************************************************************
+     *  NOT ERASE: code only available when method alei.processBackRAM() is implemented! ***
+     *  NOT ERASE: code only available when method alei.processBackRAM() is implemented! ***
+     *  NOT ERASE: code only available when method alei.processBackRAM() is implemented! ***
+     * *************************************************************************************
+     * *************************************************************************************
+     ***************************************************************************************
+     *
+    if (positionToDisplay != -1 && positionToDisplay >= 0 && positionToDisplay <= 127)
     {
         if (positionToDisplay == 72)
         {
@@ -588,6 +422,17 @@ float manualMode()
             alei.processBackRAM();
         }
     }
+    *
+    ***************************************************************************************
+    * *************************************************************************************
+    * *************************************************************************************
+    *  NOT ERASE: code only available when method alei.processBackRAM() is implemented! ***
+    *  NOT ERASE: code only available when method alei.processBackRAM() is implemented! ***
+    *  NOT ERASE: code only available when method alei.processBackRAM() is implemented! ***
+    * *************************************************************************************
+    * *************************************************************************************
+    ***************************************************************************************
+    */
 
     return (reward + alei.act(PLAYER_A_NOOP));
 }

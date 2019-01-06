@@ -3,10 +3,15 @@
 #include <time.h>
 #include <limits>
 
-Perceptron::Perceptron(unsigned inputSize) {
+Perceptron::Perceptron(unsigned inputSize) :
+    bestAcc(-1.0)
+{
     srand(time(NULL));
-    for (unsigned i = 0; i <= inputSize; ++i) 
-        this->weights.push_back(Perceptron::getRandomWeight());  
+
+    for (unsigned i = 0; i <= inputSize; ++i)
+    { 
+        this->weights.push_back(Perceptron::getRandomWeight());
+    }
 }
 
 double Perceptron::computeOutput() {
@@ -35,29 +40,36 @@ void Perceptron::setInputValues(const vector<double> &inputs) {
     this->inputs.insert(this->inputs.begin(), 1.0);
 }
 
-void Perceptron::trainPerceptron(unsigned epochs, const vector<vector<double> > &inputs, const vector<double> &targets) {
+void Perceptron::trainPerceptron(unsigned epochs, const vector<vector<double> > &inputs, const vector<double> &targets, bool verbose) {
     this->pocket.clear();
-    bestSolution = numeric_limits<unsigned>::max();
+    this->bestSolution = numeric_limits<unsigned>::max();
+    double lastAccuracy = numeric_limits<double>::lowest();
+    double lastError = numeric_limits<double>::max();
+
     
     for (unsigned e = 0; e < epochs; ++e) {
         vector<double> predictions; 
-        vector<unsigned> missclassifiedPoints;
+        vector<unsigned> misclassifiedPoints;
         double pred;
-        unsigned sum = 0;
 
-        cout << "Weights: ";
-
-        for (size_t i = 0; i < this->weights.size(); i++)
+        if (verbose)
         {
-            cout << this->weights[i];
+            cout << "Epoch " << (e + 1) << endl;
+            cout << "---------------------------------------" << endl;
+            cout << "  Weights: ";
 
-            if (i + 1 != this->weights.size())
+            for (size_t i = 0; i < this->weights.size(); i++)
             {
-                cout << ", ";
-            }
-            else
-            {
-                cout << endl;
+                cout << this->weights[i];
+
+                if (i + 1 != this->weights.size())
+                {
+                    cout << ", ";
+                }
+                else
+                {
+                    cout << endl;
+                }
             }
         }
 
@@ -69,51 +81,115 @@ void Perceptron::trainPerceptron(unsigned epochs, const vector<vector<double> > 
             if (pred + targets[d] < 0.1 && pred + targets[d] > -0.1)
             {
                 // If prediction + expectedResult == 0 then it's a missclassified point (they are not equal (1 + (-1) or (-1) + 1))
-                missclassifiedPoints.push_back(d);
+                misclassifiedPoints.push_back(d);
             }
         }
 
-        if (bestSolution > missclassifiedPoints.size()) {
-            this->bestSolution = missclassifiedPoints.size();
+        double accuracy = ((double)(inputs.size() - misclassifiedPoints.size()) / (double)inputs.size());
+        double error = 1.0 - accuracy;
+
+        if (verbose)
+        {
+            if (accuracy > lastAccuracy)
+            {
+                cout << "  Accuracy: \033[1;32m" << accuracy << "\033[0m (\033[1;32m" << accuracy * 100.0 << " %\033[0m)" << endl;
+            }
+            else
+            {
+                cout << "  Accuracy: \033[1;31m" << accuracy << "\033[0m (\033[1;31m" << accuracy * 100.0 << " %\033[0m)" << endl;
+            }
+
+            if (error < lastError)
+            {
+                cout << "  Error: \033[1;32m" << error << "\033[0m (\033[1;32m" << error * 100.0 << " %\033[0m)" << endl;
+            }
+            else
+            {
+                cout << "  Error: \033[1;31m" << error << "\033[0m (\033[1;31m" << error * 100.0 << " %\033[0m)" << endl;
+            }
+        }
+
+        if (bestSolution > misclassifiedPoints.size()) {
+            this->bestSolution = misclassifiedPoints.size();
             this->pocket = this->weights;
         }
 
-        if (missclassifiedPoints.size() == 0) {
-            cout << "100% accuracy on training set!" << endl;
-            return;
+        if (misclassifiedPoints.size() == 0) {
+            break;
         }
         else {
-            unsigned random = rand() % missclassifiedPoints.size();
+            unsigned random = rand() % misclassifiedPoints.size();
             
-            for (unsigned i = 0; i < missclassifiedPoints.size(); ++i) {
+            for (unsigned i = 0; i < misclassifiedPoints.size(); ++i) {
                 if(i == random) {
-                    cout << "Updating weights" << endl;
-                    this->setInputValues(inputs[missclassifiedPoints[i]]);
-                    this->updateWeights(targets[missclassifiedPoints[i]]);
+                    this->setInputValues(inputs[misclassifiedPoints[i]]);
+                    this->updateWeights(targets[misclassifiedPoints[i]]);
                     break;
                 }
             }
         }
 
-        cout << "Predictions: ";
+        if (verbose)
+        {
+            cout << "  Predictions: ";
 
-        for (unsigned i = 0; i < predictions.size(); ++i) {
-            cout << predictions[i];
+            for (unsigned i = 0; i < predictions.size(); ++i) {
+                cout << predictions[i];
 
-            if (i + 1 != predictions.size())
-            {
-                cout << " ";
+                if (i + 1 != predictions.size())
+                {
+                    cout << " ";
+                }
+                else
+                {
+                    cout << endl;
+                }
             }
-            else
-            {
-                cout << endl;
-            }
+
+            cout << endl;
         }
 
-        cout << endl;
+        lastAccuracy = accuracy;
+        lastError = error;
     }
 
     if (!this->pocket.empty()) {
         this->weights = this->pocket;
-    } 
+    }
+
+    if (verbose)
+    {
+        cout << endl;
+    }
+    
+    cout << "Best weights found: ";
+
+    for (size_t i = 0; i < this->weights.size(); i++)
+    {
+        cout << this->weights[i];
+
+        if (i + 1 != this->weights.size())
+        {
+            cout << ", ";
+        }
+        else
+        {
+            cout << endl;
+        }
+    }
+
+    this->bestAcc = ((double)(inputs.size() - this->bestSolution) / (double)inputs.size());
+
+    cout << "Best accuracy: " << this->bestAcc * 100.0 << "%" << endl;
+    cout << "Best error: " << (1.0 - this->bestAcc) * 100.0 << "%" << endl;
+}
+
+vector<double> Perceptron::getWeights() const
+{
+    return this->weights;
+}
+
+double Perceptron::getBestAcc() const
+{
+    return this->bestAcc;
 }

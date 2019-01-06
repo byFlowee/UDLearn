@@ -160,18 +160,18 @@ int main (int argc, char **argv)
     {
         //initialElitism = {0.189794, -0.560286, -0.460457, 0.823264, -0.65252, 0.115743, -0.194485, 0.109773, 0.382016, 0.0633527};
 
-        //weightsInitialization.resize(10);
+        weightsInitialization.resize(10);
 
-        //weightsInitialization[0] = WeightInitializationRange(-0.04754, 0.47709);
-        //weightsInitialization[1] = WeightInitializationRange(-1.44612, -0.54442);
-        //weightsInitialization[2] = WeightInitializationRange(-1.03555, 0.51202);
-        //weightsInitialization[3] = WeightInitializationRange(-0.50003, 1.19032);
-        //weightsInitialization[4] = WeightInitializationRange(-0.65252, -0.0181);
-        //weightsInitialization[5] = WeightInitializationRange(0.12, 1.39592);
-        //weightsInitialization[6] = WeightInitializationRange(-1.65275, 0.26552);
-        //weightsInitialization[7] = WeightInitializationRange(-0.40039, 0.83252);
-        //weightsInitialization[8] = WeightInitializationRange(0.11188, 0.38202);
-        //weightsInitialization[9] = WeightInitializationRange(-0.91, 0.19889);
+        weightsInitialization[0] = WeightInitializationRange(-0.04754, 0.47709);
+        weightsInitialization[1] = WeightInitializationRange(-1.44612, -0.54442);
+        weightsInitialization[2] = WeightInitializationRange(-1.03555, 0.51202);
+        weightsInitialization[3] = WeightInitializationRange(-0.50003, 1.19032);
+        weightsInitialization[4] = WeightInitializationRange(-0.65252, -0.0181);
+        weightsInitialization[5] = WeightInitializationRange(0.12, 1.39592);
+        weightsInitialization[6] = WeightInitializationRange(-1.65275, 0.26552);
+        weightsInitialization[7] = WeightInitializationRange(-0.40039, 0.83252);
+        weightsInitialization[8] = WeightInitializationRange(0.11188, 0.38202);
+        weightsInitialization[9] = WeightInitializationRange(-0.91, 0.19889);
 
         double mutationRate = 0.2;
         double crossoverRate = 0.7;
@@ -182,7 +182,7 @@ int main (int argc, char **argv)
         GANNWrapper gannWrapper(topologyBreakout, Game::breakout, generations, population, elitism, weightsFactor, filenameToSaveRecords);
 
         //gannWrapper.getGANN().setInitialElitism(initialElitism);
-        //gannWrapper.getGANN().setWeightInitializationRange(weightsInitialization);
+        gannWrapper.getGANN().setWeightInitializationRange(weightsInitialization);
         gannWrapper.getGANN().setMutationRate(mutationRate);
         gannWrapper.getGANN().setCrossoverRate(crossoverRate);
         

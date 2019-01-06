@@ -123,6 +123,17 @@ void checkKeys()
     }
 }
 
+/*
+ ***************************************************************************************
+ * *************************************************************************************
+ * *************************************************************************************
+ *  NOT ERASE: code only available when method alei.processBackRAM() is implemented! ***
+ *  NOT ERASE: code only available when method alei.processBackRAM() is implemented! ***
+ *  NOT ERASE: code only available when method alei.processBackRAM() is implemented! ***
+ * *************************************************************************************
+ * *************************************************************************************
+ ***************************************************************************************
+ *
 int currentValueOfRAM = 0;
 int stepsInitialization = 1;
 vector<int> freezePositions;
@@ -298,6 +309,17 @@ void checkAllValuesOfRAM()
 
     currentValueOfRAM++;
 }
+*
+***************************************************************************************
+* *************************************************************************************
+* *************************************************************************************
+*  NOT ERASE: code only available when method alei.processBackRAM() is implemented! ***
+*  NOT ERASE: code only available when method alei.processBackRAM() is implemented! ***
+*  NOT ERASE: code only available when method alei.processBackRAM() is implemented! ***
+* *************************************************************************************
+* *************************************************************************************
+***************************************************************************************
+*/
 
 float manualMode()
 {
@@ -335,6 +357,17 @@ float manualMode()
         cin >> empty;
     }
 
+    /*
+     ***************************************************************************************
+     * *************************************************************************************
+     * *************************************************************************************
+     *  NOT ERASE: code only available when method alei.processBackRAM() is implemented! ***
+     *  NOT ERASE: code only available when method alei.processBackRAM() is implemented! ***
+     *  NOT ERASE: code only available when method alei.processBackRAM() is implemented! ***
+     * *************************************************************************************
+     * *************************************************************************************
+     ***************************************************************************************
+     *
     if (positionToDisplay != -1 && positionToDisplay >= 0 && positionToDisplay <= 127)
     {
         cout << "RAM[" << positionToDisplay << "] = " << (int)alei.getRAM().get(positionToDisplay) << endl;
@@ -357,6 +390,16 @@ float manualMode()
             alei.processBackRAM();
         }
     }
+     ***************************************************************************************
+     * *************************************************************************************
+     * *************************************************************************************
+     *  NOT ERASE: code only available when method alei.processBackRAM() is implemented! ***
+     *  NOT ERASE: code only available when method alei.processBackRAM() is implemented! ***
+     *  NOT ERASE: code only available when method alei.processBackRAM() is implemented! ***
+     * *************************************************************************************
+     * *************************************************************************************
+     ***************************************************************************************
+     */
 
     return (reward + alei.act(PLAYER_A_NOOP));
 }
