@@ -75,7 +75,7 @@ Una vez llegado a este punto, lo que se puede hacer si se quiere modificar la RA
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=1\textwidth]{Figures/pokeMethod}
+	\includegraphics[width=1\textwidth,height=30mm]{Figures/pokeMethod}
 	\caption{Método \textit{poke(uInt16, uInt8)}}
 	\label{fig:pokeMethod}
 \end{figure}
@@ -84,7 +84,7 @@ El método que hemos implementado es muy sencillo. Es igual que el método \text
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=1\textwidth]{Figures/processBackRAM}
+	\includegraphics[width=1\textwidth,height=23mm]{Figures/processBackRAM}
 	\caption{Método que actualiza la RAM de la Atari 2600}
 	\label{fig:processBackRAM}
 \end{figure}
@@ -265,12 +265,11 @@ El Demon Attack es, sin duda, uno de los juegos mas complejos con los que hemos 
 
 Al analizar la RAM, observamos que habían demasiadas características a tener en cuenta, a pesar de tener un análisis detallado de la misma. Hay posiciones de RAM que representan varias cosas en diferentes situaciones, un ejemplo es el valor representado por \textit{RAM[20]}: 
 
-\newpage
 \textit{"20: Coordenada "X" de las balas del enemigo. También es la coordenada "X" de la mosca que se acerca para intentar matar al jugador 1 (se utiliza como una bala). Va desde 29 hasta 147 (incluso cuando dispara la mosca). El valor es todo el rato el mismo hasta que el enemigo dispara y actualiza la coordenada. Si hay mas de 2 cambios consecutivos en 2 frames significa que no es una bala y que es la mosca que sigue al jugador"}.
 
 Es por ello por lo que se dedujo que para implementar un bot básico (sin machine learning), era más fácil hacer un análisis de lo que estuviera pasando en la pantalla en un instante determinado, sin dejar de lado la RAM. Para esto, se diseñó un método de visión en el cual la nave es capaz de ver y filtrar enemigos en un área de visión y actuar concorde la situación dependiendo de unas reglas determinadas. En la figura \ref{fig:demonAttackVision} se puede observar el área de visión de la nave.
 
-\begin{figure}[h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=1\textwidth]{Figures/demonAttackVision}
 	\caption{Vision de la nave.}
@@ -296,7 +295,6 @@ La parte de detección funciona recogiendo la pantalla entera en grayscale, esto
 
 En la figura \ref{fig:demonAttackStaticOne} podemos observar diversas constantes, entre ellas el color de las balas del jugador 1, \textbf{P1\_BULLETS\_COLOR}, el color de la nave del jugador 1, \textbf{P1\_SHIP\_COLOR} y el color de las balas enemigas, \textbf{EN\_BULLETS\_COLOR}. Gracias a estar en grayscale, con tener un solo valor es suficiente. Además podemos observar otras constantes como \textbf{LINE\_WIDTH}, que representa el ancho en píxeles de la resolución de la Atari, \textbf{SHIP\_WIDTH}, el ancho en píxeles de la nave y \textbf{LEFT / RIGHT\_-THRESOLD}, que es la coordenada "X" mínima y máxima en la que se puede mover la nave aliada.
 
-\newpage
 Además de estas constantes, Demon Attack cuenta con cuatro constantes adicionales que nos permiten parametrizar algunas características de nuestro algoritmo, como se puede ver en la figura \ref{fig:demonAttackChangableOne} .
 
 \begin{figure}[h]
@@ -432,6 +430,7 @@ El perceptrón es una técnica de aprendizaje supervisado en la que le damos dat
     \tikzset{functions/.style={basic,circle,fill=blue!10}}
     
     \begin{tikzpicture}
+        \node[] (center) {};
         \node[functions,left=3em of center] (left) {$\sum$};
             \path[draw,->] (left) -- (center);
         \node[weights,left=3em of left] (2) {$w_3$} -- (2) node[input,left of=2] (l2) {$x_3$};
@@ -476,6 +475,12 @@ Finalmente, la figura \ref{fig:completeperceptron} muestra la estructura final d
     \tikzset{functions/.style={basic,circle,fill=blue!10}}
     
     \begin{tikzpicture}
+        \node[functions] (center) {};
+        \node[below of=center,font=\scriptsize,text width=3em,align=center] {sign function};
+        \draw[thick] (0.5em,0.5em) -- (0,0.5em) -- (0,-0.5em) -- (-0.5em,-0.5em);
+        \draw (0em,0.75em) -- (0em,-0.75em);
+        \draw (0.75em,0em) -- (-0.75em,0em);
+        
         \node[functions,left=3em of center] (left) {$\sum$};
             \path[draw,->] (left) -- (center);
         \node[weights,left=3em of left] (2) {$w_2$} -- (2) node[input,left of=2] (l2) {$x_2$};

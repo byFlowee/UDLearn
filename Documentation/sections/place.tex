@@ -34,6 +34,39 @@ Una vez hemos compilado el fichero, solo queda ejecutarlo. Para esto, desde la m
 	\item Cualquier opción extra no común no reflejada en la documentación aparecerá en el ejecutable siempre y cuando no se introduzca el input correctamente.
 \end{itemize}
 
+\newpage
+\subsection{Perceptrón}
+
+Para el perceptrón tenemos la posibilidad de ejecutar los experimentos que hemos implementado y están documentados en la sección \ref{subsec:perceptronexperiment}. El volver a ejecutarlos actualizará los pesos con otros diferentes (se utilizan datos aleatorios para la generación de los puntos).
+
+Hay un total de 5 experimentos, los cuales se codifican con un número. Tanto la codificación como la explicación de cada uno se describe:
+
+\begin{enumerate}
+    \item Experimento 1 (cod. = 1): se intenta que el perceptrón aprenda la función AND.
+    \item Experimento 2 (cod. = 2): se intenta que el perceptrón aprenda la función y = 0'5.
+    \item Experimento 3 (cod. = 3): se intenta que el perceptrón aprenda la función y = 0'5 * x.
+    \item Experimento 4 (cod. = 4): se intenta que el perceptrón aprenda la función y = -0'5 * x + 0.5.
+    \item Experimento 5 (cod. = 5): se intenta que el perceptrón aprenda la función y = 1/(10*x) la cual \textbf{no} es lineal.
+\end{enumerate}
+
+Al igual que el resto de tecnologías, solo habrá que ejecutar \textit{make} para obtener el fichero con el que se pueden ejecutar la tecnología (en caso de querer agregar nuevos experimentos habrá que entrar al cógido y modificarlo). Los posibles comandos se describen a continuación:
+
+\begin{enumerate}
+    \item De forma general:
+    \begin{enumerate}
+        \item ./main experimento [puntos épocas mensajes]
+    \end{enumerate}
+    \item Ejemplo 1: experimento 1 (función AND):
+    \begin{enumerate}
+        \item ./main 1
+    \end{enumerate}
+    \item Ejemplo 2: experimento 2 (y = 0.5) con 200 puntos, 100 épocas y activando mensajes:
+    \begin{enumerate}
+        \item ./main 2 200 100 1
+    \end{enumerate}
+\end{enumerate}
+
+Por defecto, el experimento 1 tiene 20 épocas asignadas y no se pueden cambiar. Esta decisión es debido a que la función AND suele obtener un acierto del 100\% en menos de 10 épocas. El resto de experimentos tienen asignado por defecto 40 puntos y 200 épocas y se puede modificar como se ha visto en los ejemplos. Para el experimento 1 se muestran todos los mensajes por defecto, ya que la cantidad no es excesiva y ayuda. Por el contrario, para el resto de experimentos por defecto los mensajes están desactivados, pero pueden activarse como se ha visto en los ejemplos.
 
 \newpage
 \subsection{Red Neuronal}
@@ -74,7 +107,7 @@ La ejecución de ambos modos es muy sencilla, y se describe a continuación:
             \item \textit{./main 1 5 100 breakoutRecords}
         \end{enumerate}
     \end{enumerate}
-    \Item Modo de ejecución:
+    \item Modo de ejecución:
     \begin{enumerate}
         \item De modo general:
         \begin{enumerate}
@@ -83,6 +116,18 @@ La ejecución de ambos modos es muy sencilla, y se describe a continuación:
         \item Ejemplo: ver el bot del Breakout.
         \begin{enumerate}
             \item \textit{./main 1}
+        \end{enumerate}
+        \item Ejemplo: ver el bot del Boxing.
+        \begin{enumerate}
+            \item \textit{./main 2}
+        \end{enumerate}
+        \item Ejemplo: ver el bot del Demon Attack.
+        \begin{enumerate}
+            \item \textit{./main 3}
+        \end{enumerate}
+        \item Ejemplo: ver el bot del StarGunner.
+        \begin{enumerate}
+            \item \textit{./main 4}
         \end{enumerate}
     \end{enumerate}
 \end{enumerate}
