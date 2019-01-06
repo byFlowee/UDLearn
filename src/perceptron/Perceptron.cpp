@@ -3,10 +3,15 @@
 #include <time.h>
 #include <limits>
 
-Perceptron::Perceptron(unsigned inputSize) {
+Perceptron::Perceptron(unsigned inputSize) :
+    bestAcc(-1.0)
+{
     srand(time(NULL));
-    for (unsigned i = 0; i <= inputSize; ++i) 
-        this->weights.push_back(Perceptron::getRandomWeight());  
+
+    for (unsigned i = 0; i <= inputSize; ++i)
+    { 
+        this->weights.push_back(Perceptron::getRandomWeight());
+    }
 }
 
 double Perceptron::computeOutput() {
@@ -173,7 +178,18 @@ void Perceptron::trainPerceptron(unsigned epochs, const vector<vector<double> > 
         }
     }
 
-    cout << "Best accuracy: " << ((double)(inputs.size() - this->bestSolution) / (double)inputs.size()) * 100.0 << "%" << endl;
-    cout << "Best error: " << (1.0 - ((double)(inputs.size() - this->bestSolution) / (double)inputs.size())) * 100.0 << "%" << endl;
-    
+    this->bestAcc = ((double)(inputs.size() - this->bestSolution) / (double)inputs.size());
+
+    cout << "Best accuracy: " << this->bestAcc * 100.0 << "%" << endl;
+    cout << "Best error: " << (1.0 - this->bestAcc) * 100.0 << "%" << endl;
+}
+
+vector<double> Perceptron::getWeights() const
+{
+    return this->weights;
+}
+
+double Perceptron::getBestAcc() const
+{
+    return this->bestAcc;
 }

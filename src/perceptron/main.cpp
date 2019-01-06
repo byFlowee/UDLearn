@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include <vector>
+#include <fstream>
 
 #include "Perceptron.h"
 
@@ -8,17 +9,22 @@ using namespace std;
 
 void ANDFunction()
 {
+    string filename = "ANDFunction";
     Perceptron p(2);
 
+    int epochs = 20;
     vector<vector<double>> inputs;
     vector<double> targets = {-1.0, -1.0, -1.0, 1.0};
+
+    cout << "Epochs: " << epochs << endl;
+    cout << endl;
 
     inputs.push_back({0.0, 0.0});
     inputs.push_back({0.0, 1.0});
     inputs.push_back({1.0, 0.0});
     inputs.push_back({1.0, 1.0});
 
-    p.trainPerceptron(200, inputs, targets);
+    p.trainPerceptron(epochs, inputs, targets);
 
     cout << endl;
     cout << "A B : A^B" << endl;
@@ -27,6 +33,31 @@ void ANDFunction()
     cout << "0 1 :  " << p.getPrediction({0.0, 1.0}) << endl;
     cout << "1 0 :  " << p.getPrediction({1.0, 0.0}) << endl;
     cout << "1 1 :  " << p.getPrediction({1.0, 1.0}) << endl;
+
+    ofstream weigthsOutputs((filename + ".weights").c_str());
+
+    if (!weigthsOutputs.is_open())
+    {
+        cerr << "ERROR: could't open the file \"" << (filename + ".weights") << "\"." << endl;
+    }
+    else
+    {
+        weigthsOutputs << "Accuracy: " << p.getBestAcc() * 100.0 << "%" << endl;
+        weigthsOutputs << "Error: " << (1.0 - p.getBestAcc()) * 100.0 << "%" << endl;
+        weigthsOutputs << endl;
+
+        vector<double> weights = p.getWeights();
+
+        for (size_t i = 0; i < weights.size(); i++)
+        {
+            weigthsOutputs << weights[i];
+
+            if (i + 1 != weights.size())
+            {
+                weigthsOutputs << ",";
+            }
+        }
+    }
 }
 
 double getRandomDouble(double min, double max)
@@ -34,85 +65,101 @@ double getRandomDouble(double min, double max)
     return min + ((double)rand() / RAND_MAX) * (max - min);
 }
 
-// Function: y = 0.5
-void function1(int points, int epochs, bool verbose = false)
+void functions(int function, int points, int epochs, bool verbose = false)
 {
+    cout << "Points: " << points << endl;
+    cout << "Epochs: " << epochs << endl;
+    cout << "Verbose: " << (verbose ? "yes" : "no") << endl;
+    cout << endl;
+
+    string filename = "function" + to_string(function) + ".csv";
     Perceptron p(2);
     vector<vector<double>> inputs;
     vector<double> targets;
+    ofstream file(filename.c_str());
+
+    if (!file.is_open())
+    {
+        cerr << "ERROR: could't open the file \"" << filename << "\"." << endl;
+    }
+    else
+    {
+        file << "x,y,target" << endl;
+    }
 
     for (int i = 0; i < points; i++)
     {
         double x = getRandomDouble(0.0, 1.0);
         double y = getRandomDouble(0.0, 1.0);
+        double target = 0.0;
+        bool change = true;
 
         inputs.push_back({x, y});
 
-        if (y < 0.5)
+        switch (function)
         {
-            targets.push_back(-1.0);
+            case 2:
+                if (y < 0.5)
+                {
+                    change = false;
+                    target = -1.0;
+                }
+                break;
+            case 3:
+                if (y < 0.5 * x)
+                {
+                    change = false;
+                    target = -1.0;
+                }
+                break;
+            case 4:
+                if (y < -0.5 * x + 0.5)
+                {
+                    change = false;
+                    target = -1.0;
+                }
+                break;
         }
-        else
+
+        if (change)
         {
-            targets.push_back(1.0);
+            target = 1.0;
         }
+
+        if (file.is_open())
+        {
+            file << x << "," << y << "," << target << endl;
+        }
+
+        targets.push_back(target);
     }
 
     p.trainPerceptron(epochs, inputs, targets, verbose);
-}
 
-// Function: y = 0.5 * x
-void function2(int points, int epochs, bool verbose = false)
-{
-    Perceptron p(2);
-    vector<vector<double>> inputs;
-    vector<double> targets;
+    ofstream weigthsOutputs((filename + ".weights").c_str());
 
-    for (int i = 0; i < points; i++)
+    if (!weigthsOutputs.is_open())
     {
-        double x = getRandomDouble(0.0, 1.0);
-        double y = getRandomDouble(0.0, 1.0);
-
-        inputs.push_back({x, y});
-
-        if (y < 0.5 * x)
-        {
-            targets.push_back(-1.0);
-        }
-        else
-        {
-            targets.push_back(1.0);
-        }
+        cerr << "ERROR: could't open the file \"" << (filename + ".weights") << "\"." << endl;
     }
-
-    p.trainPerceptron(epochs, inputs, targets, verbose);
-}
-
-// Function: y = -0.5 * x + 0.5
-void function3(int points, int epochs, bool verbose = false)
-{
-    Perceptron p(2);
-    vector<vector<double>> inputs;
-    vector<double> targets;
-
-    for (int i = 0; i < points; i++)
+    else
     {
-        double x = getRandomDouble(0.0, 1.0);
-        double y = getRandomDouble(0.0, 1.0);
+        weigthsOutputs << "Accuracy: " << p.getBestAcc() * 100.0 << "%" << endl;
+        weigthsOutputs << "Error: " << (1.0 - p.getBestAcc()) * 100.0 << "%" << endl;
+        weigthsOutputs << endl;
+        
+        vector<double> weights = p.getWeights();
 
-        inputs.push_back({x, y});
+        for (size_t i = 0; i < weights.size(); i++)
+        {
+            weigthsOutputs << weights[i];
 
-        if (y < -0.5 * x + 0.5)
-        {
-            targets.push_back(-1.0);
-        }
-        else
-        {
-            targets.push_back(1.0);
+            if (i + 1 != weights.size())
+            {
+                weigthsOutputs << ",";
+            }
         }
     }
-
-    p.trainPerceptron(epochs, inputs, targets, verbose);
 }
 
 int main(int argc, char **argv)
@@ -140,6 +187,7 @@ int main(int argc, char **argv)
             verbose = true;
         }
     }
+
     if (points < 0)
     {
         points = 40;
@@ -155,13 +203,13 @@ int main(int argc, char **argv)
             ANDFunction();
             break;
         case 2:
-            function1(points, epochs, verbose);
+            functions(2, points, epochs, verbose);
             break;
         case 3:
-            function2(points, epochs, verbose);
+            functions(3, points, epochs, verbose);
             break;
         case 4:
-            function3(points, epochs, verbose);
+            functions(4, points, epochs, verbose);
             break;
         default:
             cerr << "ERROR: unknown function." << endl;
