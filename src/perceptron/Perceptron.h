@@ -22,7 +22,7 @@ class Perceptron{
         double getOutput();
         void updateWeights(double target);
         double getPrediction(const vector<double> &inputs);
-        void trainPerceptron(unsigned epochs, const vector<vector<double> > &inputs, const vector<double> &targets);
+        void trainPerceptron(unsigned epochs, const vector<vector<double> > &inputs, const vector<double> &targets, bool = true);
 };
 
 #endif
