@@ -521,10 +521,10 @@ int main(int argc, char **argv)
             //cout << i << ", ";
    }
 
-   std::cout << "Steps: " << step << std::endl;
-   std::cout << "Reward: " << totalReward << std::endl;
-   
-	csv.close();
+    std::cout << "Steps: " << step << std::endl;
+    std::cout << "Reward: " << totalReward << std::endl;
+    
+    csv.close();
    
    return 0;
 }

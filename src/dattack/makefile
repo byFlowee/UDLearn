@@ -13,7 +13,7 @@ ALE := $(ALEPath)
 FLAGS := -I$(ALE)/src -I$(ALE)/src/controllers -I$(ALE)/src/os_dependent -I$(ALE)/src/environment -I$(ALE)/src/external -L$(ALE)
 CXX := g++
 FILE := da_bot
-LOADER := ../DataLoader/DataLoader
+LOADER := ../Technologies/DataLoader/DataLoader
 NETWORK := ../Technologies/NeuralNetwork/mat.cpp ../Technologies/NeuralNetwork/neuralNetwork.cpp
 LDFLAGS := -lale -lz
 

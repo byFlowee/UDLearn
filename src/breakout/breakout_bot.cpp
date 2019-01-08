@@ -9,8 +9,8 @@
 
 #include "SDL.h"
 
-#include "../DataLoader/DataLoader.h"
-#include "../NeuralNetwork/neuralNetwork.h"
+#include "../Technologies/DataLoader/DataLoader.h"
+#include "../Technologies/NeuralNetwork/neuralNetwork.h"
 
 using namespace std;
 
@@ -23,9 +23,8 @@ bool manualInput(false);
 time_t lastTimeChangedMode(std::time(0));
 vector<int> lastRAM(128);
 int BallX_LastTick(0);
-int tpl[] = { 4, 1 };
-int epochs = 1;
-vector<int> topology(tpl, tpl + sizeof(tpl)/sizeof(int));
+int epochs = 50;
+vector<int> topology2 = {4, 1};
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Print usage and exit
@@ -185,8 +184,9 @@ float NN(DataLoader &d)
     inputs.push_back(direction);
     inputs.push_back(playerX);
     inputs.push_back(wide);
-
-    Mat m = nn.getPrediction(values);
+    
+    outputs = d.getPrediction(inputs);
+    //Mat m = nn.getPrediction(values);
 
     if (outputs[0] < 0.5)
     {
@@ -222,8 +222,8 @@ int main(int argc, char **argv)
     const bool display_media(argc >= 3 ? atoi(argv[2])==1 : false);
     const bool printRam(argc >= 4 ? atoi(argv[3])==1 : false);
 
-    DataLoader d("../breakout/breakout.csv", topology);
-    d.trainNN(topology.front(),topology.back(),epochs);
+    DataLoader d("../breakout/breakout.csv", topology2);
+    d.trainNN(topology2.front(),topology2.back(),epochs);
 
     // Init rand seed
     srand(time(NULL));

@@ -182,7 +182,7 @@ void crossValidationTest() {
     NeuralNetwork nn(nodes, dropout);
     nn.setLearningRate(0.1);
 
-    nn.crossFoldValidation(30, 10, "../breakout/breakout.csv");
+    nn.crossFoldValidation(30, 10, "../../breakout/breakout.csv");
 }
 
 void dropoutTest() {
@@ -193,8 +193,8 @@ void dropoutTest() {
     NeuralNetwork regularNet(nodes);
 
     ifstream file1, file2;
-    file1.open("../../Documentation/CSVFiles/function5_+1.csv");
-    file2.open("../../Documentation/CSVFiles/function5_-1.csv");
+    file1.open("CSVFiles/function5_+1.csv");
+    file2.open("CSVFiles/function5_-1.csv");
 
     vector<string> line;
     

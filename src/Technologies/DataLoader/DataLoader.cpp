@@ -53,7 +53,6 @@ void DataLoader::trainNN(unsigned nInputs, unsigned nOutputs, unsigned epochs) {
         string dataTrainingLabels;
 
         getline(file, dataTrainingLabels);
-        cout << dataTrainingLabels << endl;
     
         vector<Mat> inputs;
         vector<Mat> expectedOutputs;
@@ -83,7 +82,6 @@ void DataLoader::trainNN(unsigned nInputs, unsigned nOutputs, unsigned epochs) {
                 eof = true;
         }
 
-        cout << "Training!" << endl;
         this->net->train(inputs, expectedOutputs, epochs);
     }
     else {

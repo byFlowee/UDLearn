@@ -7,10 +7,10 @@
 #include "ale_interface.hpp"
 #include "SDL.h"
 
-const string Player::BREAKOUT_ROM = "../breakout/breakout.bin";
-const string Player::BOXING_ROM = "../boxing/boxing.bin";
-const string Player::DEMONATTACK_ROM = "../dattack/demon_attack.bin";
-const string Player::STARGUNNER_ROM = "../strgunner/star_gunner.bin";
+const string Player::BREAKOUT_ROM = "../../breakout/breakout.bin";
+const string Player::BOXING_ROM = "../../boxing/boxing.bin";
+const string Player::DEMONATTACK_ROM = "../../dattack/demon_attack.bin";
+const string Player::STARGUNNER_ROM = "../../strgunner/star_gunner.bin";
 
 vector<int> Player::enemyBulletCoordinateXHistory;
 int Player::enemyBulletCoordinateXHistoryIndex = 0;

@@ -9,7 +9,7 @@
 
 #include "SDL.h"
 
-#include "../DataLoader/DataLoader.h"
+#include "../Technologies/DataLoader/DataLoader.h"
 
 using namespace std;
 
@@ -22,8 +22,8 @@ bool manualInput(false);
 time_t lastTimeChangedMode(std::time(0));
 vector<int> lastRAM(128);
 int BallX_LastTick(0);
-vector<int> topology = {123, 20, 10, 3};
-int epochs = 3;
+vector<int> topology = {123, 20, 3};
+int epochs = 10;
 
 
 
@@ -511,7 +511,8 @@ int main(int argc, char **argv)
     const bool display_media(argc >= 3 ? atoi(argv[2])==1 : false);
     const bool printRam(argc == 4 ? atoi(argv[3])==1 : false);
 
-    //DataLoader d("../dattack/demon_attack.csv", topology);
+    DataLoader d("../dattack/demon_attack.csv", topology);
+    d.trainNN(topology.front(),topology.back(), epochs);
     //cout << "Training completed, starting game..." << endl;
 
     // Init rand seed
