@@ -79,7 +79,7 @@ int main (int argc, char **argv)
     {
         cerr << "ERROR:" << endl;
         cerr << "  Usage_1 (train): ./main <GAME = 1 (breakout), 2 (boxing), 3 (demon attack), 4 (star gunner)> maxGenerations population filenameToSaveRecords" << endl;
-        cerr << "  Usage_2 (play):  ./main <GAME = 1 (breakout), 2 (boxing), 3 (demon attack), 4 (star gunner)>" << endl;
+        cerr << "  Usage_2 (play):  ./main <GAME = 1 (breakout), 2 (boxing), 3 (demon attack), 4 (star gunner)> <VISUALIZATION 0 (disabled) 1 (enabled)>" << endl;
 
         return 0;
     }
