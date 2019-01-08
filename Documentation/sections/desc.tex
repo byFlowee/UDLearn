@@ -294,13 +294,101 @@ En el último experimento de la figura \ref{fig:perceptronFunction5Experiment} u
 \subsection{Experimentos con la Red Neuronal}
 \label{subsec:nnexperiments}
 
+
+El primer experimento realizado ha sido con la función AND.
+
+\begin{figure}[H]
+    \centering
+    
+    \begin{tikzpicture}
+    \begin{axis}[width=12cm,xlabel=Epoch, ylabel=Error, legend style={at={(0.95,0.95)}},xmin=0,xmax=599,ymin=0,ymax=0.1]
+    
+        \addplot table [mark=none, x=Epoch, y=Error, col sep=comma,color=red] {CSVFiles/and.csv};
+        \addlegendentry{Error};
+    
+    \end{axis}
+    \end{tikzpicture}
+    
+    \caption{Error para la función AND con topología \{2, 10, 1\}} 
+    \label{fig:NetAndExperiment}
+\end{figure}
+
+A pesar de que la función AND es linealmente separable se ha utilizado una capa oculta para observar el comportamiento de la red. Como se puede observar el error decrece a buen ritmo hasta la época 500 donde empieza a decaer. Se ha utilizado un $\alpha$ de 0.1.
+
+También se han realiado experimentos con la función XOR ya que no es linealmente separable y es un buen punto de partida para probar la red.
+
+\begin{figure}[H]
+    \centering
+    
+    \begin{tikzpicture}
+    \begin{axis}[width=12cm,xlabel=Epoch, ylabel=Error, legend style={at={(0.95,0.95)}},xmin=0,xmax=20000,ymin=0,ymax=0.2]
+    
+        \addplot table [mark=none, x=Epoch, y=Error, col sep=comma,color=red] {CSVFiles/xor.csv};
+        \addlegendentry{Error};
+    
+    \end{axis}
+    \end{tikzpicture}
+    
+    \caption{Error para la función XOR con topología \{2, 40, 20, 10, 1\}} 
+    \label{fig:NetXorExperiment}
+\end{figure}
+
+Se ha utilizado una red profunda con una cantidad grande de neuronas para ver el comportamiento. Como se observa una vez la red encuentra una configuración buena el error cae en picado.
+
 \newpage
 \subsection{Experimentos con la Red Neuronal: \textit{Dropout}}
 \label{subsubsec:nnexperiments:Dropout}
 
+Se ha entrenado una red neuronal para que aprenda la función $y=\dfrac{1}{10*x}$ con y sin dropout, se han medido los valores de error en cada época.
+
+\begin{figure}[H]
+    \centering
+    
+    \begin{tikzpicture}
+    \begin{axis}[width=12cm,xlabel=Epoch, ylabel=Error, legend style={at={(0.95,0.95)}},xmin=0,xmax=20,ymin=0,ymax=0.1]
+    
+        \addplot table [x=Epoch, y=Error, col sep=comma,color=red] {CSVFiles/dropout04.csv};
+        \addlegendentry{Error con dropout = 0.4};
+        
+        \addplot table [x=Epoch, y=Error, col sep=comma,color=blue] {CSVFiles/dropout00.csv};
+        \addlegendentry{Error sin dropout};
+        
+    
+    \end{axis}
+    \end{tikzpicture}
+    
+    \caption{Error para $y=\dfrac{1}{10*x}$ con topología \{2, 4, 1\}} y dropout. 
+    \label{fig:dropoutFunctionExperiment}
+\end{figure}
+
+En este caso dropout no es realmente útil ya que tenemos una función sencilla de aprender con una topología bastante básica, se puede observar que la desactivación de algunas neuronas en las primeras épocas produce ciertos bumps en el error pero se normaliza hacia el final junto con la versión sin dropout.
+
 \newpage
 \subsection{Experimentos con la Red Neuronal: \textit{Cross Validation} 10}
 \label{subsubsec:nnexperiments:CV10}
+
+Se han realizado experimentos con validación cruzada. En este caso hemos utilizado un dataset real (datos extraidos de RAM de el videojuego Breakout)
+
+\begin{figure}[H]
+    \centering
+    
+    \begin{tikzpicture}
+    \begin{axis}[width=12cm,xlabel=Fold, ylabel=Error, legend style={at={(0.95,0.95)}},xmin=0,xmax=10,ymin=0,ymax=0.1]
+    
+        \addplot table [x=Fold, y=Error, col sep=comma,color=red] {CSVFiles/crossofld10.csv};
+        \addlegendentry{Error en validation set};
+        
+        \addplot table [x=Fold, y=Error, col sep=comma,color=blue] {CSVFiles/crossofld_train.csv};
+        \addlegendentry{Error en training set};
+    
+    \end{axis}
+    \end{tikzpicture}
+    
+    \caption{Error en train y validation $k = 10$} 
+    \label{fig:crossValExperiment}
+\end{figure}
+
+Con una validación cruzada de 10 folds en los que hemos separado el dataset en 10 particiones y hemos entrenado por separado, validando con ejemplos que la red no ha visto nunca. En el grafico podemos ver como el error en validación es bastante más variable en comparación con el error en entrenamiento que se mantiene más regular.
 
 \newpage
 \subsection{Experimentos con la Red Neuronal y Genético: \textit{GANN}}

@@ -11,7 +11,7 @@ void ANDFunction(bool showResults)
     cout << "------------" << endl;
 
     vector<int> nodes = {2, 10, 1};
-    vector<double> dropout = {0.0, 0.3, 0.0};
+    vector<double> dropout = {0.0, 0.0, 0.0};
 
     NeuralNetwork nn(nodes, dropout);
     nn.setLearningRate(0.1);
@@ -95,11 +95,11 @@ void XORFunction(bool showResults)
     cout << "XOR function" << endl;
     cout << "------------" << endl;
 
-    vector<int> nodes = {2, 10, 1};
-    vector<double> dropout = {0.0, 0.2, 0.0};
+    vector<int> nodes = {2, 40, 20, 10, 1};
+    vector<double> dropout = {0.0, 0.0, 0.0, 0.0, 0.0};
 
-    NeuralNetwork nn(nodes, dropout);
-    nn.setLearningRate(0.4);
+    NeuralNetwork nn(nodes);
+    nn.setLearningRate(0.05);
 
     Mat inputs1(1, 2);
     Mat inputs2(1, 2);
@@ -175,52 +175,6 @@ void XORFunction(bool showResults)
     }
 }
 
-void breakoutTest() {
-    ifstream file;
-
-    file.open("../breakout/breakout.csv");
-
-    vector<string> line = NeuralNetwork::getNextLineAndSplitIntoTokens(file);
-
-    for (size_t i = 0; i < line.size(); i++)
-    {
-        cout << line[i] << " ";
-    }
-
-    cout << endl;
-
-    vector<int> nodes = {4, 20, 10, 1};
-    vector<double> dropout = {0.0, 0.0, 0.0, 0.0};
-
-    NeuralNetwork nn(nodes, dropout);
-    nn.setLearningRate(0.1);
-
-    vector<Mat> inputs;
-    vector<Mat> expectedOutputs;
-
-    for (int i = 0; i < 4990; i++)
-    {
-        line.clear();
-        line = NeuralNetwork::getNextLineAndSplitIntoTokens(file);
-
-        Mat inputs1(1, 4);
-        Mat expectedOutputs1(1, 1);
-
-        inputs1.set(0, 0, atoi(line[0].c_str()));
-        inputs1.set(0, 1, atoi(line[1].c_str()));
-        inputs1.set(0, 2, atoi(line[2].c_str()));
-        inputs1.set(0, 3, atoi(line[3].c_str()));
-        expectedOutputs1.set(0, 0, atoi(line[4].c_str()));
-
-        inputs.push_back(inputs1);
-        expectedOutputs.push_back(expectedOutputs1);
-    }
-
-    nn.train(inputs, expectedOutputs, 100);
-
-    file.close();
-}
-
 void crossValidationTest() {
     vector<int> nodes = {4, 10, 1};
     vector<double> dropout = {0.0, 0.2, 0.0};
@@ -278,18 +232,18 @@ void dropoutTest() {
         inputs.push_back(inputs2);
         expectedOutputs.push_back(expectedOutputs2);
     }
-
-    cout << fixed;
-    cout.precision(15);
+    
     regularNet.train(inputs, expectedOutputs, 1000);
     dropoutNet.train(inputs, expectedOutputs, 1000);
 }
 
 int main(int argc, char **argv)
 {
-
+    
     if (argc == 2){ 
-
+        cout << fixed;
+        cout.precision(15);
+        
         switch (atoi(argv[1])) {
             case 1:
                 ANDFunction(true);
@@ -298,16 +252,13 @@ int main(int argc, char **argv)
                 XORFunction(true);
                 break;
             case 3:
-                breakoutTest();
-                break;
-            case 4:
                 crossValidationTest();
                 break;
-            case 5:
+            case 4:
                 dropoutTest();
                 break;
             default:
-                cout << "ExperimentID debe ser un valor entre 1 y 5" << endl;
+                cout << "ExperimentID debe ser un valor entre 1 y 4" << endl;
         }
     }
     else {

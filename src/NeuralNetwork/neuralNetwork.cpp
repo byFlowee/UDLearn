@@ -120,9 +120,6 @@ Mat NeuralNetwork::forwardPropagation(const Mat &initial, bool training)
 
         for (int j = 0; j < outputs.size(); j++)
         {
-            if (training && this->dropoutMats[i+1].get(0, j) == 0)
-                outputs.set(0, j, 0);
-            else
                 outputs.set(0, j, this->activationFunction(outputs.get(0, j) + this->bias[i].get(0, j)));
         }
 
@@ -205,9 +202,9 @@ void NeuralNetwork::backPropagation(const Mat &inputs, const Mat &expectedOutput
         {
             for (int col = 0; col < this->weights[i].cols(); col++)
             {
-                if (this->dropoutMats[i+1].get(0, col) != 0) {
+                //if (this->dropoutMats[i+1].get(0, col) != 0) {
                     weight.set(row, col, weight.get(row, col) - this->learningRate * this->a[i].get(0, row) * delta[i].get(0, col));
-                }
+                //}
             }
         }
     }
@@ -220,7 +217,7 @@ void NeuralNetwork::backPropagation(const Mat &inputs, const Mat &expectedOutput
 
         for (int row = 0; row < this->bias[i].rows(); row++)
         {   
-            if (this->dropoutMats[i+1].get(0, row) != 0)
+            //if (this->dropoutMats[i+1].get(0, row) != 0)
                 bias.set(0, row, bias.get(0, row) - this->learningRate * delta[i].get(0, row));
         }
     }
@@ -249,7 +246,7 @@ void NeuralNetwork::train(const vector<Mat> &inputs, const vector<Mat> &expected
 
             totalError += (meanError / this->error.size());
         }
-        
+
         cout << "Epoch " << i << " | Error: " << totalError / inputs.size() << endl;
     }
 }
@@ -311,10 +308,11 @@ vector<string> NeuralNetwork::getNextLineAndSplitIntoTokens(istream& str)
 
 double NeuralNetwork::getTotalError(const vector<Mat> &inputs, const vector<Mat> &expectedOutputs) {
 
-    double current = 0;
     double total = 0;
 
     for (size_t d = 0; d < inputs.size(); ++d) {
+        double current = 0;
+
         Mat outputs = this->forwardPropagation(inputs[d], false);
         Mat error = expectedOutputs[d].sub(outputs);
         
@@ -328,7 +326,7 @@ double NeuralNetwork::getTotalError(const vector<Mat> &inputs, const vector<Mat>
             current += error.get(0, i);
         }
 
-        current /= error.size();    //mean erro on one sample
+        current /= error.size();    //mean error on one sample
         total += current;
     }
 

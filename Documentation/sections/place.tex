@@ -71,7 +71,7 @@ Por defecto, el experimento 1 tiene 20 épocas asignadas y no se pueden cambiar.
 \newpage
 \subsection{Red Neuronal}
 
-La red neuronal se encuentra en el directorio NeuralNetwork y contiene un makefile para compilar y un fichero $main.cpp$ con 5 experimentos.  Para construir y entrenar una red neuronal simplemente hay que crear un vector con la topología (numero de neuronas en cada capa) por ejemplo, $\left \{8, 4, 2 \right \}$ si queremos una red neuronal con 8 neuronas de input, una capa oculta con 4 neuronas y 2 neuronas de output. El constructor por defecto recibe este vector de topología y nos devuelve una red. Existe un segundo constructor que además de el vector de topología recibe un vector de dropout, este tiene que tener el mismo tamaño que el de topología y valores de probabilidad de dropout para cada capa, comprendidos entre $0.0$ y $1.0$. Por ejemplo siguiendo el caso anterior, $\left \{0.0, 0.2, 0.0 \right \}$ añadería una probabilidad del 20\% de que las neuronas de la capa oculta queden deshabilitadas.
+La red neuronal se encuentra en el directorio NeuralNetwork y contiene un makefile para compilar y un fichero $main.cpp$ con 4 experimentos.  Para construir y entrenar una red neuronal simplemente hay que crear un vector con la topología (numero de neuronas en cada capa) por ejemplo, $\left \{8, 4, 2 \right \}$ si queremos una red neuronal con 8 neuronas de input, una capa oculta con 4 neuronas y 2 neuronas de output. El constructor por defecto recibe este vector de topología y nos devuelve una red. Existe un segundo constructor que además de el vector de topología recibe un vector de dropout, este tiene que tener el mismo tamaño que el de topología y valores de probabilidad de dropout para cada capa, comprendidos entre $0.0$ y $1.0$. Por ejemplo siguiendo el caso anterior, $\left \{0.0, 0.2, 0.0 \right \}$ añadería una probabilidad del 20\% de que las neuronas de la capa oculta queden deshabilitadas.
 
 Una vez creada la red, podemos entrenarla con el método de clase $train()$ que recibe dos vectores de Matrices (clase $Mat.cpp$) uno contiene los ejemplos de entrada para el entrenamiento y el otro los outputs esperados. Cada matriz del vector es un ejemplo de entrenamiento que debe coincidir con la shape de la red neuronal.
 
@@ -82,12 +82,11 @@ El fichero $main.cpp$ contiene 5 ejemplos de ejecución.
 \begin{enumerate}
     \item Experimento 1: Funcion AND 
     \item Experimento 2: Función XOR
-    \item Experimento 3: Breakout
-    \item Experimento 4: CrossValidation
-    \item Experimento 5: Dropout
+    \item Experimento 3: CrossValidation
+    \item Experimento 4: Dropout
 \end{enumerate}
 
-Para reproducirlos sencillamente hay que compilar con $make$ y ejecutar $./main$ $experimento$ dodne $experimento$ es un entero de con valor de 1 a 5.
+Para reproducirlos sencillamente hay que compilar con $make$ y ejecutar $./main$ $experimento$ dodne $experimento$ es un entero de con valor de 1 a 4.
 
 \newpage
 \subsection{Red Neuronal y Genético: \textit{GANN}}
