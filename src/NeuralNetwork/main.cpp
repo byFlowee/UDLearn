@@ -11,7 +11,7 @@ void ANDFunction(bool showResults)
     cout << "------------" << endl;
 
     vector<int> nodes = {2, 10, 1};
-    vector<double> dropout = {0.0, 0.2, 0.0};
+    vector<double> dropout = {0.0, 0.3, 0.0};
 
     NeuralNetwork nn(nodes, dropout);
     nn.setLearningRate(0.1);
@@ -189,8 +189,8 @@ void breakoutTest() {
 
     cout << endl;
 
-    vector<int> nodes = {4, 10, 1};
-    vector<double> dropout = {0.0, 0.2, 0.0};
+    vector<int> nodes = {4, 20, 10, 1};
+    vector<double> dropout = {0.0, 0.0, 0.0, 0.0};
 
     NeuralNetwork nn(nodes, dropout);
     nn.setLearningRate(0.1);
@@ -216,7 +216,7 @@ void breakoutTest() {
         expectedOutputs.push_back(expectedOutputs1);
     }
 
-    nn.train(inputs, expectedOutputs, 1000);
+    nn.train(inputs, expectedOutputs, 100);
 
     file.close();
 }
@@ -232,47 +232,57 @@ void crossValidationTest() {
 }
 
 void dropoutTest() {
-    vector<int> nodes = {4, 10, 1};
-    vector<double> dropout = {0.0, 0.2, 0.0};
+    vector<int> nodes = {2, 2, 1};
+    vector<double> dropout = {0.0, 0.4, 0.0};
 
     NeuralNetwork dropoutNet(nodes, dropout);
     NeuralNetwork regularNet(nodes);
 
-    ifstream file;
-    file.open("../breakout/breakout.csv");
+    ifstream file1, file2;
+    file1.open("../../Documentation/CSVFiles/function5_+1.csv");
+    file2.open("../../Documentation/CSVFiles/function5_-1.csv");
 
-    vector<string> line = NeuralNetwork::getNextLineAndSplitIntoTokens(file);
-
-    for (size_t i = 0; i < line.size(); i++)
-    {
-        cout << line[i] << " ";
-    }
-
-    cout << endl;
+    vector<string> line;
+    
+    NeuralNetwork::getNextLineAndSplitIntoTokens(file1);
+    NeuralNetwork::getNextLineAndSplitIntoTokens(file2);
 
     vector<Mat> inputs;
     vector<Mat> expectedOutputs;
 
-    for (int i = 0; i < 4990; i++)
+    for (int i = 0; i < 68; i++)
     {
         line.clear();
-        line = NeuralNetwork::getNextLineAndSplitIntoTokens(file);
+        line = NeuralNetwork::getNextLineAndSplitIntoTokens(file1);
 
-        Mat inputs1(1, 4);
+        Mat inputs1(1, 2);
         Mat expectedOutputs1(1, 1);
 
         inputs1.set(0, 0, atoi(line[0].c_str()));
         inputs1.set(0, 1, atoi(line[1].c_str()));
-        inputs1.set(0, 2, atoi(line[2].c_str()));
-        inputs1.set(0, 3, atoi(line[3].c_str()));
-        expectedOutputs1.set(0, 0, atoi(line[4].c_str()));
-
+        expectedOutputs1.set(0, 0, 1);
+        
         inputs.push_back(inputs1);
         expectedOutputs.push_back(expectedOutputs1);
+        
+        line.clear();
+        line = NeuralNetwork::getNextLineAndSplitIntoTokens(file2);
+
+        Mat inputs2(1, 2);
+        Mat expectedOutputs2(1, 1);
+
+        inputs1.set(0, 0, atoi(line[0].c_str()));
+        inputs1.set(0, 1, atoi(line[1].c_str()));
+        expectedOutputs1.set(0, 0, 1);
+
+        inputs.push_back(inputs2);
+        expectedOutputs.push_back(expectedOutputs2);
     }
 
-    regularNet.train(inputs, expectedOutputs, 100);
-    dropoutNet.train(inputs, expectedOutputs, 100);
+    cout << fixed;
+    cout.precision(15);
+    regularNet.train(inputs, expectedOutputs, 1000);
+    dropoutNet.train(inputs, expectedOutputs, 1000);
 }
 
 int main(int argc, char **argv)

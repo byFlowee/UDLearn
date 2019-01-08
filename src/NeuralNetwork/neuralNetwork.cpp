@@ -92,8 +92,11 @@ void NeuralNetwork::updateDropoutMats() {
             }
         }
 
-        //dropout.print();
-        //cout << endl;
+        /*PRINT DROPOUT MATIXES 
+        cout << "Dropout layer " << l << endl;
+        dropout.print();
+        cout << endl;
+        */
         this->dropoutMats.push_back(dropout);
     }
 }
@@ -110,14 +113,17 @@ Mat NeuralNetwork::forwardPropagation(const Mat &initial, bool training)
     this->da.push_back(initial.copy());
 
     for (size_t i = 0; i < this->size.size() - 1; i++)
-    {
+    { 
         outputs = outputs.mult(this->weights[i]);
 
         this->a.push_back(outputs.copy());
 
         for (int j = 0; j < outputs.size(); j++)
         {
-            outputs.set(0, j, this->activationFunction(outputs.get(0, j) + this->bias[i].get(0, j)));
+            if (training && this->dropoutMats[i+1].get(0, j) == 0)
+                outputs.set(0, j, 0);
+            else
+                outputs.set(0, j, this->activationFunction(outputs.get(0, j) + this->bias[i].get(0, j)));
         }
 
         this->da.push_back(outputs.copy());
@@ -199,8 +205,9 @@ void NeuralNetwork::backPropagation(const Mat &inputs, const Mat &expectedOutput
         {
             for (int col = 0; col < this->weights[i].cols(); col++)
             {
-                //weight.set(row, col, weight.get(row, col) - this.learningRate * this.a.get(i).get(0, row) * delta.get(i).get(0, col));
-                weight.set(row, col, weight.get(row, col) - this->learningRate * this->a[i].get(0, row) * delta[i].get(0, col));
+                if (this->dropoutMats[i+1].get(0, col) != 0) {
+                    weight.set(row, col, weight.get(row, col) - this->learningRate * this->a[i].get(0, row) * delta[i].get(0, col));
+                }
             }
         }
     }
@@ -212,9 +219,9 @@ void NeuralNetwork::backPropagation(const Mat &inputs, const Mat &expectedOutput
         Mat &bias = this->bias[i];
 
         for (int row = 0; row < this->bias[i].rows(); row++)
-        {
-            //bias.set(0, row, bias.get(0, row) - this.learningRate * delta.get(i).get(0, row));
-            bias.set(0, row, bias.get(0, row) - this->learningRate * delta[i].get(0, row));
+        {   
+            if (this->dropoutMats[i+1].get(0, row) != 0)
+                bias.set(0, row, bias.get(0, row) - this->learningRate * delta[i].get(0, row));
         }
     }
 }
@@ -242,8 +249,8 @@ void NeuralNetwork::train(const vector<Mat> &inputs, const vector<Mat> &expected
 
             totalError += (meanError / this->error.size());
         }
-
-        cout << "Epoch " << i << "\n Error: " << totalError / inputs.size() << endl;
+        
+        cout << "Epoch " << i << " | Error: " << totalError / inputs.size() << endl;
     }
 }
 

@@ -598,6 +598,263 @@ Nuestro código es muy similar al descrito, ya que la parte más importante es l
 \subsection{Redes neuronales}
 \label{subsec:nn}
 
+En esta sección describiremos los detalles de implementación y las bases a partir de las cuales hemos construido nuestras redes neuronales asi como sus algoritmos de aprendizaje. En concreto hemos utilizado dos metodos.
+
+\begin{itemize}
+    \item \textbf{Aprendizaje supervisdo:} Utilizando el algoritmo de \textbf{Backpropagation}.
+    \item \textbf{Aprendizaje no supervisado:} Utilizando un algorítmo genético.
+\end{itemize}
+
+Podemos ver la estructura básica de la red en la figura \ref{fig:neuralNetwork}.\newline
+
+\begin{figure}[h]
+    \tikzset{%
+      every neuron/.style={
+        circle, draw, fill=blue!20, minimum size=1cm
+      },
+      neuron missing/.style={
+        draw=none, scale=4,text height=0.333cm, fill=none, execute at begin node=\color{black}$\vdots$
+      },
+    }
+
+    \begin{tikzpicture}[x=1.5cm, y=1.5cm, >=stealth]
+        
+        \foreach \m/\l [count=\y] in {1,2,3,missing,4}
+          \node [every neuron/.try, neuron \m/.try] (input-\m) at (0,2.5-\y) {};
+        
+        \foreach \m [count=\y] in {1,missing,2}
+          \node [every neuron/.try, neuron \m/.try ] (hidden-\m) at (2,2-\y*1.25) {};
+        
+        \foreach \m [count=\y] in {1,missing,2}
+          \node [every neuron/.try, neuron \m/.try ] (output-\m) at (4,1.5-\y) {};
+        
+        \foreach \l [count=\i] in {1,2,3,n}
+          \draw [<-] (input-\i) -- ++(-1,0)
+            node [above, midway] {$I_\l$};
+        
+        \foreach \l [count=\i] in {1,n}
+          \node [above] at (hidden-\i.north) {$H_\l$};
+        
+        \foreach \l [count=\i] in {1,n}
+          \draw [->] (output-\i) -- ++(1,0)
+            node [above, midway] {$O_\l$};
+        
+        \foreach \i in {1,...,4}
+          \foreach \j in {1,...,2}
+            \draw [->] (input-\i) -- (hidden-\j);
+        
+        \foreach \i in {1,...,2}
+          \foreach \j in {1,...,2}
+            \draw [->] (hidden-\i) -- (output-\j);
+        
+        \foreach \l [count=\x from 0] in {Input, Hidden, Ouput}
+          \node [align=center, above] at (\x*2,2) {\l \\ layer};
+    
+    \end{tikzpicture}
+    \caption{Estructura de una Red Neuronal}
+    \label{fig:neuralNetwork}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    
+    \tikzset{basic/.style={draw,fill=blue!20,text width=1em,text badly centered}}
+    \tikzset{input/.style={basic,circle}}
+    \tikzset{weights/.style={basic,rectangle}}
+    \tikzset{functions/.style={basic,circle,fill=blue!10}}
+    
+    \begin{tikzpicture}
+        \node[functions] (centre) {\tikz \draw[scale=0.11,domain=-2.141:2.141,smooth,variable=\t] %
+        plot (\t,{sin(\t r)});};
+        \node[below of=center,font=\scriptsize,text width=3em,align=center] {activation function};
+        
+        \node[functions,left=3em of center] (left) {$\sum$};
+            \path[draw,->] (left) -- (center);
+        \node[weights,left=3em of left] (2) {$w_2$} -- (2) node[input,left of=2] (l2) {$x_2$};
+            \path[draw,->] (l2) -- (2);
+            \path[draw,->] (2) -- (left);
+        \node[below of=2] (dots) {$\vdots$} -- (dots) node[left of=dots] (ldots) {$\vdots$};
+        \node[weights,below of=dots] (n) {$w_n$} -- (n) node[input,left of=n] (ln) {$x_n$};
+            \path[draw,->] (ln) -- (n);
+            \path[draw,->] (n) -- (left);
+        \node[weights,above of=2] (1) {$w_1$} -- (1) node[input,left of=1] (l1) {$x_1$};
+            \path[draw,->] (l1) -- (1);
+            \path[draw,->] (1) -- (left);
+        \node[weights,above of=1] (0) {$w_0$} -- (0) node[input,left of=0] (l0) {$1$};
+            \path[draw,->] (l0) -- (0);
+            \path[draw,->] (0) -- (left);
+        \node[below of=ln,font=\scriptsize] {inputs};
+        \node[below of=n,font=\scriptsize] {weights};
+        \node[right of=center,font=\scriptsize] {output};
+    \end{tikzpicture}
+    
+    \caption{Estructura de la Neurona}
+    \label{fig:completeNeuron}
+\end{figure}
+
+Cada nodo representa una neurona, en la figura \ref{fig:completeNeuron} se representa el funcionamiento de cada una de ellas y se puede computar de la siguiente forma.
+
+\[y=\sigma(\sum_{i=0}^{N}x_{i}*w_{i})\]
+\newline
+
+Donde sigma representa la función de activación, $x_i$ los inputs de la neurona y $w_i$ los pesos correspondientes.
+
+Su estructura es muy similar a la del perceptron con la diferencia de que en lugar de una funcion de signo, su salida pasa por una función de activación (tanh, sigmoid, ReLU...) que modifica la salida en lugar de simplemente tomar una salida de +1 o -1.
+
+Por ejemplo, la función ReLU(x) tomará 0 como salida para cualquier x con valor negativo mientras que tomará valor x para cualquier valor positivo de x.
+
+\[
+  ReLU =
+  \begin{cases}
+    0 & \text{for } x < 0 \\
+    x & \text{otherwise}
+  \end{cases}
+\]
+
+A diferencia del perceptrón, una red neuronal es capaz de clasificar datos que no sean linealmente separables,combinando varias neuronas la red es capaz de aprender funciones más complejas. Debido a esta mayor expresividad, se nos presenta un nuevo problema que no existia con los clasificadores lineales, y es que ahora nuestro algoritmo es capaz de hacer \textbf{overfiting}. 
+
+El overfit es un problema común en los algoritmos de aprendizaje basado en que el algoritmo memoriza los ejemplos de entrenamiento en lugar de encontrar una solución general para otros casos que no ha visto nunca. Para evitar el overfit existen numerosas técnicas, algunas de ellas han sido implementadas y las veremos más adelante, aunque la forma más simple de reducir este fenómeno es encontrar una red con la minima dimensión posible que sea capaz de encontrar una solución general. Es decir, es mucho más sencillo que una recta sea una solución genérica a un problema que un polinomio de grado 8, sencillamente porque el polinomio de grado 8 tiene muchas más variables y es capaz de ser representado de muchas formas distintas. Es por esto que a la hora de utilizar una red neuronal para aprendizaje busquemos adecuar el tamaño de la red (numero de capas ocultas, numero de neuronas...) a la complejidad del problema.
+
+\newpage
+\subsubsection{Backpropagation}
+\label{subsubsec:nn:backprop}
+
+Uno de los algoritmos más comunes y utilizados para entrenar redes neuronales es \textbf{Backpropagation}. Se basa en buscar una minimización de la función de error utilizando el método de descenso por gradiente, considerando la combinación de los distintos pesos que minimizan este error una posible solución al problema.
+
+
+\begin{algorithm}[H]
+    Inicializar los pesos con valores aleatorios normalizados entre -1 y +1
+    Feed forward pass\\
+    \For{$layer \gets 0$ to $layers$}
+    {
+        \For{$neuron \gets 0$ to $layerSize$}
+        {
+            neuron.computeOutput();
+        }
+	}
+	
+	Gradient for output layer\\
+	\For{$neuron \gets 0$ to $outputLayerSize$}
+	{
+	    node.activationPrimeError(outputs, expectedOutputs);
+	}
+	
+	Gradient for hidden layers
+	\For{$layer \gets layers[layersSize - 1]$ to $0$} 
+	{
+	    \For{$neuron \gets 0$ to $layerSize$} 
+	    {   
+	        $nextLayer = layer + 1;$
+	        $delta = nextLayer.getDelta(neuron)$
+	        
+	        \For{$nextLayerNeuron \gets 0$ to $nextLayer$} 
+	        {
+	            $delta *= nextLayerNeuron.getWeight() * nextLayerNeuron.getDelta()$
+	        }
+	    }
+	}
+	
+	Weight update\\
+	\For{$layer \gets 0$ to $layers$}
+    {
+        \For{$neuron \gets 0$ to $layerSize$}
+        {
+            $neuron.setWeight(neuron.getWeight() - learningRate * neuron.getOutput() * neuron.getDelta()$
+        }
+    }
+	    
+	\caption{Backpropagation}
+	\label{alg:backprop}
+\end{algorithm}
+
+El algoritmo se basa en la minimización de la función de error (computada en base a los resultados obtenidos y a los resultados esperados). Obteniendo la derivada del gradiente de la función de error podemos minimizarla, haciendo asi más pequeño el valor de error global de la red.
+
+\[
+    \nabla E = \left( \dfrac{\delta E}{w_1}, \dots  \dfrac{\delta E}{w_n}, \dfrac{\delta E}{b} \right)
+\]
+
+A la hora de actualizar los pesos introducimos el \textbf{learning rate} o ratio de aprendizaje ($\alpha$), este se encarga de controlar el tamaño de los saltos en el gradiente. Si es muy elevado, dará pasos muy grandes y es posible que se pase una solución optima, si es muy bajo, dará pasos muy pequeños y tardará mucho en alcanzar una solución. En forma matemática la actualización de pesos es la siguiente:
+
+\[
+    w\prime_i \longleftarrow w_i - \alpha[-(y - \hat{y}) x_i]
+\]
+
+A continuación se describiran metodos de regularización que han sido implementados en esta práctica.
+
+\newpage
+\subsubsection{Dropout}
+\label{subsubsec:nn:backprop:dropout}
+
+El dropout es una técnica de regularización en la cual se seleccionan varias neuronas de forma aleatoria con una probabilidad $p$ y se deshabilitan temporalmente junto con sus inputs y outputs. Esto implica que dichas neuronas no tendrán ningún efecto en la activación durante el \textbf{forward pass} ni tendrán efecto en la actualización de los pesos durante el \textbf{backward pass}.
+
+Como hemos comentado con anterioridad, la gran expresividad de las redes neuronales profundas las hace propensas al overfitting, con una cantidad de datos limitada, es facil que las neuronas aprendan patrones y ahayn neuronas que dependan de sus vecinas o simplemente no tengan importancia en la red. Para evitar esto aplicamos dropout en cada epoca de entrenamiento.
+
+\begin{algorithm}
+    \For{$epoch \gets 0$ to $totalEpochs$}
+    {
+        \For{$layer \gets 0$ to $layers$}
+        {
+            \For{$neuron \gets 0$ to $layerSize$} 
+            {
+                 \If{$dropout[neuron] < RandomDouble(0.0, 1.0)$}
+                 {
+                    $neuron.disable()$
+                 }
+            }    
+        }
+        
+        $network.train(trainingSamples)$
+    }    
+	\caption{Dropout}
+	\label{alg:dropout}
+\end{algorithm}
+
+Donde $dropout$ es un vector que contiene los valores de probabilidad uniformes de que una neurona sea deshabilitada. Nuestra implementación varía ligeramente del algoritmo mostrado, ya que en lugar de deshabilitar la neurona como tal, tenemos una matriz con la misma shape que la capa que contiene valores $0$ ó $1$, de forma que multiplicando el output de la neurona por esta matriz la neurona queda deshabilitada.
+
+\newpage
+\subsubsection{Cross Validation}
+\label{subsubsec:nn:backprop:crossVal}
+
+Cross-fold validation es una técnica para evaluar modelos predictivos mediante el particionado de el espacio de ejemplos de entrenamiento en un set de entrenamiento y otro de validación.
+
+Este procedimiento que cuenta un único parámetro, el número $k$ es el número de grupos en el que vamos a dividir los datos de entrenamiento. Cross validation es comunmente utilizado en modelos de machine learning para estimar la habilidad del modelo para rendir en datos que no ha visto nunca cuando contamos con datasets limitados.
+
+\begin{algorithm}
+     $perFoldSamples = totalDataInputs / folds$
+     
+     \For{$k \gets 0$ to $folds$} 
+     {
+        $currentSampleIndex = k * perFoldSamples$
+        
+        \For{$input \gets 0$ to $inputsSize$} 
+        {
+            \eIf{$input.belongsToK(currentSampleIndex,input,k)$}
+            {
+                $trainingSamples.push\_back(inputs[input])$
+            }
+            {
+                $validationSamples.push\_back(inputs[input])$
+            }   
+        }
+        
+        NeuralNetwork $net()$
+        
+        $net.train(trainingSamples, epochs)$
+        
+        $foldScore$ += $net.getTotalError(validationSamples)$
+        
+        $trainingSamples.clear()$
+        
+        $validationSamples.clear()$
+     }
+     
+     \textbf{return} $(foldScore / folds)$
+    
+	\caption{Cross-Fold Validation}
+	\label{alg:crossval}
+\end{algorithm}
+
+El algoritmo es muy simple, vamos a hacer $k$ redes que van a entrenar sobre particiones distintas del conjunto de entrenamiento, para ello, en cada iteración dividimos los datos en dos grupos, uno de entrenamiento y otro de validación, una vez hecho esto, entrenamos la red con el grupo de entrenamiento y obtenemos el error con el grupo de validación. Una vez acabado obtenemos la media de las K iteraciones.
 
 \newpage
 \subsubsection{Algoritmo Genético (GANN)}
