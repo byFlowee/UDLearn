@@ -237,7 +237,7 @@ void NeuralNetwork::train(const vector<Mat> &inputs, const vector<Mat> &expected
             this->backPropagation(inputs[j], expectedOutputs[j]);
 
             double meanError = 0;
-            for (size_t k = 0; k < this->error.size(); ++k) 
+            for (int k = 0; k < this->error.size(); ++k) 
                 meanError += this->error.get(0, k);
 
             totalError += (meanError / this->error.size());
@@ -317,7 +317,7 @@ double NeuralNetwork::getTotalError(const vector<Mat> &inputs, const vector<Mat>
 
         error.scalar(0.5);
 
-        for (size_t i = 0; i < error.size(); ++i) {
+        for (int i = 0; i < error.size(); ++i) {
             current += error.get(0, i);
         }
 
