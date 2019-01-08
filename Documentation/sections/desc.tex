@@ -18,7 +18,7 @@ El primer experimento que hemos realizado con el perceptrón ha sido sencillo, c
 	\label{alg:andfunction}
 \end{algorithm}
 
-La función AND es linealmente separable, por lo que el perceptrón debería de poder separar los puntos eventualmente. En la figura \ref{fig:andFunctionTargets} se muestran los puntos que queremos separar (como subindice tienen el valor que se espera por el perceptrón).
+La función AND es linealmente separable, por lo que el perceptrón debería de poder separar los puntos eventualmente. En la figura \ref{fig:andFunctionTargets} se muestran los puntos que queremos separar (como subíndice tienen el valor que se espera por el perceptrón).
 
 \begin{figure}[h]
 	\centering
@@ -50,7 +50,7 @@ La función AND es linealmente separable, por lo que el perceptrón debería de 
 
 En la figura \ref{fig:andFunctionPLAIterations} podemos ver como el PLA ha ido ajustando los pesos para buscar el plano que separa correctamente estos puntos.
 
-Una vez observamos los resultados nos damos cuenta de algo, y es que al aplicar la función signo hay una recta que corta con el plano XY, y por lo tanto podemos reducir los resultados en 1 dimensión y dejar los datos mucho más claros (pasar los resultados de las 3 dimensiones al plano XY en 2 dimensiones). Lo que hay que hacer para esto es igualar la ecuación obtenida del plano (no es encesario que sea con la función signo aplicada) y resolver el sistema de ecuaciones que se forma con el plano XY.
+Una vez observamos los resultados nos damos cuenta de algo, y es que al aplicar la función signo hay una recta que corta con el plano XY, y por lo tanto podemos reducir los resultados en 1 dimensión y dejar los datos mucho más claros (pasar los resultados de las 3 dimensiones al plano XY en 2 dimensiones). Lo que hay que hacer para esto es igualar la ecuación obtenida del plano (no es necesario que sea con la función signo aplicada) y resolver el sistema de ecuaciones que se forma con el plano XY.
 
 \[PlanoXY: (x,y,z)=(x,y,0)\equiv z=0\]
 \[PlanoFunciónAND:z=1.35065*x+0.657562*y-1.35867\]
@@ -315,7 +315,7 @@ El primer experimento realizado ha sido con la función AND.
 
 A pesar de que la función AND es linealmente separable se ha utilizado una capa oculta para observar el comportamiento de la red. Como se puede observar el error decrece a buen ritmo hasta la época 500 donde empieza a decaer. Se ha utilizado un $\alpha$ de 0.1.
 
-También se han realiado experimentos con la función XOR ya que no es linealmente separable y es un buen punto de partida para probar la red.
+También se han realizado experimentos con la función XOR ya que no es linealmente separable y es un buen punto de partida para probar la red.
 
 \begin{figure}[H]
     \centering
@@ -388,7 +388,7 @@ Se han realizado experimentos con validación cruzada. En este caso hemos utiliz
     \label{fig:crossValExperiment}
 \end{figure}
 
-Con una validación cruzada de 10 folds en los que hemos separado el dataset en 10 particiones y hemos entrenado por separado, validando con ejemplos que la red no ha visto nunca. En el grafico podemos ver como el error en validación es bastante más variable en comparación con el error en entrenamiento que se mantiene más regular.
+Con una validación cruzada de 10 folds en los que hemos separado el dataset en 10 particiones y hemos entrenado por separado, validando con ejemplos que la red no ha visto nunca. En el gráfico podemos ver como el error en validación es bastante más variable en comparación con el error en entrenamiento que se mantiene más regular.
 
 \newpage
 \subsection{Experimentos con la Red Neuronal y Genético: \textit{GANN}}
@@ -417,7 +417,7 @@ El primer experimento vamos a ver los mejores resultados obtenidos en el videoju
     \label{fig:breakoutWithAndWithoutElitism}
 \end{figure}
 
-Otro de los experimentos que realizamos fue inicializar los pesos en el rango [-2.0, 2.0] en vez de [-1.0, 1.0]. Este cambio depende mucho del problema, ya que al aumentar el rango al doble de posibles valores debería de ser más dificil de obtener una mejor inicialización, pero eventualmente, como ahora tenemos pesos que no están solo limitados al rango [-1.0, 1.0] sino que ahora pueden tener un rango mayor de valores, puede que ahora tengan la posibilidad de obtener mejores resultados que antes. Esto es justo lo que sucede en la figura \ref{fig:breakoutWeightsFactor2}. Hay que destacar que en ambos hay un elitismo de 5 y el resto de parámetros son iguales para poder comparar los resultados. Lo único que cambia es el factor por el que se multiplica el rango de los números reales. El resultado al final es que converge a una puntuación mayor a pesar de tener que buscar unos pesos y \textit{biases} en un rango de valores más amplios, por lo que quizá en tener ese rango de valores le ha permitido aprender mejor a como jugar.
+Otro de los experimentos que realizamos fue inicializar los pesos en el rango [-2.0, 2.0] en vez de [-1.0, 1.0]. Este cambio depende mucho del problema, ya que al aumentar el rango al doble de posibles valores debería de ser más difícil de obtener una mejor inicialización, pero eventualmente, como ahora tenemos pesos que no están solo limitados al rango [-1.0, 1.0] sino que ahora pueden tener un rango mayor de valores, puede que ahora tengan la posibilidad de obtener mejores resultados que antes. Esto es justo lo que sucede en la figura \ref{fig:breakoutWeightsFactor2}. Hay que destacar que en ambos hay un elitismo de 5 y el resto de parámetros son iguales para poder comparar los resultados. Lo único que cambia es el factor por el que se multiplica el rango de los números reales. El resultado al final es que converge a una puntuación mayor a pesar de tener que buscar unos pesos y \textit{biases} en un rango de valores más amplios, por lo que quizá en tener ese rango de valores le ha permitido aprender mejor a como jugar.
 
 \begin{figure}[H]
     \centering
@@ -503,7 +503,7 @@ Finalmente, para obtener la distribución de probabilidad que vamos a emplear co
     \label{fig:breakoutProbabilityDistributionRes}
 \end{figure}
 
-Una vez ya tenemos estos valores, podemos aplicar la distribución de probabilidad que se observa en la figura \ref{fig:breakoutProbabilityDistributionRes} y así poder valorar si se obtienen mejores resultados o no. Como se puede apreciar en la figura \ref{fig:breakoutProbabilityDistributionExperiment} sí que se obtienen buenos resultados, por lo que obtendremos una convergencía más rápida, lo cual no siempre es bueno, pero para problemas sencillos como el Breakout ahorra mucho tiempo.
+Una vez ya tenemos estos valores, podemos aplicar la distribución de probabilidad que se observa en la figura \ref{fig:breakoutProbabilityDistributionRes} y así poder valorar si se obtienen mejores resultados o no. Como se puede apreciar en la figura \ref{fig:breakoutProbabilityDistributionExperiment} sí que se obtienen buenos resultados, por lo que obtendremos una convergencia más rápida, lo cual no siempre es bueno, pero para problemas sencillos como el Breakout ahorra mucho tiempo.
 
 \begin{figure}[H]
     \centering

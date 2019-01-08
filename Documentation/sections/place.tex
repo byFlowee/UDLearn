@@ -29,8 +29,8 @@ Una vez hemos compilado el fichero, solo queda ejecutarlo. Para esto, desde la m
 
 \begin{itemize}
 	\item \textit{./nombre\_ejecutable nombre\_rom}. Este modo ejecutará el bot sin ningun tipo de información multimedia disponible.
-	\item \textit{./nombre\_ejecutable nombre\_rom 1}. Si queremos habilitar o deshabilitar explicitamente el contenido multimedia (audio y video), tendremos que escribir a continuacion un 1 o un 0, respectivamente.
-	\item \textit{./nombre\_ejecutable nombre\_rom 1 1}. Si queremos habilitar o deshabilitar además la visualización de RAM, tendremos que escribir a continuacion un 1 o un 0 respectivamente.
+	\item \textit{./nombre\_ejecutable nombre\_rom 1}. Si queremos habilitar o deshabilitar explícitamente el contenido multimedia (audio y vídeo), tendremos que escribir a continuación un 1 o un 0, respectivamente.
+	\item \textit{./nombre\_ejecutable nombre\_rom 1 1}. Si queremos habilitar o deshabilitar además la visualización de RAM, tendremos que escribir a continuación un 1 o un 0 respectivamente.
 	\item Cualquier opción extra no común no reflejada en la documentación aparecerá en el ejecutable siempre y cuando no se introduzca el input correctamente.
 \end{itemize}
 
@@ -71,22 +71,22 @@ Por defecto, el experimento 1 tiene 20 épocas asignadas y no se pueden cambiar.
 \newpage
 \subsection{Red Neuronal}
 
-La red neuronal se encuentra en el directorio NeuralNetwork y contiene un makefile para compilar y un fichero $main.cpp$ con 4 experimentos.  Para construir y entrenar una red neuronal simplemente hay que crear un vector con la topología (numero de neuronas en cada capa) por ejemplo, $\left \{8, 4, 2 \right \}$ si queremos una red neuronal con 8 neuronas de input, una capa oculta con 4 neuronas y 2 neuronas de output. El constructor por defecto recibe este vector de topología y nos devuelve una red. Existe un segundo constructor que además de el vector de topología recibe un vector de dropout, este tiene que tener el mismo tamaño que el de topología y valores de probabilidad de dropout para cada capa, comprendidos entre $0.0$ y $1.0$. Por ejemplo siguiendo el caso anterior, $\left \{0.0, 0.2, 0.0 \right \}$ añadería una probabilidad del 20\% de que las neuronas de la capa oculta queden deshabilitadas.
+La red neuronal se encuentra en el directorio NeuralNetwork y contiene un makefile para compilar y un fichero $main.cpp$ con 4 experimentos.  Para construir y entrenar una red neuronal simplemente hay que crear un vector con la topología (numero de neuronas en cada capa) por ejemplo, $\left \{8, 4, 2 \right \}$ si queremos una red neuronal con 8 neuronas de input, una capa oculta con 4 neuronas y 2 neuronas de output. El constructor por defecto recibe este vector de topología y nos devuelve una red. Existe un segundo constructor que además de el vector de topología recibe un vector de dropout, este tiene que tener el mismo tamaño que el de topología y valores de probabilidad de dropout para cada capa, comprendidos entre $0.0$ y $1.0$. Por ejemplo siguiendo el caso anterior, $\left \{0.0, 0.2, 0.0 \right \}$ añadiría una probabilidad del 20\% de que las neuronas de la capa oculta queden deshabilitadas.
 
 Una vez creada la red, podemos entrenarla con el método de clase $train()$ que recibe dos vectores de Matrices (clase $Mat.cpp$) uno contiene los ejemplos de entrada para el entrenamiento y el otro los outputs esperados. Cada matriz del vector es un ejemplo de entrenamiento que debe coincidir con la shape de la red neuronal.
 
-Podemos inicializar la red con pesos con el metodo $setWeights()$ que recibe como argumento un vector de matrices ($Mat.h$) con la misma shape que la red en la que cada matriz contiene los pesos para cada neurona de la capa correspondiente.  
+Podemos inicializar la red con pesos con el método $setWeights()$ que recibe como argumento un vector de matrices ($Mat.h$) con la misma shape que la red en la que cada matriz contiene los pesos para cada neurona de la capa correspondiente.  
 
 El fichero $main.cpp$ contiene 5 ejemplos de ejecución.
 
 \begin{enumerate}
-    \item Experimento 1: Funcion AND 
+    \item Experimento 1: Función AND 
     \item Experimento 2: Función XOR
     \item Experimento 3: CrossValidation
     \item Experimento 4: Dropout
 \end{enumerate}
 
-Para reproducirlos sencillamente hay que compilar con $make$ y ejecutar $./main$ $experimento$ dodne $experimento$ es un entero de con valor de 1 a 4.
+Para reproducirlos sencillamente hay que compilar con $make$ y ejecutar $./main$ $experimento$ donde $experimento$ es un entero de con valor de 1 a 4.
 
 \newpage
 \subsection{Red Neuronal y Genético: \textit{GANN}}

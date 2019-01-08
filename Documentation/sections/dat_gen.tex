@@ -136,7 +136,7 @@ Otra de las partes comunes a todos los bots es el bucle principal de ejecución 
 
 En este bucle observamos nuestra opción \textbf{printRam} que llama al método encargado de imprimir la RAM, el cual convierte a hexadecimal cada uno de los valores de RAM obtenidos mediante el método \textbf{getRAM().get(i)} del entorno \ac{ale}, además hace un seguimiento de los valores de RAM del step anterior para comprobar si dichos valores han cambiado como hemos visto anteriormente en la figura \ref{fig:RAM_Colors}.
 
-Otra opción que encontramos en el bucle principal de ejecución es \textbf{display\_media}, pero en este caso es usado para llamar al método \textbf{checkKeys()}, esto se hace porque no tiene sentido trackear el input si no existe contenido de video. Este método de input es propio, ya que el método de input de ALE "pausa" el agente, lo cual no nos interesa para extraer datos. \textbf{checkKeys()} simplemente activa o desactiva el modo manual propio con la tecla "E", reflejado en la variable \textbf{manualInput}.
+Otra opción que encontramos en el bucle principal de ejecución es \textbf{display\_media}, pero en este caso es usado para llamar al método \textbf{checkKeys()}, esto se hace porque no tiene sentido trackear el input si no existe contenido de vídeo. Este método de input es propio, ya que el método de input de ALE "pausa" el agente, lo cual no nos interesa para extraer datos. \textbf{checkKeys()} simplemente activa o desactiva el modo manual propio con la tecla "E", reflejado en la variable \textbf{manualInput}.
 
 La variable \textbf{manualInput} decidirá que función se llama para calcular \textbf{totalReward}. \textbf{manualMode()} mapea el teclado a diferentes acciones del juego, mientras que \textbf{agentStep()} es el bot autónomo específico a cada juego.
 
@@ -272,7 +272,7 @@ Es por ello por lo que se dedujo que para implementar un bot básico (sin machin
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\textwidth]{Figures/demonAttackVision}
-	\caption{Vision de la nave.}
+	\caption{Visión de la nave.}
 	\label{fig:demonAttackVision}
 \end{figure}
 
@@ -340,7 +340,7 @@ Una vez que ya sabemos qué indicadores utilizaremos para las colisiones, podemo
 
 En esta primera parte recogemos los píxeles de la pantalla con la funcionalidad de \ac{ale} \textbf{getScreenGrayscale}, para luego emplearlos dentro del bucle en la función \textbf{isBlockingHit(int)}, que analizaremos mas adelante. Este bucle se encarga de recorrer 125 filas de la pantalla. En función a la respuesta de \textbf{isBlockingHit(int)}, marcará una variable a true, la cual representa que ha habido una colisión, además dentro de este struct \textbf{DirtyState}, disponemos de otra variable de tipo EBlockingHit para marcar también la dirección contraria a la colisión dada por isBlockingHit. Se ha decidido este thresold ya que el resto de líneas de pantalla contienen información no relevante para el problema.
 
-Para resumir esta parte del código, marcamos el estado a Dirty y recogemos la dirección conveniente, siempre que isBlockingHit haya detectado una colisión. Hasta que no salimos del estado Dirty, no podremos recoger nuevas direcciones, pero de ello se encargará otra parte del código. Es decir, teóricamente se ha implementado una mini máquina de estados finita (FSM), ya que la nave posee dos estados principales (dirty y no dirty) y la forma de transicionar entre ellos es mediante el código de colisiones.
+Para resumir esta parte del código, marcamos el estado a Dirty y recogemos la dirección conveniente, siempre que isBlockingHit haya detectado una colisión. Hasta que no salimos del estado Dirty, no podremos recoger nuevas direcciones, pero de ello se encargará otra parte del código. Es decir, teóricamente se ha implementado una pequeña máquina de estados finita (FSM), ya que la nave posee dos estados principales (dirty y no dirty) y la forma de cambiar de estado entre ellos es mediante el código de colisiones.
 
 \newpage
 \begin{figure}[h]
@@ -352,7 +352,7 @@ Para resumir esta parte del código, marcamos el estado a Dirty y recogemos la d
 
 La función isBlockingHit tiene que ser capaz de recorrer el array obtenido por \textbf{getScreenGrayscale} de manera eficiente. Para ello lo primero que hace es resolver la posición del array que ocupa el primer píxel de la línea a analizar, esto es fácil, pues simplemente multiplicando el ancho de la línea con el número de línea ya tenemos este número (asumiendo que las líneas empiezan en 0).
 
-La siguiente tarea es resolucionar el thresold, el cual consiste en el área que ocupa la nave, en este caso 7, mas el thresold determinado, que en nuestro caso corresponde al número de píxeles extras que tendremos en cuenta en cada lado, por ejemplo, si el thresold es 2, el área total será 7+2+2 = 11.
+La siguiente tarea es resolver el thresold, el cual consiste en el área que ocupa la nave, en este caso 7, mas el thresold determinado, que en nuestro caso corresponde al número de píxeles extras que tendremos en cuenta en cada lado, por ejemplo, si el thresold es 2, el área total será 7+2+2 = 11.
 
 La iteración que haremos en el bucle irá desde 0 hasta el área total que ocupa la visión de la nave, esto es, como ya hemos dicho anteriormente, el área de la nave mas el thresold. Esto hace que solo iteremos los píxeles necesarios para nuestra situación.
 
@@ -366,16 +366,16 @@ La primera línea que encontramos en el bucle puede parecer confusa, pero tiene 
 \end{algorithm}
 \vspace{2mm}
 
-Necesitamos el valor del píxel en un punto determinado de nuestra área de visión. Para ello, necesitamos pedirle al array grayscale esta información, pero antes necesitamos calcular qué posición del array es la correcta. Al haber pre-calculado la posición del array del primer píxel de la línea lo tenemos mucho mas fácil, pues tenemos por donde empezar. A ese número le tenemos que sumar la posición del jugador uno, representado en \textbf{getP1\_X(true)}, al cual le pasamos el parámetro true para que nos devuelva la posición en píxeles, la cual es más precisa para este problema. Una vez tenemos la posición del jugador solo nos queda sumarle i para abordar todo el área de visión. Pero como bien podemos observar en el algoritmo \ref{alg:weirdlineda}, estamos restando a la posición del jugador el \textbf{VISION\_THRESOLD}, esto se hace porque sino estaríamos solo teniendo en cuenta el área extra por la derecha, ya que la colisión estaría desplazada a la izquierda como muestra la figura 	\ref{fig:colisioncalculadaerroneamenteda}, por ello es necesario restar \textbf{VISION\_THRESOLD}.,
+Necesitamos el valor del píxel en un punto determinado de nuestra área de visión. Para ello, necesitamos pedirle al array grayscale esta información, pero antes necesitamos calcular qué posición del array es la correcta. Al haber precalculado la posición del array del primer píxel de la línea lo tenemos mucho mas fácil, pues tenemos por donde empezar. A ese número le tenemos que sumar la posición del jugador uno, representado en \textbf{getP1\_X(true)}, al cual le pasamos el parámetro true para que nos devuelva la posición en píxeles, la cual es más precisa para este problema. Una vez tenemos la posición del jugador solo nos queda sumarle i para abordar todo el área de visión. Pero como bien podemos observar en el algoritmo \ref{alg:weirdlineda}, estamos restando a la posición del jugador el \textbf{VISION\_THRESOLD}, esto se hace porque sino estaríamos solo teniendo en cuenta el área extra por la derecha, ya que la colisión estaría desplazada a la izquierda como muestra la figura 	\ref{fig:colisioncalculadaerroneamenteda}, por ello es necesario restar \textbf{VISION\_THRESOLD}.,
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.3\textwidth]{Figures/colisioncalculadaerroneamenteda}
-	\caption{Area de sin restar VISION\_THRESOLD al jugador.}
+	\caption{Área de sin restar VISION\_THRESOLD al jugador.}
 	\label{fig:colisioncalculadaerroneamenteda}
 \end{figure}
 
-Una vez hemos resolucionado el valor del píxel, podemos hacer el filtrado del mismo, el cual se realizará en el cuerpo del bucle.
+Una vez hemos resuelto el valor del píxel, podemos hacer el filtrado del mismo, el cual se realizará en el cuerpo del bucle.
 
 \begin{figure}[h]
 	\centering
@@ -598,11 +598,11 @@ Nuestro código es muy similar al descrito, ya que la parte más importante es l
 \subsection{Redes neuronales}
 \label{subsec:nn}
 
-En esta sección describiremos los detalles de implementación y las bases a partir de las cuales hemos construido nuestras redes neuronales asi como sus algoritmos de aprendizaje. En concreto hemos utilizado dos metodos.
+En esta sección describiremos los detalles de implementación y las bases a partir de las cuales hemos construido nuestras redes neuronales, así como sus algoritmos de aprendizaje. En concreto hemos utilizado dos métodos.
 
 \begin{itemize}
-    \item \textbf{Aprendizaje supervisdo:} Utilizando el algoritmo de \textbf{Backpropagation}.
-    \item \textbf{Aprendizaje no supervisado:} Utilizando un algorítmo genético.
+    \item \textbf{Aprendizaje supervisado:} Utilizando el algoritmo de \textbf{Back Propagation}.
+    \item \textbf{Aprendizaje por refuerzo:} Utilizando un algoritmo genético.
 \end{itemize}
 
 Podemos ver la estructura básica de la red en la figura \ref{fig:neuralNetwork}.\newline
@@ -699,7 +699,7 @@ Cada nodo representa una neurona, en la figura \ref{fig:completeNeuron} se repre
 
 Donde sigma representa la función de activación, $x_i$ los inputs de la neurona y $w_i$ los pesos correspondientes.
 
-Su estructura es muy similar a la del perceptron con la diferencia de que en lugar de una funcion de signo, su salida pasa por una función de activación (tanh, sigmoid, ReLU...) que modifica la salida en lugar de simplemente tomar una salida de +1 o -1.
+Su estructura es muy similar a la del perceptrón con la diferencia de que en lugar de una función de signo, su salida pasa por una función de activación (tanh, sigmoid, ReLU...) que modifica la salida en lugar de simplemente tomar una salida de +1 o -1.
 
 Por ejemplo, la función ReLU(x) tomará 0 como salida para cualquier x con valor negativo mientras que tomará valor x para cualquier valor positivo de x.
 
@@ -711,15 +711,15 @@ Por ejemplo, la función ReLU(x) tomará 0 como salida para cualquier x con valo
   \end{cases}
 \]
 
-A diferencia del perceptrón, una red neuronal es capaz de clasificar datos que no sean linealmente separables,combinando varias neuronas la red es capaz de aprender funciones más complejas. Debido a esta mayor expresividad, se nos presenta un nuevo problema que no existia con los clasificadores lineales, y es que ahora nuestro algoritmo es capaz de hacer \textbf{overfiting}. 
+A diferencia del perceptrón, una red neuronal es capaz de clasificar datos que no sean linealmente separables,combinando varias neuronas la red es capaz de aprender funciones más complejas. Debido a esta mayor expresividad, se nos presenta un nuevo problema que no existía con los clasificadores lineales, y es que ahora nuestro algoritmo es capaz de hacer \textbf{overfitting}. 
 
-El overfit es un problema común en los algoritmos de aprendizaje basado en que el algoritmo memoriza los ejemplos de entrenamiento en lugar de encontrar una solución general para otros casos que no ha visto nunca. Para evitar el overfit existen numerosas técnicas, algunas de ellas han sido implementadas y las veremos más adelante, aunque la forma más simple de reducir este fenómeno es encontrar una red con la minima dimensión posible que sea capaz de encontrar una solución general. Es decir, es mucho más sencillo que una recta sea una solución genérica a un problema que un polinomio de grado 8, sencillamente porque el polinomio de grado 8 tiene muchas más variables y es capaz de ser representado de muchas formas distintas. Es por esto que a la hora de utilizar una red neuronal para aprendizaje busquemos adecuar el tamaño de la red (numero de capas ocultas, numero de neuronas...) a la complejidad del problema.
+El overfit es un problema común en los algoritmos de aprendizaje basado en que el algoritmo memoriza los ejemplos de entrenamiento en lugar de encontrar una solución general para otros casos que no ha visto nunca. Para evitar el overfit existen numerosas técnicas, algunas de ellas han sido implementadas y las veremos más adelante, aunque la forma más simple de reducir este fenómeno es encontrar una red con la mínima dimensión posible que sea capaz de encontrar una solución general. Es decir, es mucho más sencillo que una recta sea una solución genérica a un problema que un polinomio de grado 8, sencillamente porque el polinomio de grado 8 tiene muchas más variables y es capaz de ser representado de muchas formas distintas. Es por esto que a la hora de utilizar una red neuronal para aprendizaje busquemos adecuar el tamaño de la red (numero de capas ocultas, numero de neuronas...) a la complejidad del problema.
 
 \newpage
-\subsubsection{Backpropagation}
+\subsubsection{Back Propagation}
 \label{subsubsec:nn:backprop}
 
-Uno de los algoritmos más comunes y utilizados para entrenar redes neuronales es \textbf{Backpropagation}. Se basa en buscar una minimización de la función de error utilizando el método de descenso por gradiente, considerando la combinación de los distintos pesos que minimizan este error una posible solución al problema.
+Uno de los algoritmos más comunes y utilizados para entrenar redes neuronales es \textbf{Back Propagation}. Se basa en buscar una minimización de la función de error utilizando el método de descenso por gradiente, considerando la combinación de los distintos pesos que minimizan este error una posible solución al problema.
 
 
 \begin{algorithm}[H]
@@ -763,23 +763,23 @@ Uno de los algoritmos más comunes y utilizados para entrenar redes neuronales e
         }
     }
 	    
-	\caption{Backpropagation}
+	\caption{Back Propagation}
 	\label{alg:backprop}
 \end{algorithm}
 
-El algoritmo se basa en la minimización de la función de error (computada en base a los resultados obtenidos y a los resultados esperados). Obteniendo la derivada del gradiente de la función de error podemos minimizarla, haciendo asi más pequeño el valor de error global de la red.
+El algoritmo se basa en la minimización de la función de error (computada en base a los resultados obtenidos y a los resultados esperados). Obteniendo la derivada del gradiente de la función de error podemos minimizarla, haciendo así más pequeño el valor de error global de la red.
 
 \[
     \nabla E = \left( \dfrac{\delta E}{w_1}, \dots  \dfrac{\delta E}{w_n}, \dfrac{\delta E}{b} \right)
 \]
 
-A la hora de actualizar los pesos introducimos el \textbf{learning rate} o ratio de aprendizaje ($\alpha$), este se encarga de controlar el tamaño de los saltos en el gradiente. Si es muy elevado, dará pasos muy grandes y es posible que se pase una solución optima, si es muy bajo, dará pasos muy pequeños y tardará mucho en alcanzar una solución. En forma matemática la actualización de pesos es la siguiente:
+A la hora de actualizar los pesos introducimos el \textbf{learning rate} o ratio de aprendizaje ($\alpha$), este se encarga de controlar el tamaño de los saltos en el gradiente. Si es muy elevado, dará pasos muy grandes y es posible que se pase una solución óptima, si es muy bajo, dará pasos muy pequeños y tardará mucho en alcanzar una solución. En forma matemática la actualización de pesos es la siguiente:
 
 \[
     w\prime_i \longleftarrow w_i - \alpha[-(y - \hat{y}) x_i]
 \]
 
-A continuación se describiran metodos de regularización que han sido implementados en esta práctica.
+A continuación, se describirán métodos de regularización que han sido implementados en esta práctica.
 
 \newpage
 \subsubsection{Dropout}
@@ -787,7 +787,7 @@ A continuación se describiran metodos de regularización que han sido implement
 
 El dropout es una técnica de regularización en la cual se seleccionan varias neuronas de forma aleatoria con una probabilidad $p$ y se deshabilitan temporalmente junto con sus inputs y outputs. Esto implica que dichas neuronas no tendrán ningún efecto en la activación durante el \textbf{forward pass} ni tendrán efecto en la actualización de los pesos durante el \textbf{backward pass}.
 
-Como hemos comentado con anterioridad, la gran expresividad de las redes neuronales profundas las hace propensas al overfitting, con una cantidad de datos limitada, es facil que las neuronas aprendan patrones y ahayn neuronas que dependan de sus vecinas o simplemente no tengan importancia en la red. Para evitar esto aplicamos dropout en cada epoca de entrenamiento.
+Como hemos comentado con anterioridad, la gran expresividad de las redes neuronales profundas las hace propensas al overfitting, con una cantidad de datos limitada, es fácil que las neuronas aprendan patrones y hayan neuronas que dependan de sus vecinas o simplemente no tengan importancia en la red. Para evitar esto aplicamos dropout en cada época de entrenamiento.
 
 \begin{algorithm}
     \For{$epoch \gets 0$ to $totalEpochs$}
@@ -896,7 +896,7 @@ Las fases principales de los algoritmos genéticos son:
 \begin{enumerate}
     \item Crear una \textbf{población inicial} de individuos. Esta población suele generarse de forma aleatoria y, aunque muchos individuos harán mal su tarea, otros lo harán medio bien o incluso bien. También se pueden inicializar siguiendo una distribución de probabilidad que se sabe que sigue el patrón de los individuos que hacen bien su tarea.
     \item Calcular su \textbf{\textit{fitness}}. Este valor se calcula de la función de \textit{fitness}, la cual nos indica como de bien un individuo hace la tarea para la que se supone que ha sido concebido. El objetivo suele ser maximizar esta función.
-    \item \textbf{Selección}. Seleccionar los individuos más aptos para pasar su información a la siguiente generación. Esto es una cuestión de probabilidad, no de directamente hacer que los mejores individuos sean los que pasen su información a la siguiente generación. Los mejores individuos tendrán más posibilidades, pero los peores también tendrán una pequeña posbilidad de pasar su información a la siguiente generación.
+    \item \textbf{Selección}. Seleccionar los individuos más aptos para pasar su información a la siguiente generación. Esto es una cuestión de probabilidad, no de directamente hacer que los mejores individuos sean los que pasen su información a la siguiente generación. Los mejores individuos tendrán más posibilidades, pero los peores también tendrán una pequeña posibilidad de pasar su información a la siguiente generación.
     \item \textbf{\textit{Crossover} (emparejamiento)}. Unir la información genética de los individuos seleccionados para pasar a la siguiente generación.
     \item \textbf{Mutación}. Las mutaciones son algo que sucede cuando hablamos de la genética. A veces son buenas y a veces son malas, pero está claro que son necesarias. La mutación puede aportarnos algo que puede que ningún individuo de la población inicial tuviera en su información genética, y esa mutación podría hacer que un nuevo gen surgiera y predominara por encima de todos.
     \label{enum:geneticAlgorithmSteps}
