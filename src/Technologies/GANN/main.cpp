@@ -17,7 +17,7 @@ int main (int argc, char **argv)
     if (argc == 3)
     {
         Game game = (Game)atoi(argv[1]);
-        bool visualization = atoi(argv[2]) == 1 ? true : false;
+        bool visualization = atoi(argv[2]) == 1;
 
         if (game == Game::breakout)
         {
