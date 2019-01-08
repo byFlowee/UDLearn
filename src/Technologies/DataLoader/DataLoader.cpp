@@ -1,16 +1,13 @@
 #include "DataLoader.h"
 
-DataLoader::DataLoader(string filename, vector<int> &topology) {
-    vector<unsigned> jTopology(topology.begin(), topology.end());
+DataLoader::DataLoader(string filename, vector<int> &topology)
+{
     net = new NeuralNetwork(topology);
-    jnet = new JNet(jTopology);
     this->filename = filename;
 }
 DataLoader::~DataLoader(){
     delete this->net;
-    delete this->jnet;
     this->net = NULL;
-    this->jnet = NULL;
 }
 
 vector<string> DataLoader::getNextLineAndSplitIntoTokens(istream& str) {
@@ -45,15 +42,6 @@ vector<double> DataLoader::getPrediction(vector<double> inputs) {
         outputs.push_back(result.get(0, i));
 
     return outputs;    
-}
-
-vector<double> DataLoader::getPredictionJNet(vector<double> inputs) {
-    vector<double> outputs;
-
-    this->jnet->feedForward(inputs);
-    this->jnet->getResults(outputs);
-
-    return outputs;
 }
 
 void DataLoader::trainNN(unsigned nInputs, unsigned nOutputs, unsigned epochs) {
@@ -97,65 +85,6 @@ void DataLoader::trainNN(unsigned nInputs, unsigned nOutputs, unsigned epochs) {
 
         cout << "Training!" << endl;
         this->net->train(inputs, expectedOutputs, epochs);
-    }
-    else {
-        cout << "Error: File \"" << this->filename << "\" couldn't be opened" << endl;
-    }
-}
-
-void DataLoader::trainJNet(unsigned nInputs, unsigned nOutputs, unsigned epochs) {
-    ifstream file;
-    file.open(this->filename);
-
-    if(file.is_open()) {
-        vector<string> line;
-        string dataTrainingLabels;
-
-        getline(file, dataTrainingLabels);
-        cout << dataTrainingLabels << endl;
-    
-        vector<vector<double>> inputs;
-        vector<vector<double>> expectedOutputs;
-
-        bool eof = false;
-        line = getNextLineAndSplitIntoTokens(file);
-
-        while(!eof) {            
-            vector<double> inputs1;                      //Mat inputs1(1, nInputs);
-            vector<double> expectedOutputs1;             //Mat expectedOutputs1(1, nOutputs);
-
-            for (unsigned i = 0; i < nInputs; ++i) {
-                inputs1.push_back(atof(line[i].c_str()));
-            }
-            
-            for (unsigned o = 0; o < nOutputs; ++o) {
-                expectedOutputs1.push_back(atof(line[nInputs + o].c_str()));
-            }
-            
-            inputs.push_back(inputs1);
-            expectedOutputs.push_back(expectedOutputs1);
-
-            line.clear();
-            line = getNextLineAndSplitIntoTokens(file);
-
-            if (line.size() < (nInputs + nOutputs)) 
-                eof = true;
-        }
-
-        for(vector<double> a : inputs) {
-            cout << a.size() << endl;
-        }
-
-        cout << "Training!" << endl;
-
-        for (unsigned e = 0; e < epochs; ++e) {
-            for (unsigned i = 0; i < inputs.size(); ++i) {
-                this->jnet->feedForward(inputs[i]);
-                this->jnet->backPropagation(expectedOutputs[i]);
-            }
-        }
-        
-        file.close();
     }
     else {
         cout << "Error: File \"" << this->filename << "\" couldn't be opened" << endl;

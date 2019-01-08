@@ -14,7 +14,7 @@ FLAGS := -I$(ALE)/src -I$(ALE)/src/controllers -I$(ALE)/src/os_dependent -I$(ALE
 CXX := g++
 FILE := breakout_bot
 LOADER := ../DataLoader/DataLoader
-NETWORK := ../NeuralNetwork/mat.cpp ../NeuralNetwork/neuralNetwork.cpp ../JNet/JNet.cpp ../JNet/Perceptron.cpp
+NETWORK := ../Technologies/NeuralNetwork/mat.cpp ../Technologies/NeuralNetwork/neuralNetwork.cpp
 LDFLAGS := -lale -lz
 
 UNAME_S := $(shell uname -s)

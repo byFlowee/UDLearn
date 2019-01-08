@@ -512,7 +512,6 @@ int main(int argc, char **argv)
     const bool printRam(argc == 4 ? atoi(argv[3])==1 : false);
 
     //DataLoader d("../dattack/demon_attack.csv", topology);
-    //d.trainJNet(topology.front(),topology.back(),epochs);
     //cout << "Training completed, starting game..." << endl;
 
     // Init rand seed

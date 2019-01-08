@@ -186,9 +186,7 @@ float NN(DataLoader &d)
     inputs.push_back(playerX);
     inputs.push_back(wide);
 
-    outputs = d.getPredictionJNet(inputs);
-
-    //Mat m = nn.forwardPropagation(values);
+    Mat m = nn.getPrediction(values);
 
     if (outputs[0] < 0.5)
     {
@@ -225,8 +223,7 @@ int main(int argc, char **argv)
     const bool printRam(argc >= 4 ? atoi(argv[3])==1 : false);
 
     DataLoader d("../breakout/breakout.csv", topology);
-    d.trainJNet(topology.front(),topology.back(),epochs);
-    //NeuralNetwork &nn = *d.getNN();
+    d.trainNN(topology.front(),topology.back(),epochs);
 
     // Init rand seed
     srand(time(NULL));
