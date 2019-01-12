@@ -7,10 +7,10 @@
 #include "ale_interface.hpp"
 #include "SDL.h"
 
-const string Player::BREAKOUT_ROM = "../../breakout/breakout.bin";
-const string Player::BOXING_ROM = "../../boxing/boxing.bin";
-const string Player::DEMONATTACK_ROM = "../../dattack/demon_attack.bin";
-const string Player::STARGUNNER_ROM = "../../strgunner/star_gunner.bin";
+const string Player::BREAKOUT_ROM = "games/breakout.bin";
+const string Player::BOXING_ROM = "games/boxing.bin";
+const string Player::DEMONATTACK_ROM = "games/demon_attack.bin";
+const string Player::STARGUNNER_ROM = "games/star_gunner.bin";
 
 vector<int> Player::enemyBulletCoordinateXHistory;
 int Player::enemyBulletCoordinateXHistoryIndex = 0;
@@ -27,12 +27,12 @@ int Player::breakoutGetBallX()
    return alei.getRAM().get(99);
 }
 
-vector<int> Player::playBreakout(NeuralNetwork &nn, bool displayScreen)
+vector<int> Player::playBreakout(NeuralNetwork &nn, bool displayScreen, int steps)
 {
     vector<int> res;
     int lastLives = 0;
     float totalReward = .0f;
-    int maxSteps = 7500;
+    int maxSteps = steps;
 
     alei.disableBufferedIO();
 
@@ -127,11 +127,11 @@ vector<int> Player::playBreakout(NeuralNetwork &nn, bool displayScreen)
     return res;
 }
 
-vector<int> Player::playBoxing(NeuralNetwork &nn, bool displayScreen)
+vector<int> Player::playBoxing(NeuralNetwork &nn, bool displayScreen, int steps)
 {
     vector<int> res;
     float totalReward = .0f;
-    int maxSteps = 15000;
+    int maxSteps = steps;
 
     alei.disableBufferedIO();
 
@@ -268,11 +268,11 @@ bool Player::demonAttackIsEnemyAlive(Player::DemonAttackEnemy enemy)
     return true;
 }
 
-vector<int> Player::playDemonAttack(NeuralNetwork &nn, bool displayScreen)
+vector<int> Player::playDemonAttack(NeuralNetwork &nn, bool displayScreen, int steps)
 {
     vector<int> res;
     float totalReward = .0f;
-    int maxSteps = 15000;
+    int maxSteps = steps;
 
     alei.disableBufferedIO();
 
@@ -657,11 +657,11 @@ vector<int> Player::playDemonAttack(NeuralNetwork &nn, bool displayScreen)
     return res;
 }
 
-vector<int> Player::playStarGunner(NeuralNetwork &nn, bool displayScreen)
+vector<int> Player::playStarGunner(NeuralNetwork &nn, bool displayScreen, int steps)
 {
     vector<int> res;
     float totalReward = .0f;
-    int maxSteps = 15000;
+    int maxSteps = steps;
 
     alei.disableBufferedIO();
 

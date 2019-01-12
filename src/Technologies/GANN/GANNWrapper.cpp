@@ -8,14 +8,15 @@
 
 using std::cout;
 
-GANNWrapper::GANNWrapper(const vector<int> &topology, Game game, int generations, int population, size_t elitism, size_t weightsFactor, const string &filename) :
+GANNWrapper::GANNWrapper(const vector<int> &topology, Game game, int gameSteps, int generations, int population, size_t elitism, size_t weightsFactor, const string &filename) :
     gann(topology, game, {}, {}, population, elitism, weightsFactor),
     generations(generations),
     bestFitnessAndScoreFileTxt(("records/" + filename + ".txt").c_str()),
     bestFitnessAndScoreFileWeightsAndBiases(("records/" + filename + ".weights").c_str()),
     topology(topology),
     fitnessSharing(false),
-    game(game)
+    game(game),
+    gameSteps(gameSteps)
 {
     if (!this->bestFitnessAndScoreFileTxt.is_open() || !this->bestFitnessAndScoreFileWeightsAndBiases.is_open())
     {
@@ -128,16 +129,16 @@ NeuralNetwork GANNWrapper::trainAndGetBestNN()
         switch (this->game)
         {
             case Game::breakout:
-                playerResults = Player::playBreakout(nn);           // If you don't want to see the best DNA.
+                playerResults = Player::playBreakout(nn, false, this->gameSteps);           // If you don't want to see the best DNA.
                 break;
             case Game::boxing:
-                playerResults = Player::playBoxing(nn);           // If you don't want to see the best DNA.
+                playerResults = Player::playBoxing(nn, false, this->gameSteps);           // If you don't want to see the best DNA.
                 break;
             case Game::demonAttack:
-                playerResults = Player::playDemonAttack(nn);           // If you don't want to see the best DNA.
+                playerResults = Player::playDemonAttack(nn, false, this->gameSteps);           // If you don't want to see the best DNA.
                 break;
             case Game::starGunner:
-                playerResults = Player::playStarGunner(nn);           // If you don't want to see the best DNA.
+                playerResults = Player::playStarGunner(nn, false, this->gameSteps);           // If you don't want to see the best DNA.
                 break;
             default:
                 //cerr << "ERROR: game unknown." << endl;   // Standard error output is redirected to /dev/null

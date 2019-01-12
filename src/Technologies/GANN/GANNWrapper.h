@@ -18,9 +18,10 @@ class GANNWrapper
         vector<int> topology;
         bool fitnessSharing;
         Game game;
+        int gameSteps;
 
     public:
-        GANNWrapper(const vector<int>&, Game, int, int, size_t, size_t, const string&);
+        GANNWrapper(const vector<int>&, Game, int, int, int, size_t, size_t, const string&);
         ~GANNWrapper();
         GANN& getGANN();
         int getGenerations() const;

@@ -7,7 +7,7 @@
 #include "../NeuralNetwork/neuralNetwork.h"
 #include "Player.h"
 
-GANN::GANN(const vector<int> &topology, Game game, const vector<double> &initialElitism, const vector<WeightInitializationRange> &weightsInitializationRange, size_t population, size_t elitism, size_t weightsFactor) :
+GANN::GANN(const vector<int> &topology, Game game, int gameSteps, const vector<double> &initialElitism, const vector<WeightInitializationRange> &weightsInitializationRange, size_t population, size_t elitism, size_t weightsFactor) :
     population(population),
     fitnessValues(population),
     topology(topology),
@@ -17,6 +17,7 @@ GANN::GANN(const vector<int> &topology, Game game, const vector<double> &initial
     weightsFactor(weightsFactor)
 {
     this->currentGeneration = 0;
+    this->gameSteps = gameSteps;
     this->populationSize = population;
 
     if (this->weightsFactor <= 0)
@@ -103,16 +104,16 @@ vector<int> GANN::fitness(const DNA &dna)
     switch (this->currentGame)
     {
         case Game::breakout:
-            res = Player::playBreakout(nn);
+            res = Player::playBreakout(nn, false, this->gameSteps);
             break;
         case Game::boxing:
-            res = Player::playBoxing(nn);
+            res = Player::playBoxing(nn, false, this->gameSteps);
             break;
         case Game::demonAttack:
-            res = Player::playDemonAttack(nn);
+            res = Player::playDemonAttack(nn, false, this->gameSteps);
             break;
         case Game::starGunner:
-            res = Player::playStarGunner(nn);
+            res = Player::playStarGunner(nn, false, this->gameSteps);
             break;
         default:
             cerr << "ERROR: Unknown game." << endl;

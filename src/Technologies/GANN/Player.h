@@ -34,10 +34,10 @@ class Player
         static bool demonAttackIsEnemyAlive(DemonAttackEnemy);
 
     public:
-        static vector<int> playBreakout(NeuralNetwork&, bool = false);
-        static vector<int> playBoxing(NeuralNetwork&, bool = false);
-        static vector<int> playDemonAttack(NeuralNetwork&, bool = false);
-        static vector<int> playStarGunner(NeuralNetwork&, bool = false);
+        static vector<int> playBreakout(NeuralNetwork&, bool = false, int = 7500);
+        static vector<int> playBoxing(NeuralNetwork&, bool = false, int = 7500);
+        static vector<int> playDemonAttack(NeuralNetwork&, bool = false, int = 7500);
+        static vector<int> playStarGunner(NeuralNetwork&, bool = false, int = 7500);
     
 };
 

@@ -64,6 +64,7 @@ class GANN
         size_t currentGeneration;
         size_t DNASize;
         Game currentGame;
+        int gameSteps;
         // Elitism.
         size_t elitism;
         size_t weightsFactor;
@@ -73,7 +74,7 @@ class GANN
         double getFitnessValue(const vector<int>&);
 
     public:
-        GANN(const vector<int>&, Game, const vector<double>&, const vector<WeightInitializationRange>&, size_t = 50, size_t = 0, size_t = 1);
+        GANN(const vector<int>&, Game, int, const vector<double>&, const vector<WeightInitializationRange>&, size_t = 50, size_t = 0, size_t = 1);
         void setMutationRate(double);
         void setCrossoverRate(double);
         void createPopulation();

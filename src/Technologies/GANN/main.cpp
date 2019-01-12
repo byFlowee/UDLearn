@@ -14,10 +14,11 @@ using namespace std;
 
 int main (int argc, char **argv)
 {
-    if (argc == 3)
+    if (argc == 4)
     {
         Game game = (Game)atoi(argv[1]);
         bool visualization = atoi(argv[2]) == 1;
+        int steps = atoi(argv[3]);
 
         if (game == Game::breakout)
         {
@@ -26,7 +27,7 @@ int main (int argc, char **argv)
             vector<int> topology = {4, 2};
             NeuralNetwork nn(topology);
             UtilG::setRepresentativeVectorOnNeuralNetwork(weightsAndBiasesMat, nn);
-            vector<int> values = Player::playBreakout(nn, visualization);
+            vector<int> values = Player::playBreakout(nn, visualization, steps);
 
             cout << "Score: " << values[0] << endl;
             cout << "Steps: " << values[1] << endl;
@@ -39,7 +40,7 @@ int main (int argc, char **argv)
             vector<int> topology = {4, 5};
             NeuralNetwork nn(topology);
             UtilG::setRepresentativeVectorOnNeuralNetwork(weightsAndBiasesMat, nn);
-            vector<int> values = Player::playBoxing(nn, visualization);
+            vector<int> values = Player::playBoxing(nn, visualization, steps);
 
             cout << "Score: " << values[0] << endl;
             cout << "Steps: " << values[1] << endl;
@@ -51,7 +52,7 @@ int main (int argc, char **argv)
             vector<int> topology = {3, 3};
             NeuralNetwork nn(topology);
             UtilG::setRepresentativeVectorOnNeuralNetwork(weightsAndBiasesMat, nn);
-            vector<int> values = Player::playDemonAttack(nn, visualization);
+            vector<int> values = Player::playDemonAttack(nn, visualization, steps);
 
             cout << "Score: " << values[0] << endl;
             cout << "Steps: " << values[1] << endl;
@@ -63,7 +64,7 @@ int main (int argc, char **argv)
             vector<int> topology = {12, 5};
             NeuralNetwork nn(topology);
             UtilG::setRepresentativeVectorOnNeuralNetwork(weightsAndBiasesMat, nn);
-            vector<int> values = Player::playStarGunner(nn, visualization);
+            vector<int> values = Player::playStarGunner(nn, visualization, steps);
 
             cout << "Score: " << values[0] << endl;
             cout << "Steps: " << values[1] << endl;
@@ -75,11 +76,11 @@ int main (int argc, char **argv)
 
         return 0;
     }
-    else if (argc != 5)
+    else if (argc != 6)
     {
         cerr << "ERROR:" << endl;
-        cerr << "  Usage_1 (train): ./main <GAME = 1 (breakout), 2 (boxing), 3 (demon attack), 4 (star gunner)> maxGenerations population filenameToSaveRecords" << endl;
-        cerr << "  Usage_2 (play):  ./main <GAME = 1 (breakout), 2 (boxing), 3 (demon attack), 4 (star gunner)> <VISUALIZATION 0 (disabled) 1 (enabled)>" << endl;
+        cerr << "  Usage_1 (train): ./main <GAME = 1 (breakout), 2 (boxing), 3 (demon attack), 4 (star gunner)> maxGenerations population filenameToSaveRecords gameSteps" << endl;
+        cerr << "  Usage_2 (play):  ./main <GAME = 1 (breakout), 2 (boxing), 3 (demon attack), 4 (star gunner)> <VISUALIZATION 0 (disabled) 1 (enabled)> gameSteps" << endl;
 
         return 0;
     }
@@ -98,6 +99,7 @@ int main (int argc, char **argv)
     vector<WeightInitializationRange> weightsInitialization;
 
     Game game = (Game)atoi(argv[1]);
+    int steps = atoi(argv[5]);
 
     if (game == Game::breakout)
     {
@@ -144,7 +146,7 @@ int main (int argc, char **argv)
         NeuralNetwork nn = gannWrapper.trainAndGetBestNN();
 
         cout << "Best neural network is playing!" << endl;
-        Player::playBreakout(nn, true);
+        Player::playBreakout(nn, true, steps);
     }
     else if (game == Game::boxing)
     {
@@ -174,7 +176,7 @@ int main (int argc, char **argv)
         NeuralNetwork nn = gannWrapper.trainAndGetBestNN();
 
         cout << "Best neural network is playing!" << endl;
-        Player::playBoxing(nn, true);
+        Player::playBoxing(nn, true, steps);
     }
     else if (game == Game::demonAttack)
     {
@@ -204,7 +206,7 @@ int main (int argc, char **argv)
         NeuralNetwork nn = gannWrapper.trainAndGetBestNN();
 
         cout << "Best neural network is playing!" << endl;
-        Player::playDemonAttack(nn, true);
+        Player::playDemonAttack(nn, true, steps);
     }
     else if (game == Game::starGunner)
     {
@@ -234,12 +236,13 @@ int main (int argc, char **argv)
         NeuralNetwork nn = gannWrapper.trainAndGetBestNN();
 
         cout << "Best neural network is playing!" << endl;
-        Player::playStarGunner(nn, true);
+        Player::playStarGunner(nn, true, steps);
     }
     else
     {
         //cerr << "ERROR: game unknown." << endl;   // Standard error output is redirected to /dev/null
-        cout << "ERROR: game unknown." << endl;
+        //cout << "ERROR: game unknown." << endl;
+        error = true;
     }
 
     // Restore error output
