@@ -9,7 +9,7 @@
 using std::cout;
 
 GANNWrapper::GANNWrapper(const vector<int> &topology, Game game, int gameSteps, int generations, int population, size_t elitism, size_t weightsFactor, const string &filename) :
-    gann(topology, game, {}, {}, population, elitism, weightsFactor),
+    gann(topology, game, gameSteps, {}, {}, population, elitism, weightsFactor),
     generations(generations),
     bestFitnessAndScoreFileTxt(("records/" + filename + ".txt").c_str()),
     bestFitnessAndScoreFileWeightsAndBiases(("records/" + filename + ".weights").c_str()),

@@ -124,7 +124,7 @@ int main (int argc, char **argv)
         size_t weightsFactor = 1;
         vector<int> topologyBreakout = {4, 2};
 
-        GANNWrapper gannWrapper(topologyBreakout, Game::breakout, generations, population, elitism, weightsFactor, filenameToSaveRecords);
+        GANNWrapper gannWrapper(topologyBreakout, Game::breakout, steps, generations, population, elitism, weightsFactor, filenameToSaveRecords);
 
         //gannWrapper.getGANN().setInitialElitism(initialElitism);
         //gannWrapper.getGANN().setWeightInitializationRange(weightsInitialization);
@@ -156,7 +156,7 @@ int main (int argc, char **argv)
         size_t weightsFactor = 2;
         vector<int> topologyBoxing = {4, 5};
 
-        GANNWrapper gannWrapper(topologyBoxing, Game::boxing, generations, population, elitism, weightsFactor, filenameToSaveRecords);
+        GANNWrapper gannWrapper(topologyBoxing, Game::boxing, steps, generations, population, elitism, weightsFactor, filenameToSaveRecords);
 
         gannWrapper.getGANN().setMutationRate(mutationRate);
         gannWrapper.getGANN().setCrossoverRate(crossoverRate);
@@ -186,7 +186,7 @@ int main (int argc, char **argv)
         size_t weightsFactor = 2;
         vector<int> topologyDemonAttack = {3, 3};
 
-        GANNWrapper gannWrapper(topologyDemonAttack, Game::demonAttack, generations, population, elitism, weightsFactor, filenameToSaveRecords);
+        GANNWrapper gannWrapper(topologyDemonAttack, Game::demonAttack, steps, generations, population, elitism, weightsFactor, filenameToSaveRecords);
 
         gannWrapper.getGANN().setMutationRate(mutationRate);
         gannWrapper.getGANN().setCrossoverRate(crossoverRate);
@@ -216,7 +216,7 @@ int main (int argc, char **argv)
         size_t weightsFactor = 2;
         vector<int> topologyStarGunner = {12, 5};
 
-        GANNWrapper gannWrapper(topologyStarGunner, Game::starGunner, generations, population, elitism, weightsFactor, filenameToSaveRecords);
+        GANNWrapper gannWrapper(topologyStarGunner, Game::starGunner, steps, generations, population, elitism, weightsFactor, filenameToSaveRecords);
 
         gannWrapper.getGANN().setMutationRate(mutationRate);
         gannWrapper.getGANN().setCrossoverRate(crossoverRate);
